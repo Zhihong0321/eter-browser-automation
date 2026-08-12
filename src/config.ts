@@ -39,4 +39,18 @@ export const DEFAULTS = {
   healthIntervalMs: 15 * 60_000,
   /** Hard ceiling on agent-driven actions, to stay under platform rate heuristics. */
   maxActionsPerMinute: 12,
+  /**
+   * Outbound WhatsApp message budget. See src/sendlimit.ts for why these are shaped
+   * around distinct recipients rather than around the clock. Conservative on purpose —
+   * raise them once real usage is known, rather than discovering the ceiling by
+   * losing the number.
+   */
+  whatsappSend: {
+    perMinute: 6,
+    recipientsPerHour: 15,
+    newRecipientsPerHour: 5,
+    perDay: 100,
+    /** Wait out short pacing gaps; refuse rather than block for a quarter hour. */
+    maxWaitMs: 15 * 60_000,
+  },
 };

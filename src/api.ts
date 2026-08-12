@@ -70,6 +70,15 @@ export function createServer(svc: VaultService): http.Server {
     ['POST', /^\/api\/browser\/screenshot$/, async () => svc.screenshot()],
     ['POST', /^\/api\/browser\/eval$/, async (b) => svc.evaluate(str(b.expr))],
 
+    ['POST', /^\/api\/recon\/probe$/, async (b) => svc.reconProbe(str(b.url), num(b.windowMs, 8000))],
+    ['POST', /^\/api\/recon\/scan$/, async (b) =>
+      svc.reconScan(str(b.url), {
+        windowMs: num(b.windowMs, 8000),
+        quietMs: num(b.quietMs, 2000),
+        maxPages: num(b.maxPages, 40),
+        approved: Array.isArray(b.approved) ? (b.approved as string[]) : [],
+      })],
+
     ['POST', /^\/api\/wa\/chats$/, async (b) => ({ chats: await svc.waListChats(num(b.limit, 20)) })],
     ['POST', /^\/api\/wa\/read$/, async (b) => svc.waReadChat(str(b.target), num(b.limit, 20))],
     ['POST', /^\/api\/wa\/send$/, async (b) => svc.waSend(str(b.target), str(b.text))],

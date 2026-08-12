@@ -1,15 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { Page } from 'patchright';
+import type { BrowserContext, Page } from 'patchright';
 import { BrowserManager } from './browser.js';
 import { commentOnPost, readFeed, readMyPosts, type FbPost } from './facebook.js';
+import * as gmap from './gmaprecon.js';
 import { humanClick, humanType, pause } from './human.js';
+import { LeadStore, toCsv } from './leads.js';
 import { deepProbe, hintFor, learnCookies, PRESETS, quickProbe } from './probe.js';
+import { SendLimiter } from './sendlimit.js';
+import { analyzeSettle, assertReconAllowed, captureSettle, detectChallenge } from './recon.js';
+import { scanSite, type ScanOptions, type SiteScan } from './recon-scan.js';
 import { describeUrl, Vault, type SessionRecord } from './vault.js';
 import * as wa from './whatsapp.js';
 
 /** The host WhatsApp Web is enrolled under. */
 const WA_HOST = 'web.whatsapp.com';
+
+/** gmap-recon's own disposable Chrome — never the agent profile. See #gmapChrome. */
+const GMAP_PROFILE = 'gmaprecon';
 
 export interface SessionView extends SessionRecord {
   ageMinutes: number | null;
@@ -21,11 +29,22 @@ const STALE_AFTER_MS = 30 * 60_000;
 export class VaultService {
   readonly vault: Vault;
   readonly browser: BrowserManager;
+  readonly sendLimiter: SendLimiter;
   #health: NodeJS.Timeout | null = null;
+  // gmap-recon handles, created on first use — see #gmapChrome.
+  #gmapBrowser: BrowserManager | null = null;
+  #leads: LeadStore | null = null;
+  #gmapLimiter: gmap.SearchLimiter | null = null;
 
   constructor(home: string) {
     this.vault = new Vault(home);
     this.browser = new BrowserManager(this.vault);
+    // On disk, next to the manifest: the daemon restarts often, and an in-memory
+    // counter would hand back a fresh daily budget every time it came up.
+    this.sendLimiter = new SendLimiter(
+      path.join(this.vault.home, 'send-history.json'),
+      this.vault.manifest.settings.whatsappSend,
+    );
   }
 
   // ---------------------------------------------------------------- status
@@ -47,6 +66,7 @@ export class VaultService {
       sessions,
       presets: PRESETS,
       settings: this.vault.manifest.settings,
+      sendBudget: this.sendLimiter.snapshot(),
     };
   }
 
@@ -202,26 +222,212 @@ export class VaultService {
 
   /**
    * Every WhatsApp entry point re-navigates and waits for the app itself, because
-   * the browser idle-closes between calls and comes back on about:blank.
+   * the tab may have been closed, crashed or left somewhere else.
    *
-   * All three go through wa.resolvePage so they share ONE tab. WhatsApp allows a
-   * single active web client per linked device — a second tab takes the session
-   * over and breaks the first. Never route this site through openTab().
+   * All three go through wa.warmPage so they share ONE tab. WhatsApp allows a single
+   * active web client per linked device — a second tab takes the session over and
+   * breaks the first. Never route this site through openTab().
+   *
+   * warmPage also PINS that tab against the idle shutdown. A WhatsApp client costs
+   * 20-30s to boot; letting the idle timer close it meant re-paying that on the first
+   * call after any five-minute gap, which dwarfed everything else these actions do.
    */
+  #waPage(ctx: BrowserContext, page: Page): Promise<Page> {
+    return wa.warmPage(ctx, page, (p) => this.browser.pin(p));
+  }
+
   async waListChats(limit = 20): Promise<wa.WaChat[]> {
     await this.requireReady(WA_HOST);
-    return this.browser.run(async (ctx, page) => wa.listChats(await wa.resolvePage(ctx, page), limit));
+    return this.browser.run(async (ctx, page) => wa.listChats(await this.#waPage(ctx, page), limit));
   }
 
   async waReadChat(target: string, limit = 20): Promise<{ chat: string; messages: wa.WaMessage[] }> {
     await this.requireReady(WA_HOST);
-    return this.browser.run(async (ctx, page) => wa.readChat(await wa.resolvePage(ctx, page), target, limit));
+    return this.browser.run(async (ctx, page) => wa.readChat(await this.#waPage(ctx, page), target, limit));
   }
 
+  /**
+   * Sending is the only WhatsApp action with a budget, and it is NOT the generic
+   * per-minute action limiter. See src/sendlimit.ts: what risks the number is how many
+   * different people you contact, especially ones who never contacted you — not how
+   * fast you click. Reads stay unmetered.
+   *
+   * The slot is booked before the send, not after a successful one. A send that fails
+   * still reached WhatsApp, and a retry loop that only counts successes is how one
+   * refused message becomes fifty.
+   */
   async waSend(target: string, text: string): Promise<wa.WaSendResult> {
     await this.requireReady(WA_HOST);
-    await this.browser.limiter.take();
-    return this.browser.run(async (ctx, page) => wa.sendMessage(await wa.resolvePage(ctx, page), target, text));
+    await this.sendLimiter.take(target);
+    return this.browser.run(async (ctx, page) => wa.sendMessage(await this.#waPage(ctx, page), target, text));
+  }
+
+  /** Current outbound budget — what is left before a send starts waiting. */
+  sendBudget() {
+    return this.sendLimiter.snapshot();
+  }
+
+  // ------------------------------------------------------------- gmap-recon
+
+  /**
+   * gmap-recon owns a SEPARATE Chrome, never the agent profile. Two measured
+   * reasons: Google silently degrades a profile that has been searching (101
+   * results fresh, 64 once used), and Maps work would otherwise open tabs in the
+   * context WhatsApp Web lives in, where a second tab seizes the session.
+   *
+   * All three handles are lazy — the daemon must not pay for a second browser or
+   * create a database file unless a harvest actually runs.
+   */
+  #gmapChrome(): BrowserManager {
+    if (!this.#gmapBrowser) {
+      this.vault.ensureProfile(GMAP_PROFILE, 'gmap-recon (disposable)');
+      this.#gmapBrowser = new BrowserManager(this.vault, GMAP_PROFILE);
+    }
+    return this.#gmapBrowser;
+  }
+
+  #leadStore(): LeadStore {
+    this.#leads ??= new LeadStore(path.join(this.vault.home, 'gmap-leads.db'));
+    return this.#leads;
+  }
+
+  #gmapBudget(): gmap.SearchLimiter {
+    this.#gmapLimiter ??= new gmap.SearchLimiter(path.join(this.vault.home, 'gmap-search-history.json'));
+    return this.#gmapLimiter;
+  }
+
+  gmapPlan(keywords: string[], places: string[]) {
+    if (!keywords.length || !places.length) throw new Error('gmap_plan needs at least one keyword and one place');
+    return this.#leadStore().plan(keywords, places);
+  }
+
+  gmapStatus() {
+    return { ...this.#leadStore().status(), budget: this.#gmapBudget().snapshot() };
+  }
+
+  /**
+   * Harvest a bounded chunk. Bounded because the daemon is request→response and a
+   * full campaign runs for hours; the store holds all progress, so a crash costs
+   * one chunk and never the run.
+   *
+   * A canary re-search leads the chunk. Google's throttle produces no captcha and
+   * no error — just fewer results — so yield against a known baseline is the only
+   * signal that distinguishes "this town is small" from "we are being throttled".
+   * Banking short results silently would quietly lose a third of the leads.
+   */
+  async gmapHarvest(limit = 5): Promise<Record<string, unknown>> {
+    const store = this.#leadStore();
+    const pending = store.pendingSearches(limit);
+    if (!pending.length) return { ran: 0, note: 'nothing pending', ...store.status() };
+
+    const browser = this.#gmapChrome();
+    const budget = this.#gmapBudget();
+    let ran = 0;
+    let found = 0;
+    let halted: string | null = null;
+
+    await browser.run(async (ctx, page) => {
+      const tab = await gmap.warmPage(ctx, page, (p) => browser.pin(p));
+
+      const canary = store.canaryBaseline();
+      if (canary) {
+        await budget.take();
+        const check = await gmap.searchPlace(tab, canary.keyword, canary.place);
+        if (check.found < canary.found * 0.75) {
+          halted =
+            `throttled: canary "${canary.keyword} ${canary.place}" returned ${check.found} ` +
+            `against a baseline of ${canary.found}. Nothing harvested this call — ` +
+            `results would be silently short. Let the profile rest and retry later.`;
+          return;
+        }
+      }
+
+      for (const s of pending) {
+        await budget.take();
+        try {
+          const out = await gmap.searchPlace(tab, s.keyword, s.place);
+          out.businesses.forEach((b, i) => store.upsertBusiness(b, s.id, i));
+          store.completeSearch(s.id, out.found, out.hitCap);
+          ran++;
+          found += out.found;
+        } catch (e) {
+          const msg = String((e as Error).message ?? e);
+          const blocked = msg.startsWith('blocked:');
+          store.failSearch(s.id, msg, blocked);
+          // A hard block is terminal for the call. Grinding on is how a temporary
+          // throttle becomes a persistent one.
+          if (blocked) {
+            halted = msg;
+            return;
+          }
+        }
+      }
+    });
+
+    return { ran, found, halted, ...store.status() };
+  }
+
+  /**
+   * Stage 2 is plain fetch, not the browser: these are ordinary third-party sites,
+   * a different rate domain from Google entirely, and routing thousands of visits
+   * through the single Chrome would block every other automation for hours.
+   */
+  async gmapEnrich(limit = 25): Promise<Record<string, unknown>> {
+    const store = this.#leadStore();
+    const rows = store.pendingEnrich(limit);
+    let done = 0;
+    let failed = 0;
+
+    for (const r of rows) {
+      if (!r.website) continue;
+      try {
+        store.completeEnrich(r.placeId, await gmap.enrichSite(r.website));
+        done++;
+      } catch (e) {
+        store.failEnrich(r.placeId, String((e as Error).message ?? e));
+        failed++;
+      }
+    }
+    return { attempted: rows.length, done, failed, ...store.status() };
+  }
+
+  gmapExport(file: string, opts: { withPhoneOnly?: boolean; withEmailOnly?: boolean } = {}) {
+    const rows = this.#leadStore().rows(opts);
+    fs.writeFileSync(file, toCsv(rows), 'utf8');
+    return { file, rows: rows.length };
+  }
+
+  // ------------------------------------------------------------------ recon
+
+  /**
+   * Watch one page settle and report what to wait on. Runs in a throwaway tab
+   * so it never disturbs whatever the working tab is doing.
+   */
+  async reconProbe(url: string, windowMs = 8000) {
+    const host = new URL(url).hostname;
+    assertReconAllowed(host);
+    await this.requireReady(host);
+
+    return this.browser.runIsolated(async (_ctx, page) => {
+      const trace = await captureSettle(page, url, windowMs);
+      const body = await page.evaluate(() => (document.body?.textContent ?? '').slice(0, 2000)).catch(() => '');
+      const challenge = detectChallenge(trace.url, trace.title, body);
+      if (challenge) throw new Error(`recon aborted: ${challenge} challenge on ${trace.url}. Not retrying.`);
+      return { trace, verdict: analyzeSettle(trace) };
+    });
+  }
+
+  /**
+   * Crawl a site and write scan.json. One launch, one throwaway tab, every
+   * route — an open/close/reopen loop per page would cost minutes in cold
+   * boots alone.
+   */
+  async reconScan(rootUrl: string, opts: ScanOptions = {}): Promise<SiteScan> {
+    const host = new URL(rootUrl).hostname;
+    assertReconAllowed(host);
+    await this.requireReady(host);
+    const outDir = path.join(this.vault.home, 'tools', host, 'recon');
+    return this.browser.runIsolated((ctx, page) => scanSite(ctx, page, rootUrl, outDir, opts));
   }
 
   // -------------------------------------------------------- generic driving
@@ -314,5 +520,8 @@ export class VaultService {
     if (this.#health) clearInterval(this.#health);
     this.#health = null;
     await this.browser.close();
+    // gmap-recon's Chrome and store only exist if a harvest ran.
+    await this.#gmapBrowser?.close();
+    this.#leads?.close();
   }
 }

@@ -1,6 +1,15 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { DAEMON_PORT, DAEMON_URL, resolveVaultHome } from './config.js';
+import { DAEMON_PORT, DAEMON_URL, PKG_ROOT, resolveVaultHome } from './config.js';
+import path from 'node:path';
+
+// Optional local secrets. Absent .env is the normal case — the engine and the
+// scanner both work without it; only the fast worker needs one.
+try {
+  process.loadEnvFile(path.join(PKG_ROOT, '.env'));
+} catch {
+  /* no .env — fine */
+}
 
 function flag(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -100,6 +109,53 @@ async function cmdCheck(site?: string): Promise<void> {
   await cmdStatus();
 }
 
+async function cmdRecon(): Promise<void> {
+  const sub = process.argv[3];
+  const url = process.argv[4];
+  if ((sub !== 'probe' && sub !== 'scan') || !url) {
+    console.error('  Usage: eter-browser recon probe <url> [--window 8000] [--json]');
+    console.error('         eter-browser recon scan  <url> [--max-pages 40] [--window 8000] [--approve "A,B"] [--json]');
+    process.exit(1);
+  }
+  const windowMs = Number(flag('window') ?? 8000);
+
+  if (sub === 'probe') {
+    const r = (await daemon('POST', '/api/recon/probe', { url, windowMs })) as Record<string, unknown>;
+    const { formatVerdict } = await import('./recon.js');
+    console.log('\n' + formatVerdict(r.trace as never, r.verdict as never) + '\n');
+    if (process.argv.includes('--json')) console.log(JSON.stringify(r, null, 2));
+    return;
+  }
+
+  const maxPages = Number(flag('max-pages') ?? 40);
+  const approved = (flag('approve') ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  console.log(`\n  scanning ${url} … (one launch, up to ${maxPages} routes — this takes a few minutes)`);
+  if (approved.length) console.log(`  approved for exploration: ${approved.join(', ')}`);
+  const scan = (await daemon('POST', '/api/recon/scan', { url, windowMs, maxPages, approved })) as Record<string, unknown>;
+  const { formatScan } = await import('./recon-scan.js');
+  console.log(formatScan(scan as never));
+  console.log('');
+  if (process.argv.includes('--json')) console.log(JSON.stringify(scan, null, 2));
+}
+
+async function cmdFastWorker(): Promise<void> {
+  const { fastAsk, fastWorkerConfig } = await import('./fastworker.js');
+  const cfg = fastWorkerConfig();
+  if (!cfg) {
+    console.error('  Fast worker not configured. Copy .env.example to .env and fill it in.');
+    process.exit(1);
+  }
+  const question = process.argv.slice(3).join(' ').trim();
+  console.log(`\n  model : ${cfg.model}\n  base  : ${cfg.baseUrl}`);
+  if (!question) {
+    console.log('  status: configured. Pass a question to test it.\n');
+    return;
+  }
+  const a = await fastAsk(question);
+  console.log(`  took  : ${a.ms}ms · ${a.outputTokens} out tokens · ${a.reasoningChars} reasoning chars`);
+  console.log(`\n${a.text}\n`);
+}
+
 const HELP = `
   eter-browser — share your real browser login sessions with AI agents
 
@@ -112,6 +168,13 @@ const HELP = `
   eter-browser login <site>     Open the agent Chrome to sign in  (facebook|instagram|x|linkedin)
   eter-browser check [site]     Re-verify one or all sessions
   eter-browser status           Print session status
+
+  eter-browser recon probe <url> [--window 8000] [--json]
+      Watch one page settle and report what to wait on (and what lies).
+
+  eter-browser fastworker [question]
+      Show fast-worker config, or ask it something to check it works.
+      Optional — the scanner uses no model at all.
 `;
 
 async function main(): Promise<void> {
@@ -133,6 +196,10 @@ async function main(): Promise<void> {
       return cmdLogin(process.argv[3]);
     case 'check':
       return cmdCheck(process.argv[3]);
+    case 'recon':
+      return cmdRecon();
+    case 'fastworker':
+      return cmdFastWorker();
     default:
       console.log(HELP);
   }

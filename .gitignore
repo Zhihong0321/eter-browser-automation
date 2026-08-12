@@ -1,9 +1,16 @@
 node_modules/
 dist/
 *.log
+# Daemon stdout capture — runtime artifact, and it prints the local vault path.
+.daemon.out
 
 # Never commit browser profiles — they contain live login sessions.
 profiles/
 .eter-browser/
 screenshots/
 manifest.json
+
+# API keys. This project may be published; secrets live here and nowhere else.
+.env
+.env.*
+!.env.example

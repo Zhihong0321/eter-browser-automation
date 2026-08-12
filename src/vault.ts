@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DEFAULTS, DEFAULT_PROFILE_ID } from './config.js';
+import type { SendLimits } from './sendlimit.js';
 
 export type SessionStatus = 'ready' | 'logged_out' | 'pending_login' | 'unknown' | 'error';
 
@@ -48,6 +49,7 @@ export interface Manifest {
     idleTimeoutMs: number;
     healthIntervalMs: number;
     maxActionsPerMinute: number;
+    whatsappSend: SendLimits;
   };
 }
 
@@ -106,7 +108,14 @@ export class Vault {
       return m;
     }
     const raw = JSON.parse(fs.readFileSync(this.manifestPath, 'utf8')) as Manifest;
-    raw.settings = { ...DEFAULTS, ...raw.settings };
+    // Shallow-merge new top-level settings in, but merge whatsappSend one level
+    // deeper: a manifest that overrides only `perDay` must keep the defaults for the
+    // other four limits rather than losing them to undefined.
+    raw.settings = {
+      ...DEFAULTS,
+      ...raw.settings,
+      whatsappSend: { ...DEFAULTS.whatsappSend, ...raw.settings?.whatsappSend },
+    };
     if (!raw.profiles?.[DEFAULT_PROFILE_ID]) {
       raw.profiles = freshManifest().profiles;
     }
@@ -174,6 +183,27 @@ export class Vault {
 
   profileInitialized(id = DEFAULT_PROFILE_ID): boolean {
     return fs.existsSync(path.join(this.profileDir(id), 'Local State'));
+  }
+
+  /**
+   * Mint a profile on first use, so a subsystem can own a Chrome that is not the
+   * agent's. gmap-recon needs this for two measured reasons: Google silently
+   * degrades a profile that has been searching (101 results fresh, 64 once used),
+   * and runIsolated opens its throwaway tab in the SAME context — which is unsafe
+   * next to WhatsApp Web, where a second tab takes the linked-device session over.
+   */
+  ensureProfile(id: string, label: string): ProfileRecord {
+    const existing = this.#manifest.profiles[id];
+    if (existing) return existing;
+    this.#manifest.profiles[id] = {
+      id,
+      label,
+      createdAt: new Date().toISOString(),
+      launch: { ...DEFAULT_LAUNCH, args: [...DEFAULT_LAUNCH.args] },
+      sessions: {},
+    };
+    this.save();
+    return this.#manifest.profiles[id];
   }
 
   sessions(profileId = DEFAULT_PROFILE_ID): SessionRecord[] {

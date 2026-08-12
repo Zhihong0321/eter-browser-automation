@@ -1,5 +1,4 @@
-import type { BrowserContext, Page } from 'patchright';
-import { humanClick, humanType, pause, sleep } from './human.js';
+import type { BrowserContext, Locator, Page } from 'patchright';
 
 /**
  * WhatsApp Web.
@@ -42,7 +41,9 @@ import { humanClick, humanType, pause, sleep } from './human.js';
  *                      so this selector is unambiguous.
  *                      aria-label = "Type a message to <chat name>" — it NAMES the
  *                      recipient. That is what makes the wrong-chat guard possible.
- *   search box       [role="textbox"][aria-label*="Search"]
+ *   search box       [role="textbox"]:not([contenteditable="true"])
+ *                      It has NO aria-label in this build (measured: ""). Never match
+ *                      it by label — that is what broke every by-name lookup.
  *   delivery status  aria-label " Sent " / " Delivered " / " Read " inside the row.
  *
  * OPERATIONAL FACTS THAT BITE:
@@ -53,11 +54,22 @@ import { humanClick, humanType, pause, sleep } from './human.js';
  *     resolvePage(), which reuses the existing tab and closes duplicates. NEVER
  *     reach for browser.openTab() for this site — not for enrollment either.
  *   - Cold boot takes ~20-25s after navigate. Never act before waitForApp().
- *   - The daemon idle-closes Chrome (settings.idleTimeoutMs, default 5 min) and
- *     relaunches it on about:blank, so every entry point must navigate itself.
- *     Never assume the app is still on screen from a previous call.
+ *   - Every entry point still navigates and waits for itself — the tab may have been
+ *     closed, crashed, or left on about:blank. But it should rarely have to: the tab
+ *     is pinned (browser.pin) so the idle timer cannot reap it, which is what turns a
+ *     25s boot from a per-call cost into a once-per-daemon cost.
  *   - A "What's new on WhatsApp Web" dialog covers the UI on most loads.
  *     dismissOverlays() must run before anything touches the chat list.
+ *
+ * NO SYNTHETIC HUMAN PACING HERE — deliberately, and it is not an oversight:
+ *   human.ts exists to defeat timing/burst heuristics on sites that authenticate a
+ *   scraped cookie and watch how you behave. Facebook is such a site. WhatsApp Web
+ *   is not: it authenticates the Noise linked-device keypair, and the server sees
+ *   protocol frames, not DOM events — keystroke cadence inside a contenteditable
+ *   never leaves the browser. Padding every action with 1-2s of sleep bought nothing
+ *   and cost ~5s per call. The risk that IS real for this site is bulk-send volume,
+ *   and that is covered by BrowserManager's RateLimiter, which stays.
+ *   Do not reintroduce pause()/humanType()/humanClick() here.
  */
 
 export const APP_URL = 'https://web.whatsapp.com/';
@@ -68,12 +80,56 @@ export const CHAT_ROW_SEL = '#pane-side [role="row"]';
 export const MSG_ROW_SEL = '#main [role="row"]';
 /** Unambiguous: the search box is role=textbox but not contenteditable. */
 export const COMPOSER_SEL = '[role="textbox"][contenteditable="true"]';
-export const SEARCH_SEL = '[role="textbox"][aria-label*="Search" i]';
+/**
+ * The search box, identified structurally rather than by its label.
+ *
+ * It is NOT `[aria-label*="Search"]`. In this WhatsApp build the box carries no
+ * aria-label at all — measured live: the two role=textbox nodes on a chat screen come
+ * back as label "" (search) and "Type a message to <chat>" (composer). So that
+ * selector matched NOTHING, and every by-name lookup died: openChat sat in
+ * pressSequentially until the 30s action timeout, then reported "search box not found
+ * — the app may still be loading", which reads like a timing problem and is not one.
+ * Measured against the original code on a live linked account: readChat by name
+ * failed in 31.0s, every subsequent call failed instantly. Only the phone path worked.
+ *
+ * Not-contenteditable is the durable half of the distinction, and it is the same one
+ * COMPOSER_SEL relies on: exactly two role=textbox nodes exist on a chat screen, and
+ * only the composer is editable.
+ */
+export const SEARCH_SEL = '[role="textbox"]:not([contenteditable="true"])';
 
 /** Cold boot is slow and highly variable on a busy account. */
 const BOOT_MS = 90_000;
 
+/** How long a chat switch or a delivery ack is allowed to take once the app is up. */
+const ACT_MS = 20_000;
+
 export type AppState = 'ready' | 'logged_out';
+
+/**
+ * Per-phase stopwatch, printed to stderr as one line per call.
+ *
+ * Every latency claim about this file used to be inferred from the constants in it,
+ * which is how ~5s of sleep per call went unnoticed for so long. Emitting real
+ * numbers costs nothing and is the only way to tell a slow network from a slow
+ * implementation the next time this feels sluggish. stderr, not the return value, so
+ * no caller or MCP schema has to care.
+ */
+function stopwatch(op: string) {
+  const t0 = Date.now();
+  let mark = t0;
+  const phases: string[] = [];
+  return {
+    lap(name: string) {
+      const now = Date.now();
+      phases.push(`${name}=${now - mark}ms`);
+      mark = now;
+    },
+    done() {
+      console.error(`[wa] ${op} ${phases.join(' ')} total=${Date.now() - t0}ms`);
+    },
+  };
+}
 
 export interface WaChat {
   index: number;
@@ -126,6 +182,21 @@ export async function resolvePage(ctx: BrowserContext, fallback: Page): Promise<
 }
 
 /**
+ * The tab every WhatsApp action runs in, kept warm.
+ *
+ * resolvePage picks it; pin() is what stops the idle timer reaping it five minutes
+ * later. Those two together are the difference between paying a 20-30s app boot on
+ * every call and paying it once per daemon: rebuilding this tab means re-running the
+ * bundle, IndexedDB, the Noise handshake and a chat sync, none of which get faster
+ * by being repeated.
+ */
+export async function warmPage(ctx: BrowserContext, fallback: Page, pin: (p: Page) => void): Promise<Page> {
+  const page = await resolvePage(ctx, fallback);
+  pin(page);
+  return page;
+}
+
+/**
  * Navigate to WhatsApp Web if we are not already there, then wait for the app to
  * settle into one of its two terminal states. Both are load-bearing: reporting
  * `logged_out` is how the caller learns to ask the human for a QR scan instead of
@@ -136,24 +207,30 @@ export async function waitForApp(page: Page): Promise<AppState> {
     await page.goto(APP_URL, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   }
 
-  const deadline = Date.now() + BOOT_MS;
-  while (Date.now() < deadline) {
-    const state = await page.evaluate(
+  // waitForFunction, not a sleep-poll: the predicate runs INSIDE the page, so it
+  // costs no round-trip per attempt and resolves within a frame of the pane
+  // appearing instead of up to a second later. On an already-warm tab this returns
+  // essentially instantly.
+  const handle = await page
+    .waitForFunction(
       ([ready, out]) => {
         if (document.querySelector(ready)) return 'ready';
         if (document.querySelector(out)) return 'logged_out';
         return null;
       },
       [READY_SEL, LOGGED_OUT_SEL],
+      { timeout: BOOT_MS, polling: 250 },
+    )
+    .catch(() => null);
+
+  if (!handle) {
+    throw new Error(
+      `WhatsApp Web did not finish loading within ${Math.round(BOOT_MS / 1000)}s — neither the chat list ` +
+        'nor the QR code appeared. The account may be syncing; try again.',
     );
-    if (state) return state as AppState;
-    await sleep(1000);
   }
 
-  throw new Error(
-    `WhatsApp Web did not finish loading within ${Math.round(BOOT_MS / 1000)}s — neither the chat list ` +
-      'nor the QR code appeared. The account may be syncing; try again.',
-  );
+  return (await handle.jsonValue()) as AppState;
 }
 
 /** Same, but turns `logged_out` into the actionable error every action wants. */
@@ -182,12 +259,14 @@ export async function dismissOverlays(page: Page, max = 3): Promise<number> {
     const close = dialog.getByRole('button', { name: /^close$/i }).first();
     if ((await close.count()) === 0) break;
     try {
-      await humanClick(close);
+      await close.click({ timeout: 5_000 });
       closed++;
     } catch {
       break; // already gone, or not clickable — not worth thrashing over
     }
-    await pause(400, 900);
+    // Wait for the dialog to actually leave rather than sleeping and hoping; if it
+    // lingers, the next iteration's count() sees it and we stop.
+    await page.waitForFunction(() => !document.querySelector('[role="dialog"]'), undefined, { timeout: 3_000 }).catch(() => {});
   }
   return closed;
 }
@@ -219,10 +298,15 @@ const READ_CHATS = ([sel, limit]: [string, number]) => {
 
 /** The chat list, most recent first — the same order WhatsApp shows. */
 export async function listChats(page: Page, limit = 20): Promise<WaChat[]> {
+  const t = stopwatch('listChats');
   await requireApp(page);
+  t.lap('app');
   await dismissOverlays(page);
-  await pause(400, 900);
-  return (await page.evaluate(READ_CHATS, [CHAT_ROW_SEL, limit] as [string, number])) as WaChat[];
+  t.lap('overlays');
+  const chats = (await page.evaluate(READ_CHATS, [CHAT_ROW_SEL, limit] as [string, number])) as WaChat[];
+  t.lap('read');
+  t.done();
+  return chats;
 }
 
 // --------------------------------------------------------------- opening chats
@@ -240,56 +324,145 @@ async function composerLabel(page: Page): Promise<string | null> {
   return box.getAttribute('aria-label');
 }
 
+/** "Type a message to group Eternalgy - Eight Banners" -> "Eternalgy - Eight Banners" */
+function chatFromLabel(label: string): string {
+  return label.replace(/^type a message to\s*(group\s*)?/i, '').trim() || label;
+}
+
+/**
+ * Put `text` in a field in one shot. Never per-character.
+ *
+ * fill() handles the common case; insertText is the fallback for an editor fill()
+ * does not recognise. Both land the whole string in a single call, which is the
+ * whole point — pressSequentially at ~100ms/char is what made this file slow.
+ * Clears first, because a leftover value would otherwise be prepended to the new one.
+ */
+async function fastFill(page: Page, box: Locator, text: string): Promise<void> {
+  await box.click();
+  await box.press('ControlOrMeta+A');
+  await box.press('Backspace');
+  try {
+    await box.fill(text, { timeout: 3_000 });
+  } catch {
+    await page.keyboard.insertText(text);
+  }
+}
+
+/**
+ * Find the sidebar row for `target` and return its displayed name, or null.
+ *
+ * The match must be PROVABLE, because the failure mode here is opening the wrong
+ * conversation and, one call later, messaging the wrong person:
+ *   - a name matches when the row text contains it (what the old code did);
+ *   - a phone number matches only when the row's own digits contain the number.
+ * A saved contact usually renders as a name with no digits on the row, so a phone
+ * lookup often finds nothing here. That is fine — the caller falls back to the
+ * /send deep link, which is unambiguous. Slow and certain beats fast and wrong.
+ */
+async function findChatRow(page: Page, target: string, phone: string | null): Promise<string | null> {
+  const search = page.locator(SEARCH_SEL).first();
+  if ((await search.count()) === 0) throw new Error('WhatsApp search box not found — the app may still be loading.');
+
+  await fastFill(page, search, target);
+
+  // Results are re-rendered asynchronously. Wait for a provable match to appear
+  // rather than sleeping ~1.7s and hoping the list has caught up.
+  const handle = await page
+    .waitForFunction(
+      ([sel, want, digits]) => {
+        const wanted = (want as string).toLowerCase().trim();
+        for (const row of Array.from(document.querySelectorAll(sel as string))) {
+          const text = ((row as HTMLElement).innerText || '').replace(/\s+/g, ' ');
+          const hit = digits
+            ? text.replace(/\D/g, '').includes(digits as string)
+            : text.toLowerCase().includes(wanted);
+          if (!hit) continue;
+          const title = row.querySelector('span[title]')?.getAttribute('title') ?? '';
+          return title.trim() || text.trim().slice(0, 80);
+        }
+        return null;
+      },
+      [CHAT_ROW_SEL, target, phone] as [string, string, string | null],
+      { timeout: 6_000, polling: 100 },
+    )
+    .catch(() => null);
+
+  return handle ? ((await handle.jsonValue()) as string) : null;
+}
+
 /**
  * Open a conversation and return the chat name the composer says it is pointing at.
  *
- * Two strategies, because they have genuinely different reach:
- *   - a phone number goes through the /send deep link, the ONLY way to reach a
- *     number with no existing chat. It reloads the whole app, hence the second
- *     requireApp().
- *   - anything else is treated as a chat name and found through the search box,
- *     which is what works for groups and saved contacts.
+ * Search first, for BOTH names and numbers. Clicking a sidebar row is a client-side
+ * chat switch — a few hundred milliseconds. The /send deep link is a full document
+ * load that tears the SPA down and re-boots it, so it used to cost 15-25s on every
+ * single lookup by phone, warm browser or not. It is now only what it always should
+ * have been: the fallback for a number with no existing chat, which is the one case
+ * nothing else can reach.
  *
- * Never returns without a composer on screen, so callers can trust that typing
- * will land somewhere real.
+ * Never returns without a composer NAMING THE CHAT WE ASKED FOR. The old version
+ * waited for any composer at all and broke on the first one it saw, which on a warm
+ * tab is the previous chat's composer, still mounted — so it could return the wrong
+ * chat instantly. A blind 1.2-2.4s sleep was the only thing papering over that race.
+ * Waiting for the label to match removes the race and the sleep together.
  */
 export async function openChat(page: Page, target: string): Promise<string> {
+  const t = stopwatch(`openChat(${target})`);
   const phone = asPhone(target);
 
-  if (phone) {
+  await requireApp(page);
+  await dismissOverlays(page);
+  t.lap('app');
+
+  const rowName = await findChatRow(page, target, phone);
+  t.lap('find');
+
+  if (rowName === null && !phone) {
+    throw new Error(
+      `No chat matching "${target}". Call whatsapp_list_chats to see the exact names, or pass a phone ` +
+        'number in international format (e.g. 60123456789) to start a new conversation.',
+    );
+  }
+
+  let label: string | null = null;
+
+  if (rowName !== null) {
+    await page.locator(CHAT_ROW_SEL).filter({ hasText: rowName }).first().click({ timeout: 10_000 });
+    // The row's own displayed name is what the composer will echo, so it is a far
+    // better wait condition than "a composer exists" — it cannot be satisfied by a
+    // composer left over from the chat we were in a moment ago.
+    const handle = await page
+      .waitForFunction(
+        ([sel, want]) => {
+          const box = document.querySelector(sel as string);
+          const l = box?.getAttribute('aria-label') ?? '';
+          return l.toLowerCase().includes((want as string).toLowerCase()) ? l : null;
+        },
+        [COMPOSER_SEL, rowName] as [string, string],
+        { timeout: ACT_MS, polling: 100 },
+      )
+      .catch(() => null);
+    label = handle ? ((await handle.jsonValue()) as string) : null;
+  } else {
+    // Phone with no existing chat. Only route that can reach a stranger; costs a
+    // full app reload, which is exactly why it is last.
     await page.goto(`${APP_URL}send?phone=${phone}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
     await requireApp(page);
     await dismissOverlays(page);
-  } else {
-    await requireApp(page);
-    await dismissOverlays(page);
-
-    const search = page.locator(SEARCH_SEL).first();
-    if ((await search.count()) === 0) throw new Error('WhatsApp search box not found — the app may still be loading.');
-    await humanType(search, target);
-    await pause(1200, 2200);
-
-    const row = page.locator(CHAT_ROW_SEL).filter({ hasText: target }).first();
-    if ((await row.count()) === 0) {
-      throw new Error(
-        `No chat matching "${target}". Call whatsapp_list_chats to see the exact names, or pass a phone ` +
-          'number in international format (e.g. 60123456789) to start a new conversation.',
-      );
-    }
-    await humanClick(row);
+    // Nothing to match against here — but the navigation guarantees no stale
+    // composer survives, so "a composer exists" is sound on this path only.
+    const handle = await page
+      .waitForFunction((sel) => document.querySelector(sel as string)?.getAttribute('aria-label') ?? null, COMPOSER_SEL, {
+        timeout: ACT_MS,
+        polling: 100,
+      })
+      .catch(() => null);
+    label = handle ? ((await handle.jsonValue()) as string) : null;
   }
 
-  await pause(1200, 2400);
+  t.lap('open');
+  t.done();
 
-  // The composer only exists once a conversation is actually open, so this
-  // doubles as the "did it open" check.
-  const deadline = Date.now() + 20_000;
-  let label: string | null = null;
-  while (Date.now() < deadline) {
-    label = await composerLabel(page);
-    if (label) break;
-    await sleep(750);
-  }
   if (label === null) {
     throw new Error(
       `Opened "${target}" but no message composer appeared. The chat may not exist, or the number may ` +
@@ -297,8 +470,7 @@ export async function openChat(page: Page, target: string): Promise<string> {
     );
   }
 
-  // "Type a message to group Eternalgy - Eight Banners" -> "Eternalgy - Eight Banners"
-  return label.replace(/^type a message to\s*(group\s*)?/i, '').trim() || label;
+  return chatFromLabel(label);
 }
 
 // ------------------------------------------------------------------- reading
@@ -364,25 +536,106 @@ const READ_MESSAGES = ([sel, limit]: [string, number]) => {
  * vs 8). Wait for the row count to stop growing rather than guessing a delay.
  */
 async function waitForMessages(page: Page): Promise<number> {
-  let last = -1;
-  for (let i = 0; i < 16; i++) {
-    const n = (await page.evaluate((sel) => document.querySelectorAll(sel).length, MSG_ROW_SEL)) as number;
-    if (n > 0 && n === last) return n;
-    last = n;
-    await sleep(500);
-  }
-  return last;
+  // Settle detection, entirely in-page: the count has to hold steady for 300ms
+  // before we call it done. Same idea as the old count-twice loop, but the clock
+  // runs in the page instead of costing a 500ms sleep plus a round-trip per sample,
+  // so a chat that renders in 200ms is read after ~500ms rather than ~1s, and a slow
+  // one is no longer rounded up to the next half second.
+  const SETTLE_MS = 300;
+  await page.evaluate(() => {
+    const w = window as unknown as { __waN?: number; __waAt?: number };
+    w.__waN = -1;
+    w.__waAt = Date.now();
+  });
+
+  const handle = await page
+    .waitForFunction(
+      ([sel, settle]) => {
+        const w = window as unknown as { __waN?: number; __waAt?: number };
+        const n = document.querySelectorAll(sel as string).length;
+        if (w.__waN !== n) {
+          w.__waN = n;
+          w.__waAt = Date.now();
+          return null;
+        }
+        return n > 0 && Date.now() - (w.__waAt ?? 0) >= (settle as number) ? n : null;
+      },
+      [MSG_ROW_SEL, SETTLE_MS] as [string, number],
+      { timeout: 15_000, polling: 100 },
+    )
+    .catch(() => null);
+
+  // Timing out is not fatal — an empty conversation legitimately never settles on a
+  // non-zero count. Report what is actually there and let the caller read it.
+  if (handle) return (await handle.jsonValue()) as number;
+  return (await page.evaluate((sel) => document.querySelectorAll(sel).length, MSG_ROW_SEL)) as number;
 }
 
 /** Recent messages from one conversation, oldest first. */
 export async function readChat(page: Page, target: string, limit = 20): Promise<{ chat: string; messages: WaMessage[] }> {
+  const t = stopwatch(`readChat(${target})`);
   const chat = await openChat(page, target);
+  t.lap('open');
   await waitForMessages(page);
+  t.lap('settle');
   const messages = (await page.evaluate(READ_MESSAGES, [MSG_ROW_SEL, limit] as [string, number])) as WaMessage[];
+  t.lap('read');
+  t.done();
   return { chat, messages };
 }
 
 // ------------------------------------------------------------------- sending
+
+/**
+ * Put the whole message body into the composer in one shot, and prove it landed.
+ *
+ * NEVER TYPE INTO WHATSAPP. Per-character entry ran at ~100ms/char: twenty seconds
+ * for an ordinary message, and past roughly 370 characters it blew Playwright's 30s
+ * action timeout and left a half-written message sitting in the composer — a
+ * partial send waiting for someone to hit Enter. Emoji and other multi-byte
+ * characters came out mangled too.
+ *
+ * Clipboard + Ctrl+V is the proven path on this app (the composer is a rich-text
+ * editor that ignores naive value-setting). insertText is the fallback for when the
+ * clipboard permission is unavailable; it is still one call, not one per character.
+ * Either way the composer is read back before returning, because paste is async and
+ * pressing Enter on a composer that has not caught up sends an empty or partial
+ * message — the one failure this function exists to make impossible.
+ */
+async function placeInComposer(page: Page, box: Locator, text: string): Promise<void> {
+  const landed = () =>
+    page
+      .waitForFunction(
+        ([sel, want]) => {
+          const b = document.querySelector(sel as string);
+          return !!b && ((b as HTMLElement).innerText || '').replace(/\s+/g, ' ').includes(want as string);
+        },
+        [COMPOSER_SEL, text.replace(/\s+/g, ' ').trim().slice(0, 40)] as [string, string],
+        { timeout: 10_000, polling: 100 },
+      )
+      .then(() => true)
+      .catch(() => false);
+
+  try {
+    await page
+      .context()
+      .grantPermissions(['clipboard-read', 'clipboard-write'], { origin: APP_URL.replace(/\/$/, '') });
+    await page.evaluate((t2) => navigator.clipboard.writeText(t2), text);
+    await box.press('ControlOrMeta+V');
+    if (await landed()) return;
+  } catch {
+    // Fall through — the clipboard route is the fast path, not the only one.
+  }
+
+  await box.click();
+  await page.keyboard.insertText(text);
+  if (await landed()) return;
+
+  throw new Error(
+    `Could not get the message into the WhatsApp composer for "${await composerLabel(page)}". ` +
+      'Nothing was sent.',
+  );
+}
 
 /**
  * Send a message, then confirm it actually left.
@@ -393,7 +646,9 @@ export async function readChat(page: Page, target: string, limit = 20): Promise<
  * human the truth.
  */
 export async function sendMessage(page: Page, target: string, text: string): Promise<WaSendResult> {
+  const t = stopwatch(`send(${target}, ${text.length}ch)`);
   const chat = await openChat(page, target);
+  t.lap('open');
 
   // Guard against the composer belonging to a chat left open by a previous
   // action. For a phone number the /send link already pinned the recipient.
@@ -412,44 +667,83 @@ export async function sendMessage(page: Page, target: string, text: string): Pro
 
   const box = page.locator(COMPOSER_SEL).first();
   await box.scrollIntoViewIfNeeded();
-  await humanType(box, text);
-  await pause(500, 1200);
+  await box.click();
+
+  // A draft left in the composer by an earlier run or a human would otherwise get
+  // the new text appended to it, and the whole lot sent as one message.
+  await box.press('ControlOrMeta+A');
+  await box.press('Backspace');
+
+  await placeInComposer(page, box, text);
+  t.lap('compose');
+
   await box.press('Enter');
 
-  const needle = text.replace(/\s+/g, ' ').trim().slice(0, 60);
-  for (let i = 0; i < 15; i++) {
-    await sleep(1000);
-    const hit = (await page.evaluate(
-      ([sel, want]) => {
+  // Sent means it came BACK as an outgoing row carrying a delivery status. Pressing
+  // Enter proves nothing. The status regex excludes "pending" — a queued message is
+  // not a sent one — so this resolves on the real ack and no sooner.
+  //
+  // The needle is EMOJI-STRIPPED, and that is not cosmetic. WhatsApp renders emoji as
+  // images, so they contribute nothing to innerText: a message beginning "🤖 Automation
+  // test" reads back as "Automation test", and a raw-text needle never matches. Measured
+  // live — a 669-char message was delivered and read, and this check still reported
+  // "treat as NOT sent" after burning the full 20s timeout. That false negative is the
+  // dangerous direction: a caller that believes a delivered message failed will send it
+  // again. Both sides are normalised identically so the comparison is like-for-like.
+  const strip = (s: string) =>
+    s
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const needle = strip(text).slice(0, 60);
+  // An all-emoji message ("👍") strips to nothing, and includes('') matches everything.
+  // Fall back to "a new outgoing row settled after we pressed Enter" rather than
+  // accepting a match that means nothing.
+  const usable = needle.length >= 4;
+  const before = usable ? 0 : ((await page.evaluate((sel) => document.querySelectorAll(sel).length, MSG_ROW_SEL)) as number);
+
+  const status = await page
+    .waitForFunction(
+      ([sel, want, minRows]) => {
         const rows = Array.from(document.querySelectorAll(sel as string));
+        if (rows.length < (minRows as number)) return null;
+        const clean = (s: string) =>
+          s
+            .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
+            .replace(/\s+/g, ' ')
+            .trim();
         for (const row of rows.slice(-8).reverse()) {
-          const body = ((row as HTMLElement).innerText || '').replace(/\s+/g, ' ');
-          if (!body.includes(want as string)) continue;
+          if (want && !clean((row as HTMLElement).innerText || '').includes(want as string)) continue;
           const icons = Array.from(row.querySelectorAll('[data-icon]')).map((i2) => i2.getAttribute('data-icon') ?? '');
           const saysYou = Array.from(row.querySelectorAll('[aria-label]')).some((e) =>
             /^You:/.test(e.getAttribute('aria-label') ?? ''),
           );
           if (!icons.includes('tail-out') && !saysYou) continue;
-          const status =
-            Array.from(row.querySelectorAll('[aria-label]'))
-              .map((e) => (e.getAttribute('aria-label') ?? '').trim())
-              .find((l) => /^(sent|delivered|read|pending)$/i.test(l)) ?? null;
-          return { found: true, status };
+          const s = Array.from(row.querySelectorAll('[aria-label]'))
+            .map((e) => (e.getAttribute('aria-label') ?? '').trim())
+            .find((l) => /^(sent|delivered|read)$/i.test(l));
+          if (s) return s;
         }
-        return { found: false, status: null };
+        return null;
       },
-      [MSG_ROW_SEL, needle] as [string, string],
-    )) as { found: boolean; status: string | null };
+      [MSG_ROW_SEL, usable ? needle : '', usable ? 0 : before + 1] as [string, string, number],
+      { timeout: ACT_MS, polling: 200 },
+    )
+    .then((h) => h.jsonValue() as Promise<string>)
+    .catch(() => null);
 
-    if (hit.found && hit.status && !/pending/i.test(hit.status)) {
-      return { ok: true, detail: `Delivered to "${chat}" (${hit.status})`, target, chat, status: hit.status };
-    }
+  t.lap('confirm');
+  t.done();
+
+  if (status) {
+    return { ok: true, detail: `Delivered to "${chat}" (${status})`, target, chat, status };
   }
 
   return {
     ok: false,
     detail:
-      `Typed the message into "${chat}" and pressed Enter, but it never came back as a sent outgoing ` +
+      `Put the message into "${chat}" and pressed Enter, but it never came back as a sent outgoing ` +
       'message. Treat as NOT sent and check the browser.',
     target,
     chat,

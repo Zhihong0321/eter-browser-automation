@@ -306,7 +306,7 @@ export function createMcpServer(): McpServer {
         target: z.string().describe('Exact chat name from whatsapp_list_chats, or a phone number like 60123456789.'),
         text: z.string().describe('The exact message text to send.'),
       },
-      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: true },
     },
     handler(async ({ target, text }: { target: string; text: string }) =>
       call('POST', '/api/wa/send', { target, text }),
@@ -374,7 +374,7 @@ export function createMcpServer(): McpServer {
           .describe('Permalink of the post, exactly as returned by facebook_read_my_posts or facebook_read_feed.'),
         text: z.string().describe('The comment text to publish.'),
       },
-      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: true },
     },
     handler(async ({ postUrl, text }: { postUrl: string; text: string }) =>
       call('POST', '/api/fb/comment', { postUrl, text }),
