@@ -1,76 +1,44 @@
 # Eter Browser
 
-Share your real browser login sessions with any AI agent — without handing over passwords, without pasting cookies, and without getting flagged as a bot.
+A local TypeScript/Node.js vault for browser sessions, exposed as a dashboard, daemon, and stdio MCP server.
 
-You sign in once, in a dedicated Chrome. The agent drives that same Chrome later. The session is never copied, injected, or transplanted anywhere.
+## Value proposition
 
----
+Eter Browser lets agents and tools drive a real browser session through a persistent Chrome profile managed by Patchright. Passwords stay human-only; cookies and session state remain local on your machine.
 
-## Why not just export cookies?
-
-Because it doesn't work on platforms that actually check.
-
-Facebook's `datr` and `sb` cookies bind a session to the browser instance Meta first saw. Drop `c_user`/`xs` into a fresh automation browser and you get a mismatched canvas/WebGL/TLS fingerprint, empty storage entropy, and no history — Meta's Deep Entity Classification flags it and you land on a checkpoint.
-
-So this tool inverts it: **the session is born inside the browser the agent will use.**
-
-| Approach | Survives Meta |
-|---|---|
-| Cookie-Editor export → inject into automation browser | No |
-| Playwright `storageState` | No |
-| Attach to your default Chrome | Blocked since Chrome 136 (`--remote-debugging-port` is refused on the default profile) |
-| **Dedicated Chrome profile you log into once** | **Yes** — this tool |
-
----
-
-## How it works
+## Architecture
 
 ```
-  You ──sign in once──►  Agent Chrome  ◄──drives──  AI agent (via MCP)
-                              │
-                              ▼
-                    E:\eter-browser\profiles\agent\
-                    (a real Chrome user-data-dir:
-                     Cookies, Local Storage, IndexedDB,
-                     Service Workers, History, Local State)
+Human → Dashboard (127.0.0.1:7676) → Daemon → Chrome profile → Websites
+                                               ↑
+MCP client → stdio MCP server → local HTTP API ─┘
 ```
 
-- A **separate Chrome user-data-dir**, not a Chrome "Add profile". Chrome's single-instance lock is per-directory, so this runs side by side with your daily browser and never touches it.
-- **Real Google Chrome** (`channel: 'chrome'`), driven by [Patchright](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright-nodejs) — a drop-in Playwright fork that removes the `Runtime.enable` CDP leak stock Playwright emits.
-- The launch config is captured at enrollment and **replayed verbatim** on every run, so the fingerprint the site enrolled against is the fingerprint it always sees.
-- One Chrome process, owned by the daemon, behind a serialized queue. Two agents can't corrupt the profile.
-
-Verified on `bot.sannysoft.com`: `WebDriver Advanced: passed`, `HEADCHR_PERMISSIONS: ok`, `HEADCHR_PLUGINS: ok`, real GPU vendor.
-
----
+The daemon owns one Chrome process and serializes browser work so concurrent callers cannot corrupt the profile. The MCP server is a thin client; it does not launch Chrome itself.
 
 ## Quick start
 
 ```bash
+git clone <repository-url>
+cd eter-browser
 npm install
 npm run build
-
-# 1. Start the daemon + dashboard (keep this running)
-npx eter-browser ui           # → http://127.0.0.1:7676
-
-# 2. In the dashboard, click "Facebook" under Add a session.
-#    Chrome opens. Sign in normally — 2FA, captcha, "trust this device", all of it.
-#    Click "I've signed in".
-
-# 3. The session shows READY. That's it.
+npm start
 ```
 
-CLI equivalents:
+Open <http://127.0.0.1:7676> and add a session, or use the built CLI from another terminal:
 
 ```bash
-eter-browser login facebook   # open Chrome at the login page
-eter-browser check facebook   # verify against the live site
-eter-browser status           # what's ready right now
+node dist/cli.js login facebook
+node dist/cli.js check facebook
+node dist/cli.js status
 ```
 
----
+Keep the daemon running before connecting any MCP client.
 
-## Connect an AI agent
+## MCP client configuration
+
+If `eter-browser` is available as an installed package or linked binary:
 
 ```json
 {
@@ -83,61 +51,101 @@ eter-browser status           # what's ready right now
 }
 ```
 
-The MCP server is a thin client — the `ui` daemon must be running, because it owns the browser.
+Local-clone alternative:
 
-### Tools
+```json
+{
+  "mcpServers": {
+    "eter-browser": {
+      "command": "node",
+      "args": ["/absolute/path/to/eter-browser/dist/cli.js", "mcp"]
+    }
+  }
+}
+```
 
-| Tool | What it does |
+## CLI commands
+
+| Command | Description |
 |---|---|
-| `list_sessions` | Which logins are ready **right now**. Agents should call this first. |
-| `check_session` | Re-verify one session against the live site. |
-| `request_login` | Opens Chrome at the login page for the human. The agent cannot log in itself. |
-| `browser_navigate` / `browser_read` / `browser_click` / `browser_type` / `browser_screenshot` | Generic driving, on the authenticated browser. |
-| `facebook_read_my_posts` | Your own recent posts, with permalinks. |
-| `facebook_read_feed` | Home timeline. |
-| `facebook_comment` | Comment on a post, then verify it actually rendered. |
+| `eter-browser ui [--port 7676] [--home DIR] [--no-open]` | Start the daemon and dashboard. |
+| `eter-browser profiles` | List profiles, sessions, and browser state. |
+| `eter-browser profiles create <id> [label]` | Create a persistent Chrome profile. |
+| `eter-browser login <site-or-url> [--profile ID]` | Open Chrome for a human login. |
+| `eter-browser check [site] [--profile ID]` | Re-verify one or all sessions. |
+| `eter-browser status [--profile ID]` | Show current session readiness. |
+| `eter-browser recon probe <url> [--window 8000] [--json]` | Inspect one page. |
+| `eter-browser recon scan <url> [--max-pages 40] [--approve "A,B"] [--json]` | Run a bounded site scan. |
+| `eter-browser fb-recon --topic <topic> [--source group:<url>] [--min-score 3] [--open] [--json]` | Start read-only Facebook prospecting. |
+| `eter-browser fb-recon-projects [--json]` | List prior Facebook recon runs. |
+| `eter-browser fastworker [question]` | Exercise the optional Fast Worker integration. |
+| `node gmap.mjs new "<keywords>" "<towns>"` | Create and run a Google Maps recon project. |
+| `node gmap.mjs list` | List Maps projects. |
+| `node gmap.mjs resume <project-id>` | Resume an interrupted Maps project. |
+| `node gmap.mjs report <project-id>` | Rebuild/open a Maps report. |
+| `node radar.mjs list` | List Maps projects available to review radar. |
+| `node radar.mjs <project-id> [cap]` | Harvest reviews; `cap` limits companies, and `0` rebuilds existing data. |
 
-Every action that needs a login calls `requireReady()` first. If the session is dead or checkpointed, the tool fails with an actionable message instead of silently doing nothing.
+## MCP tools
 
----
+Agents should call `list_sessions` first. Tools that need authentication fail with an actionable login error rather than silently continuing.
 
-## Staying under the radar
+| Tool | Inputs | What it does |
+|---|---|---|
+| `list_sessions` | None | List sessions and current readiness. |
+| `check_session` | `siteId` | Re-verify one session against its live site; do not poll it. |
+| `request_login` | `siteId` | Open Chrome so the human can sign in. |
+| `browser_navigate` | `url` | Navigate and return the final URL/title. |
+| `browser_read` | `maxChars` (default `8000`) | Return visible page text, URL, and title. |
+| `browser_click` | `name`, optional `role` | Click by accessible name/visible text; read the page first. |
+| `browser_type` | `label`, `text`, optional `submit=false` | Type into a labelled field. Never use it to enter the human's credentials. |
+| `browser_screenshot` | None | Save a PNG and return its local path. |
+| `whatsapp_list_chats` | `limit` (default `20`) | List recent chats and exact chat names. |
+| `whatsapp_read_chat` | `target`, `limit` (default `20`) | Read recent messages. **Opening a chat marks it read.** |
+| `whatsapp_send_message` | `target`, `text` | **Sends a real message. Use only for the exact recipient/message the user requested.** |
+| `facebook_read_my_posts` | `limit` (default `5`) | Read the signed-in user's recent posts. |
+| `facebook_read_feed` | `limit` (default `5`) | Read recent home-feed posts. |
+| `facebook_comment` | `postUrl`, `text` | **Publishes publicly under the user's name; requires an explicit request.** |
+| `facebook_recon` | `topic`, optional `sources`, `minScore=3` | Start a new read-only background prospecting project; poll the projects tool rather than starting duplicates. |
+| `facebook_recon_projects` | None | List past/current recon projects, contacts, counters, and status. |
+| `search_automations` | `query`, `limit` (default `10`) | Find purpose-built automations by intent; an empty query lists all. |
+| `run_automation` | `id`, optional `args` | Run a catalogue automation. Inspect its declared effect before executing destructive work. |
 
-- Headful real Chrome. Headless is the single biggest tell.
-- Real CDP input (`isTrusted === true`), never synthetic DOM `.click()`.
-- Per-character typing with jitter and occasional pauses.
-- Incremental wheel scrolling, never a jump to page bottom.
-- Hard rate limit — `maxActionsPerMinute`, default 12.
-- Role/aria selectors only. Facebook randomises class names; the accessibility tree is stable.
-- Health checks piggyback on an already-open browser and never pop a window on a timer.
+## Configuration
 
----
+| Setting | Default | Description |
+|---|---|---|
+| `--home DIR` | — | Per-command vault root override. |
+| `ETER_BROWSER_HOME` | — | Environment-level vault root override. |
+| `vault.config.json` `home` | — | File-based vault root. |
+| `ETER_BROWSER_PORT` | `7676` | Dashboard and daemon port. |
+| `ETER_BROWSER_DEBUG=1` | off | Enables the internal `browser_eval` endpoint. |
+| `STEPFUN_API_KEY` | — | Required for Agent features; also the Fast Worker fallback key. |
+| `FASTWORKER_API_KEY` | falls back to `STEPFUN_API_KEY` | Optional dedicated Fast Worker key. |
+| `FBRECON_LLM_URL`, `FBRECON_LLM_KEY`, `FBRECON_LLM_MODEL` | empty | Optional Facebook recon classifier; empty uses regex-only classification. |
+| `MONOLITH_PATH` | auto-discovered when possible | Optional `monolith` executable path for recon snapshots. |
 
-## Layout
+Precedence: `--home` > `ETER_BROWSER_HOME` > `vault.config.json` > `~/.eter-browser`.
 
+## Supported login targets
+
+Presets: `facebook`, `whatsapp`, `instagram`, `x`, `linkedin`, `gmail`, `youtube`, or any arbitrary URL.
+
+## Development
+
+```bash
+npm run build
+npm test
+npm run ui
+npm run mcp
 ```
-src/
-  config.ts     vault home resolution, ports
-  vault.ts      manifest, profile dirs, session records
-  browser.ts    the single Chrome process + serialized queue + idle close
-  human.ts      pacing, rate limiter, human-like input
-  sites.ts      site registry, cookie + live-page probes
-  facebook.ts   read posts / feed, post a comment (with verification)
-  service.ts    the one object everything else calls
-  api.ts        local HTTP API (127.0.0.1 only)
-  mcp.ts        MCP server → HTTP client
-  cli.ts        entry point
-  ui/index.html dashboard
-```
 
-Vault location resolution: `--home` → `ETER_BROWSER_HOME` → `vault.config.json` → `~/.eter-browser`.
+Live built-artifact integration test: `test/gmaprecon-e2e.mjs`.
 
----
+## Security and operations
 
-## Limits, stated plainly
-
-- **The profile is bound to this machine.** Chrome 127+ App-Bound Encryption plus Windows DPAPI seal the cookie key to this install and user account. Copy the folder to a server and the cookies decrypt to garbage — silently. This is local-first by construction.
-- **One agent at a time per profile.** One user-data-dir means one Chrome. Concurrent calls serialize.
-- **Everything in the profile shares a blast radius.** Only log in to what you want automated. Do not add your bank.
-- **Sessions expire.** The dashboard shows cookie expiry and marks a session `stale` after 30 minutes; agents re-verify before acting.
-- The daemon binds to `127.0.0.1` with no auth. Anything already running on your machine can reach it.
+- Binds loopback only (`127.0.0.1`) with no API authentication. Do not expose the port.
+- The shared browser profile means all actions use the human account.
+- One daemon instance owns and serializes Chrome.
+- Sessions expire; re-authenticate when they do.
+- Respect Facebook and WhatsApp rate limits and authorization requirements.
