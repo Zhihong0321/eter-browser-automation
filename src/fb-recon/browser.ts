@@ -78,6 +78,75 @@ export function guardPage(page: Page): void {
   page.on('download', (d) => void d.cancel().catch(() => {}));
 }
 
+/**
+ * A portrait 4K monitor at 150% Windows scaling — 2160x3840 physical, which a
+ * browser reports as a 1440x2560 CSS screen at devicePixelRatio 1.5.
+ *
+ * The sweep is bounded by how much Facebook has RENDERED, not by how much
+ * exists: the timeline is virtualized, so only what is in or near the viewport
+ * has DOM nodes. A ~940 CSS px viewport (a maximised window on a 1080p screen)
+ * therefore holds very few posts at once — and humanScroll moves 900-1800 CSS
+ * px per round, which can exceed a full viewport. Posts can render and be
+ * destroyed BETWEEN two extractions, unseen. That is the most likely mechanism
+ * behind the measured 47 / 3 / 1 post yields on the same group.
+ *
+ * A 2480 px viewport makes an 1800 px scroll a partial screen, so consecutive
+ * rounds always overlap, and it keeps ~2.6x more posts alive per extraction so
+ * a slow-loading group is far less likely to hand back an empty round and trip
+ * the dry-round exit early.
+ *
+ * Why these numbers and not a plain zoom-out: every metric has to agree with
+ * every other one. Zooming to 25% gives innerHeight 3760 against a screen
+ * height of 1080, and an inner viewport taller than the screen is a trivially
+ * detectable tell. A rotated 4K monitor at 150% scaling is a configuration real
+ * people sit at, and screen / window / DPR all corroborate each other.
+ */
+export const TALL_VIEWPORT = {
+  width: 1440,
+  /** Screen height less ~80 CSS px of tab strip and omnibox. */
+  height: 2480,
+  deviceScaleFactor: 1.5,
+  mobile: false,
+  screenWidth: 1440,
+  screenHeight: 2560,
+} as const;
+
+/**
+ * Returns null on success, or a problem string. Deliberately non-fatal: a
+ * sweep on a short viewport is a worse sweep, not a failed one, and losing the
+ * harvest over a display setting would be absurd.
+ */
+export async function useTallViewport(page: Page): Promise<string | null> {
+  try {
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Emulation.setDeviceMetricsOverride', { ...TALL_VIEWPORT });
+    return null;
+  } catch (err) {
+    return `tall viewport not applied, sweeping at the default window size — ${(err as Error).message}`;
+  }
+}
+
+/**
+ * BrowserManager.run() hands out the profile's one long-lived tab and never
+ * closes it, so an override left in place would follow every later task on this
+ * profile. Cleared on the way out.
+ *
+ * This depends on the context being launched with `viewport: null`, which
+ * BrowserManager does. Measured 2026-08-12: with viewport null, clearing
+ * restores window/screen/DPR coherently. With a Playwright-managed viewport,
+ * Playwright implements it via this same override, and clearing leaves
+ * innerHeight at 2480 against a screen height of 600 — an incoherent
+ * fingerprint, and worse than never having applied it.
+ */
+export async function clearTallViewport(page: Page): Promise<void> {
+  try {
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Emulation.clearDeviceMetricsOverride');
+  } catch {
+    // The page is already gone, or CDP is unavailable. Nothing to restore.
+  }
+}
+
 export async function expandSeeMore(page: Page, rounds = 12): Promise<void> {
   for (let i = 0; i < rounds; i++) {
     if (!(await safeClick(page, 'See more'))) return;

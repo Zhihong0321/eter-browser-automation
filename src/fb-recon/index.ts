@@ -13,7 +13,14 @@
  * much smaller number.
  */
 import type { Page } from 'patchright';
-import { expandComments, expandSeeMore, guardPage, scrollAndSettle } from './browser.js';
+import {
+  clearTallViewport,
+  expandComments,
+  expandSeeMore,
+  guardPage,
+  scrollAndSettle,
+  useTallViewport,
+} from './browser.js';
 import { defaultClassifier, type Classifier, type ClassifyItem } from './classify.js';
 import { extractContactFields, messengerLink, profileIdentity } from './contact.js';
 import { COMMENT_EXTRACT_SRC, POST_EXTRACT_SRC, type RawComment, type RawPost } from './extract.js';
@@ -209,6 +216,12 @@ export async function runReconSweep(page: Page, opts: ReconOptions): Promise<Rec
 
   guardPage(page);
 
+  // A taller viewport keeps more of the virtualized timeline alive per
+  // extraction. See TALL_VIEWPORT in browser.ts for why this shape.
+  const viewportProblem = await useTallViewport(page);
+  if (viewportProblem) problems.push(viewportProblem);
+  opts.reporter?.event('sweep', viewportProblem ?? 'viewport 1440x2480 (portrait 4K @150%)');
+
   // ---- Pass 1: sweep every sweepable source, gate inline.
   let scanned = 0;
   const candidates: Candidate[] = [];
@@ -320,6 +333,8 @@ export async function runReconSweep(page: Page, opts: ReconOptions): Promise<Rec
       if (contact && mergeContact(opts.contacts, contact)) newContacts++;
     }
   }
+
+  await clearTallViewport(page);
 
   return {
     topic: opts.topic,
