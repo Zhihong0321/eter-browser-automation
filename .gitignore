@@ -3,6 +3,7 @@ dist/
 *.log
 # Daemon stdout capture — runtime artifact, and it prints the local vault path.
 .daemon.out
+.daemon.err
 
 # Never commit browser profiles — they contain live login sessions.
 profiles/
@@ -10,7 +11,18 @@ profiles/
 screenshots/
 manifest.json
 
+# fb-recon's harvest is a list of identified people collected for outreach.
+# PDPA applies to it — it must never leave this machine in a repo.
+# Root-anchored on purpose: an unanchored "fb-recon/" also matches src/fb-recon/
+# and would silently untrack the entire module.
+/fb-recon/
+contacts.csv
+contacts.json
+
 # API keys. This project may be published; secrets live here and nowhere else.
 .env
 .env.*
 !.env.example
+
+# Repo-local Claude home for the Agent SDK (src/agent.ts) — never commit.
+.agent-home/

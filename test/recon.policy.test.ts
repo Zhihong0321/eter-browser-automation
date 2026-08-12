@@ -106,11 +106,12 @@ test('url patterns collapse ids so endpoints group', () => {
 });
 
 test('only replayable endpoints reach the brief, biggest first', () => {
+  const base = { status: 200, contentType: 'application/json', bytes: 1, matchesScreen: 'unknown', apiRowCount: null, screenRowCount: null } as const;
   const recs: XhrRecord[] = [
-    { method: 'GET', url: 'u1', urlPattern: '/api/small', status: 200, contentType: 'application/json', bytes: 1, rowCount: 3, replayable: 'yes' },
-    { method: 'GET', url: 'u2', urlPattern: '/api/big', status: 200, contentType: 'application/json', bytes: 1, rowCount: 27, replayable: 'yes' },
-    { method: 'GET', url: 'u3', urlPattern: '/api/nope', status: 200, contentType: 'application/json', bytes: 1, replayable: 'auth-failed' },
-    { method: 'POST', url: 'u4', urlPattern: '/api/write', status: 200, contentType: 'application/json', bytes: 1, replayable: 'not-tried' },
+    { ...base, method: 'GET', url: 'u1', urlPattern: '/api/small', rowCount: 3, replayable: 'yes' },
+    { ...base, method: 'GET', url: 'u2', urlPattern: '/api/big', rowCount: 27, replayable: 'yes' },
+    { ...base, method: 'GET', url: 'u3', urlPattern: '/api/nope', replayable: 'auth-failed' },
+    { ...base, method: 'POST', url: 'u4', urlPattern: '/api/write', replayable: 'not-tried' },
   ];
   const out = usefulEndpoints(recs);
   assert.deepEqual(out.map((r) => r.urlPattern), ['/api/big', '/api/small']);

@@ -8,6 +8,7 @@ effect:   read
 needs:    []
 ---*/
 
+import type { StatusResult } from '../../leads.js';
 import type { VaultService } from '../../service.js';
 
 /**
@@ -17,4 +18,4 @@ import type { VaultService } from '../../service.js';
  * businesses behind the cap and should be split into districts and re-planned.
  * That list is the coverage check on the whole campaign.
  */
-export const run = (svc: VaultService) => svc.gmapStatus();
+export const run = (svc: VaultService): StatusResult => svc.gmapStatus();

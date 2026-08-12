@@ -78,6 +78,38 @@ export interface Progress {
   saturated: { keyword: string; place: string; found: number }[];
 }
 
+/**
+ * Result shapes are declared, not inferred. The card's signature is the contract an
+ * agent reads before calling it, and `Record<string, unknown>` documents nothing.
+ */
+export interface PlanResult {
+  planned: number;
+  existing: number;
+}
+
+export interface HarvestResult extends Progress {
+  ran: number;
+  found: number;
+  /** Non-null when the run stopped early — a hard block, or the canary tripping. */
+  halted: string | null;
+  note?: string;
+}
+
+export interface EnrichResult extends Progress {
+  attempted: number;
+  done: number;
+  failed: number;
+}
+
+export interface StatusResult extends Progress {
+  budget: { lastMinute: number; lastHour: number; today: number };
+}
+
+export interface ExportResult {
+  file: string;
+  rows: number;
+}
+
 // ---------------------------------------------------------------------- schema
 
 const SCHEMA = `

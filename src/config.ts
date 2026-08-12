@@ -32,6 +32,16 @@ export function resolveVaultHome(flagHome?: string): string {
 /** Default profile every install starts with. */
 export const DEFAULT_PROFILE_ID = 'agent';
 
+/**
+ * Optional intent classifier. Unset means fb-recon runs on its regex gate
+ * alone, which is a supported configuration — the pack is tuned for recall, so
+ * the cost of no classifier is noise in the contact list, not missed leads.
+ * Any OpenAI-compatible /chat/completions endpoint works.
+ */
+export const FBRECON_LLM_URL = process.env.FBRECON_LLM_URL ?? '';
+export const FBRECON_LLM_KEY = process.env.FBRECON_LLM_KEY ?? '';
+export const FBRECON_LLM_MODEL = process.env.FBRECON_LLM_MODEL ?? '';
+
 export const DEFAULTS = {
   /** Close the browser after this long with no activity. 0 = keep it open forever. */
   idleTimeoutMs: 5 * 60_000,

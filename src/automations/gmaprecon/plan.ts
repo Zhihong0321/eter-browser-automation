@@ -8,6 +8,7 @@ effect:   write
 needs:    []
 ---*/
 
+import type { PlanResult } from '../../leads.js';
 import type { VaultService } from '../../service.js';
 
 /**
@@ -18,5 +19,8 @@ import type { VaultService } from '../../service.js';
  * Maps caps a single search well short of a whole state, so coverage comes from
  * naming sub-places (towns, districts), not from one broad region string.
  */
-export const run = (svc: VaultService, { keywords, places }: { keywords: string[]; places: string[] }) =>
+export const run = (
+  svc: VaultService,
+  { keywords, places }: { keywords: string[]; places: string[] },
+): PlanResult =>
   svc.gmapPlan(keywords, places);

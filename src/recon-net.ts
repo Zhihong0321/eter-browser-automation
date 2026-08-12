@@ -19,6 +19,17 @@ const STATIC_RE = /\.(?:js|mjs|cjs|css|png|jpe?g|gif|svg|webp|avif|ico|woff2?|tt
 
 export type Replayable = 'yes' | 'no' | 'auth-failed' | 'not-json' | 'not-tried';
 
+/**
+ * Does the endpoint's row count agree with what the screen showed?
+ *
+ * `'unknown'` is NEVER a pass. An endpoint can answer 200 OK with 200 rows when
+ * the screen showed 47, because the UI filtered client-side or via a param that
+ * was not replayed — no error anywhere, a confident wrong number through a
+ * brand-new door. Same rule as the empty-trace verdict: absence of evidence is
+ * `'unknown'`, and unknown does not get to look like agreement.
+ */
+export type ScreenMatch = 'yes' | 'no' | 'unknown';
+
 export interface XhrRecord {
   method: string;
   url: string;
@@ -35,6 +46,16 @@ export interface XhrRecord {
   rowCount?: number;
   replayable: Replayable;
   replayNote?: string;
+  /** Reconciliation verdict — see {@link ScreenMatch}. Starts, and stays, 'unknown' until proven. */
+  matchesScreen: ScreenMatch;
+  /**
+   * Rows a read automation would get from this endpoint: the STANDALONE replay's
+   * count when a replay happened, otherwise the count the page itself received.
+   * The replay is the number that matters — it is the one the automation will see.
+   */
+  apiRowCount: number | null;
+  /** The rendered row count this was compared against. null when nothing countable rendered. */
+  screenRowCount: number | null;
 }
 
 /** /api/invoices/8821/lines?page=2 → /api/invoices/:id/lines */
@@ -118,6 +139,9 @@ export function captureNetwork(page: Page): NetworkCapture {
       contentType: contentType.split(';')[0].trim(),
       bytes: Number(headers['content-length'] ?? 0),
       replayable: 'not-tried',
+      matchesScreen: 'unknown',
+      apiRowCount: null,
+      screenRowCount: null,
     };
     records.push(rec);
 
@@ -197,12 +221,77 @@ export async function probeReplay(ctx: BrowserContext, records: XhrRecord[], lim
         continue;
       }
       rec.replayable = 'yes';
-      if (shape.rowCount !== undefined) rec.replayNote = `${shape.rowCount} rows without rendering`;
+      // The standalone count, not the page's: this is what an automation would
+      // actually receive, and the whole point of reconciliation is that the two
+      // can differ silently.
+      if (shape.rowCount !== undefined) {
+        rec.apiRowCount = shape.rowCount;
+        rec.replayNote = `${shape.rowCount} rows without rendering`;
+      }
     } catch (err) {
       rec.replayable = 'no';
       rec.replayNote = err instanceof Error ? err.message.slice(0, 120) : 'replay failed';
     }
   }
+}
+
+/**
+ * Reconcile every captured endpoint against what the screen actually rendered.
+ *
+ * Pure, so the interesting cases are testable without a browser.
+ *
+ * `screenRowCounts` is every countable table on the route, main table first —
+ * a route's tab states each render their own table, and the XHR that fed any of
+ * them was captured in the same trace, so agreement with ANY of them is
+ * agreement. On disagreement the closest count is reported, because "200 vs 47"
+ * is the sentence that makes the trap obvious.
+ *
+ * A rendered count of 0 is deliberately discarded: an empty table and a table
+ * that never rendered look identical from here, and 0 === 0 would manufacture a
+ * pass out of two absences. That is the fails-toward-fine pattern this whole
+ * feature exists to eliminate.
+ */
+export function reconcileRows(records: XhrRecord[], screenRowCounts: (number | null | undefined)[]): void {
+  const screens = screenRowCounts.filter((n): n is number => typeof n === 'number' && Number.isFinite(n) && n > 0);
+
+  for (const rec of records) {
+    if (rec.apiRowCount === null || rec.apiRowCount === undefined) rec.apiRowCount = rec.rowCount ?? null;
+
+    const api = rec.apiRowCount;
+    if (api === null || screens.length === 0) {
+      rec.matchesScreen = 'unknown';
+      rec.screenRowCount = screens.length ? screens[0] : null;
+      continue;
+    }
+
+    if (screens.includes(api)) {
+      rec.matchesScreen = 'yes';
+      rec.screenRowCount = api;
+      continue;
+    }
+
+    rec.matchesScreen = 'no';
+    rec.screenRowCount = screens.reduce((a, b) => (Math.abs(b - api) < Math.abs(a - api) ? b : a));
+  }
+}
+
+/** One line for the brief and the terminal report. */
+export function reconcileNote(rec: XhrRecord): string {
+  if (rec.matchesScreen === 'yes') return `matches screen (${rec.screenRowCount} rows)`;
+  if (rec.matchesScreen === 'no') return `DISAGREES — api ${rec.apiRowCount} vs screen ${rec.screenRowCount}`;
+  return 'unverified — no row count to compare, do not trust it as a read source';
+}
+
+/**
+ * The only gate an automation may be written against.
+ *
+ * Both conditions, explicitly: replayable AND reconciled. `'unknown'` fails
+ * here by construction — writing `rec.matchesScreen !== 'no'` would let every
+ * unverified endpoint through, the same shape of bug as `if (rec.replayable)`
+ * being truthy for `"not-json"`.
+ */
+export function isVerifiedRead(rec: XhrRecord): boolean {
+  return rec.replayable === 'yes' && rec.matchesScreen === 'yes';
 }
 
 /** The endpoints worth putting in the brief: distinct, replayable, data-bearing. */

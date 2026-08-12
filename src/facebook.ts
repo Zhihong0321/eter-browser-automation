@@ -13,8 +13,28 @@ export interface FbPost {
 /** Where a post's body text actually lives. `[role="article"]` nodes are empty decoys. */
 export const MESSAGE_SEL = '[data-ad-preview="message"],[data-ad-comet-preview="message"]';
 
+/**
+ * The post action bar, matched by ARIA.
+ *
+ * Facebook renders Like / Comment / Share as icon buttons: the words live in
+ * `aria-label`, and the rendered text contains neither "Comment" nor "Share".
+ * The previous rule tested `innerText` against /\b(Comment|Like|Share)\b/ and so
+ * never fired — measured 2026-08-12, it found the author link at ancestor level
+ * 3 and still rejected every one of the 14 levels, returning zero posts.
+ *
+ * Measured on the home feed, same session, same scroll pattern:
+ *   innerText rule -> 0 posts.   this rule -> 16 posts.
+ *
+ * See docs/fb-recon-feasibility-probe.md finding 1.
+ */
+export const ACTION_SEL =
+  '[aria-label="Like"],[aria-label="React"],[aria-label*="omment"],[aria-label*="Share"]';
+
 /** Substituted with MESSAGE_SEL when EXTRACT is stringified for the page. */
 declare const MESSAGE_SEL_PLACEHOLDER: string;
+
+/** Substituted with ACTION_SEL when EXTRACT is stringified for the page. */
+declare const ACTION_SEL_PLACEHOLDER: string;
 
 /**
  * Facebook randomises class names and scrambles visible timestamps with
@@ -31,7 +51,6 @@ declare const MESSAGE_SEL_PLACEHOLDER: string;
 const EXTRACT = () => {
   const clean = (s: string | null | undefined) => (s ?? '').replace(/\s+/g, ' ').trim();
   const permaRe = /\/(posts|permalink|videos|photo|reel|share)\/|story_fbid=|pfbid/;
-  const actionRe = /\b(Comment|Like|Share)\b/;
 
   const tidyUrl = (href: string): string | null => {
     try {
@@ -49,10 +68,10 @@ const EXTRACT = () => {
   for (const msg of Array.from(document.querySelectorAll(MESSAGE_SEL_PLACEHOLDER))) {
     let node: HTMLElement | null = msg as HTMLElement;
     for (let i = 0; node && i < 14; i++) {
-      const text = node.innerText || '';
       const authored = node.querySelector('a[aria-label]');
+      const acted = node.querySelector(ACTION_SEL_PLACEHOLDER);
       const msgCount = node.querySelectorAll(MESSAGE_SEL_PLACEHOLDER).length;
-      if (authored && actionRe.test(text) && msgCount === 1) {
+      if (authored && acted && msgCount === 1) {
         if (!roots.has(msg)) roots.set(msg, node);
         break;
       }
@@ -86,7 +105,9 @@ const EXTRACT = () => {
 
 // page.evaluate serialises the function source, so the selector constant has to be
 // inlined into it rather than captured from this module's scope.
-const EXTRACT_SRC = EXTRACT.toString().replaceAll('MESSAGE_SEL_PLACEHOLDER', JSON.stringify(MESSAGE_SEL));
+const EXTRACT_SRC = EXTRACT.toString()
+  .replaceAll('MESSAGE_SEL_PLACEHOLDER', JSON.stringify(MESSAGE_SEL))
+  .replaceAll('ACTION_SEL_PLACEHOLDER', JSON.stringify(ACTION_SEL));
 
 /**
  * Long posts render collapsed behind a "See more" control, so the DOM genuinely

@@ -381,6 +381,98 @@ export function createMcpServer(): McpServer {
     ),
   );
 
+  server.registerTool(
+    'facebook_recon',
+    {
+      title: 'Find people interested in a topic on Facebook',
+      description:
+        'READ ONLY. Sweeps Facebook for people who appear interested in a topic. EVERY CALL CREATES A ' +
+        'NEW PROJECT — it never appends to an earlier harvest. It RETURNS IMMEDIATELY with the project ' +
+        'id and the path to its HTML report, while the sweep keeps running in the background for ' +
+        'several minutes: poll facebook_recon_projects until that project\'s status leaves "running", ' +
+        'then read its counters and contacts. Do not call this again while one is running. ' +
+        'Scores every post against a per-topic keyword pack, then opens only the promising ones to ' +
+        'collect commenters. Collects name, profile URL, Messenger link, and any phone or email the ' +
+        'person published themselves, with the quote that shows their interest. Never replies, ' +
+        'comments, likes or messages anyone. Sources: "feed", "search" or "search:<query>", ' +
+        '"group:<url>", "thread:<url>". Group sources only work for groups the human has ALREADY ' +
+        'joined — this tool never joins anything, so its reach is capped by existing membership and a ' +
+        'topic with no matching joined group will return an empty harvest. A contact already found by ' +
+        'an earlier project is flagged with priorProjects rather than dropped — check it before ' +
+        'suggesting outreach, so the same person is not pitched twice.',
+      inputSchema: {
+        topic: z.string().describe('The subject to prospect for, e.g. "solar".'),
+        sources: z
+          .array(z.string())
+          .optional()
+          .describe('Where to look. Defaults to ["feed"]. e.g. ["group:https://www.facebook.com/groups/xyz", "search"].'),
+        minScore: z.number().int().optional().describe('Gate threshold. Lower finds more and noisier. Defaults to 3.'),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    handler(async ({ topic, sources, minScore }: { topic: string; sources?: string[]; minScore?: number }) =>
+      call('POST', '/api/fb/recon', { topic, sources, minScore }),
+    ),
+  );
+
+  server.registerTool(
+    'facebook_recon_projects',
+    {
+      title: 'List Facebook prospecting projects',
+      description:
+        'READ ONLY. List every fb-recon project on this machine, newest first, with its status, ' +
+        'inputs, counters and harvested contacts. Use this to answer "what prospecting have we done" ' +
+        'or to re-read an earlier run\'s results instead of sweeping Facebook again.',
+      annotations: { readOnlyHint: true },
+    },
+    handler(async () => call('GET', '/api/fb/recon/projects')),
+  );
+
+  // ---------------------------------------------------- automation registry
+
+  server.registerTool(
+    'search_automations',
+    {
+      title: 'Find an automation',
+      description:
+        'Search the catalogue of built automations by intent, e.g. "find companies on google maps" or ' +
+        '"who messaged me". Call this FIRST when a request sounds like a job this machine already knows ' +
+        'how to do — a purpose-built automation is far faster and more reliable than driving the browser ' +
+        'with primitives. Each result gives an id, what it is for, its effect (read / write / destructive), ' +
+        'any login it needs, and the exact argument shape to pass to run_automation. An empty query ' +
+        'returns the whole catalogue, which answers "what can you do?".',
+      inputSchema: {
+        query: z.string().describe('Plain-language description of the job. Empty string lists everything.'),
+        limit: z.number().int().optional().describe('Max results. Defaults to 10.'),
+      },
+      annotations: { readOnlyHint: true },
+    },
+    handler(async ({ query, limit }: { query: string; limit?: number }) =>
+      call('POST', '/api/automations/search', { query, limit }),
+    ),
+  );
+
+  server.registerTool(
+    'run_automation',
+    {
+      title: 'Run an automation',
+      description:
+        'Run an automation found via search_automations, by id. Pass its arguments as `args`, matching the ' +
+        'signature that search returned. Check the effect first: `destructive` automations send or post ' +
+        'something on behalf of the user, and need the user to have asked for that specific action. ' +
+        'Long jobs (e.g. gmaprecon_harvest) do a bounded chunk per call and are safe to call repeatedly ' +
+        'until their status reports nothing pending.',
+      inputSchema: {
+        id: z.string().describe('Automation id, e.g. "gmaprecon_harvest".'),
+        args: z.record(z.string(), z.unknown()).optional().describe('Arguments object matching the signature.'),
+      },
+      annotations: { openWorldHint: true },
+    },
+    handler(async ({ id, args }: { id: string; args?: Record<string, unknown> }) =>
+      call('POST', '/api/automations/run', { id, args: args ?? {} }),
+    ),
+  );
+
   return server;
 }
 

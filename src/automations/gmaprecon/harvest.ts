@@ -8,6 +8,7 @@ effect:   write
 needs:    []
 ---*/
 
+import type { HarvestResult } from '../../leads.js';
 import type { VaultService } from '../../service.js';
 
 /**
@@ -20,4 +21,5 @@ import type { VaultService } from '../../service.js';
  * or when the canary re-search shows Google is silently returning short results —
  * in which case nothing is banked, because short results look exactly like success.
  */
-export const run = (svc: VaultService, { limit }: { limit?: number }) => svc.gmapHarvest(limit);
+export const run = (svc: VaultService, { limit }: { limit?: number }): Promise<HarvestResult> =>
+  svc.gmapHarvest(limit);

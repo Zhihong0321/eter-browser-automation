@@ -8,6 +8,7 @@ effect:   write
 needs:    []
 ---*/
 
+import type { EnrichResult } from '../../leads.js';
 import type { VaultService } from '../../service.js';
 
 /**
@@ -19,4 +20,5 @@ import type { VaultService } from '../../service.js';
  * rate risk. Expect roughly half to yield an email — many small businesses run a
  * Facebook page instead of a site.
  */
-export const run = (svc: VaultService, { limit }: { limit?: number }) => svc.gmapEnrich(limit);
+export const run = (svc: VaultService, { limit }: { limit?: number }): Promise<EnrichResult> =>
+  svc.gmapEnrich(limit);

@@ -296,6 +296,61 @@
 
   .disabled-note { font-size: 12.5px; color: var(--fg-faint); margin-top: 8px; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---- gmap-recon ------------------------------------------------------- */
+  .gm-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; }
+  .gm-form label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--fg-muted); }
+  .gm-form input {
+    font: inherit; padding: 8px 10px; border: 1px solid var(--border-strong);
+    border-radius: 6px; background: var(--panel); color: var(--fg);
+  }
+  .gm-form input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+  @media (max-width: 720px) { .gm-form { grid-template-columns: 1fr; } }
+
+  .gm-msg { margin-top: 10px; padding: 10px 12px; border-radius: 6px; font-size: 13px; line-height: 1.5; }
+  .gm-msg.bad  { background: var(--bad-soft);  border: 1px solid var(--bad-border);  color: var(--bad); }
+  .gm-msg.warn { background: var(--warn-soft); border: 1px solid var(--warn-border); color: var(--warn); }
+  .gm-msg.ok   { background: var(--ok-soft);   border: 1px solid var(--ok-border);   color: var(--ok); }
+  .gm-msg button { margin-left: 8px; }
+
+  .gm-bar { height: 6px; border-radius: 3px; background: var(--bg-sunken); overflow: hidden; margin: 8px 0; }
+  .gm-fill { height: 100%; background: var(--accent); width: 0; transition: width .4s ease; }
+  .gm-line { font-size: 12.5px; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+
+  .gm-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .gm-row {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+    background: var(--panel); padding: 11px 12px;
+  }
+  .gm-row:hover { background: var(--bg-sunken); }
+  .gm-id { font-size: 13px; color: var(--fg); word-break: break-all; }
+  .gm-sub { font-size: 11.5px; color: var(--fg-faint); margin-top: 3px; }
+  .gm-nums { font-size: 12px; color: var(--fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .gm-nums b { color: var(--fg); font-weight: 600; }
+  .gm-acts { display: flex; gap: 6px; }
+  .gm-empty { background: var(--panel); padding: 22px; text-align: center; color: var(--fg-faint); font-size: 13px; }
+  @media (max-width: 720px) { .gm-row { grid-template-columns: 1fr; } }
+
+  /* ---------------------------------------------------------------- recon */
+  .rc-row {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+    background: var(--panel); padding: 11px 12px; cursor: pointer; text-align: left;
+    border: 0; width: 100%; font: inherit; color: inherit;
+  }
+  .rc-row:hover { background: var(--bg-sunken); }
+  .rc-row.on { background: var(--bg-sunken); box-shadow: inset 3px 0 0 var(--accent); }
+  .rc-routes { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .rc-route { background: var(--panel); padding: 10px 12px; }
+  .rc-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rc-path { font-size: 13px; color: var(--fg); word-break: break-all; }
+  .rc-title { font-size: 11.5px; color: var(--fg-faint); }
+  .rc-meta { margin-top: 5px; font-size: 11.5px; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+  .rc-api { margin-top: 5px; font-size: 11.5px; font-family: var(--mono, ui-monospace, monospace); word-break: break-all; }
+  .rc-api .mark { display: inline-block; width: 1.1em; font-weight: 700; }
+  .rc-ok { color: var(--ok, #3fb950); }
+  .rc-bad { color: var(--err, #f85149); }
+  .rc-unk { color: var(--fg-faint); }
+  .rc-trap { margin-top: 5px; font-size: 11.5px; color: var(--warn, #d29922); }
 </style>
 </head>
 <body>
@@ -316,6 +371,21 @@
 
 <main class="wrap">
   <div id="banners"></div>
+
+  <section id="sec-profiles">
+    <div class="sec-head">
+      <h2>Chrome profiles</h2>
+      <span class="count" id="profile-count">0</span>
+    </div>
+    <div class="panel">
+      <div class="row" id="profile-row" style="flex-wrap:wrap;gap:8px;"></div>
+      <p class="hint" style="margin:10px 0 0;">
+        Each profile is a separate Chrome with its own logins. Work in one profile cannot be killed by a
+        browser restart in another, so a long Facebook sweep and other automation can run at the same time —
+        sign the same site in once per profile. There is no limit on how many you create.
+      </p>
+    </div>
+  </section>
 
   <section id="sec-sessions">
     <div class="sec-head">
@@ -365,6 +435,66 @@
       <div id="fb-posts" class="posts"></div>
     </div>
   </section>
+
+  <section id="sec-gmap">
+    <div class="sec-head">
+      <h2>Google Maps lead search</h2>
+      <div class="grow"></div>
+      <span id="gm-pill" class="pill" hidden><span class="dot"></span><span id="gm-pill-text"></span></span>
+    </div>
+
+    <div class="panel">
+      <div class="gm-form">
+        <label>Keywords
+          <input id="gm-kw" placeholder="solar panel installer, solar supplier" autocomplete="off">
+        </label>
+        <label>Towns or areas
+          <input id="gm-pl" placeholder="Petaling Jaya, Shah Alam, Klang" autocomplete="off">
+        </label>
+        <button class="btn primary" id="gm-start">Start search</button>
+      </div>
+      <div class="hint">
+        One Google search per keyword &times; town, then every company website is read for
+        email and socials. Runs in the background &mdash; you can close this page and come back.
+      </div>
+      <div id="gm-msg" class="gm-msg" hidden></div>
+    </div>
+
+    <div class="panel" id="gm-live" hidden>
+      <div class="subhead">Running &mdash; <span id="gm-live-id"></span></div>
+      <div class="gm-bar"><div class="gm-fill" id="gm-fill"></div></div>
+      <div class="gm-line" id="gm-line"></div>
+    </div>
+
+    <div class="panel">
+      <div class="subhead">Projects</div>
+      <div id="gm-list" class="gm-list"></div>
+    </div>
+  </section>
+
+  <section id="sec-recon">
+    <div class="sec-head">
+      <h2>Recon agent</h2>
+      <div class="grow"></div>
+      <span class="hint">read-only site scan</span>
+    </div>
+
+    <div class="panel">
+      <div class="subhead">Projects</div>
+      <div id="rc-list" class="gm-list"></div>
+      <div class="hint">
+        One project per scanned site. <b>Snapshots</b> counts only frozen pages that
+        actually rendered &mdash; bytes on disk are not evidence. <b>Verified reads</b>
+        counts API endpoints that replayed <em>and</em> agreed with the screen; an
+        endpoint that returns a confident wrong row count is not one.
+      </div>
+    </div>
+
+    <div class="panel" id="rc-detail" hidden>
+      <div class="subhead" id="rc-detail-head"></div>
+      <div id="rc-routes" class="rc-routes"></div>
+    </div>
+  </section>
 </main>
 
 <script>
@@ -382,6 +512,9 @@
     addSig: '',
     posts: null,
     pollTimer: null,
+    /** Which Chrome profile the page is showing. Every session call carries it. */
+    profile: 'agent',
+    profileSig: '',
   };
 
   const $ = (id) => document.getElementById(id);
@@ -394,6 +527,13 @@
 
   // ------------------------------------------------------------------- http
   async function api(method, path, body) {
+    // Sessions belong to a profile, so every session call carries the one the
+    // page is showing. Done here rather than at each call site because missing
+    // it at one site would silently read or write the wrong profile.
+    const scoped = /^\/api\/(sessions|check-all)/.test(path);
+    if (scoped && state.profile && state.profile !== 'agent') {
+      body = Object.assign({}, body || {}, { profile: state.profile });
+    }
     const init = { method, headers: { accept: 'application/json' } };
     if (body !== undefined) {
       init.headers['content-type'] = 'application/json';
@@ -572,6 +712,56 @@
   }
 
   // -------------------------------------------------------------- sessions
+  /**
+   * The profile switcher. Selecting one re-reads every session panel below
+   * against that profile, because sessions belong to a profile — the same site
+   * signed into two profiles is genuinely two separate logins.
+   */
+  function paintProfiles(s) {
+    const profiles = (s && s.profiles) || [];
+    $('profile-count').textContent = String(profiles.length);
+
+    const sig = JSON.stringify([profiles, state.profile]);
+    if (sig === state.profileSig) return;
+    state.profileSig = sig;
+
+    const row = $('profile-row');
+    row.textContent = '';
+
+    profiles.forEach((p) => {
+      const active = p.id === state.profile;
+      const btn = el('button', 'btn small' + (active ? ' primary' : ''));
+      const ready = (p.sessions || []).filter((x) => x.status === 'ready').length;
+      btn.textContent = p.label + '  (' + ready + '/' + (p.sessions || []).length + ')';
+      btn.title = p.dir + (p.browser === 'running' ? ' — Chrome running' : '');
+      btn.addEventListener('click', () => {
+        state.profile = p.id;
+        state.sig = '';        // force the session list to repaint
+        state.addSig = '';
+        state.profileSig = '';
+        refresh();
+      });
+      row.appendChild(btn);
+    });
+
+    const input = el('input');
+    input.placeholder = 'new profile id, e.g. fbrecon';
+    input.style.maxWidth = '220px';
+    const add = el('button', 'btn small', 'Create profile');
+    add.addEventListener('click', () => run(add, async () => {
+      const id = input.value.trim();
+      if (!id) return;
+      const p = await api('POST', '/api/profiles', { id: id });
+      input.value = '';
+      state.profile = p.id;
+      state.profileSig = '';
+      state.sig = '';
+      await refresh();
+    }));
+    row.appendChild(input);
+    row.appendChild(add);
+  }
+
   function paintSessions(s) {
     const sessions = (s && s.sessions) || [];
     $('session-count').textContent = String(sessions.length);
@@ -963,7 +1153,7 @@
   // ------------------------------------------------------------- poll loop
   async function refresh() {
     try {
-      const s = await api('GET', '/api/status');
+      const s = await api('GET', '/api/status/' + encodeURIComponent(state.profile));
       state.status = s;
       state.lastFetch = Date.now();
       if (state.lastError) {
@@ -972,6 +1162,7 @@
       }
       state.lastError = null;
       paintHeader(s);
+      paintProfiles(s);
       paintSessions(s);
       paintAdd(s);
       paintReadiness(s);
@@ -999,6 +1190,293 @@
     if (document.hidden) { stopPoll(); return; }
     if (state.inflight === 0) { refresh(); startPoll(); }
   });
+
+
+  // ------------------------------------------------------------- gmap-recon
+  // A harvest runs for minutes to hours in the daemon, so this polls rather than
+  // awaiting: 2s while something is running, 15s when idle.
+  const gm = { sig: '', timer: null, busy: false };
+
+  function gmMsg(text, tone) {
+    const box = $('gm-msg');
+    if (!text) { box.hidden = true; box.textContent = ''; return; }
+    box.hidden = false;
+    box.className = 'gm-msg ' + (tone || 'warn');
+    box.textContent = text;
+  }
+
+  function gmRow(p, running) {
+    const row = el('div', 'gm-row');
+
+    const left = el('div');
+    left.appendChild(el('div', 'gm-id', p.id));
+    left.appendChild(el('div', 'gm-sub',
+      p.keywords.join(', ') + '  ·  ' + p.places.join(', ')));
+    row.appendChild(left);
+
+    const nums = el('div', 'gm-nums');
+    nums.innerHTML = '<b>' + p.stats.companies + '</b> companies · '
+      + p.stats.withPhone + ' phone · ' + p.stats.withEmail + ' email';
+    row.appendChild(nums);
+
+    const acts = el('div', 'gm-acts');
+    const done = p.stats.companies > 0;
+
+    if (done) {
+      const rep = el('a', 'btn small', 'Report');
+      rep.href = '/gmap/report/' + encodeURIComponent(p.id);
+      rep.target = '_blank';
+      rep.rel = 'noopener';
+      acts.appendChild(rep);
+
+      const csv = el('a', 'btn small', 'CSV');
+      csv.href = '/gmap/csv/' + encodeURIComponent(p.id);
+      acts.appendChild(csv);
+
+      // Written by gmap-review-radar, which is a separate CLI run. The link is always
+      // offered; if it has not been run for this project the server answers with the
+      // exact command to run, which beats hiding the feature.
+      const rev = el('a', 'btn small', 'Reviews');
+      rev.href = '/gmap/reviews/' + encodeURIComponent(p.id);
+      rev.target = '_blank';
+      rev.rel = 'noopener';
+      acts.appendChild(rev);
+    }
+
+    if (p.status !== 'complete') {
+      const go = el('button', 'btn small primary', 'Resume');
+      go.disabled = running;
+      go.addEventListener('click', () => gmPost('/api/gmap/projects/' + encodeURIComponent(p.id) + '/resume', {}, go));
+      acts.appendChild(go);
+    }
+
+    row.appendChild(acts);
+    return row;
+  }
+
+  function gmRender(data) {
+    const run = data.run || {};
+    const running = !!run.projectId
+      && run.phase !== 'idle' && run.phase !== 'done'
+      && run.phase !== 'error' && run.phase !== 'paused';
+
+    // Skip a repaint when nothing changed — otherwise polling steals focus from
+    // whatever the user is typing.
+    const sig = JSON.stringify([data.projects.map(p => [p.id, p.status, p.stats]), run]);
+    if (sig === gm.sig) return;
+    gm.sig = sig;
+
+    const pill = $('gm-pill');
+    if (run.phase && run.phase !== 'idle') {
+      pill.hidden = false;
+      pill.className = 'pill ' + (running ? 'warn' : run.phase === 'error' ? 'bad' : 'ok');
+      $('gm-pill-text').textContent = run.phase;
+    } else {
+      pill.hidden = true;
+    }
+
+    $('gm-live').hidden = !running;
+    if (running) {
+      $('gm-live-id').textContent = run.projectId;
+      $('gm-line').textContent = run.line || 'starting…';
+      const p = data.projects.find(x => x.id === run.projectId);
+      const pct = p && p.stats.searchesTotal
+        ? Math.round((p.stats.searchesDone / p.stats.searchesTotal) * 100) : 0;
+      $('gm-fill').style.width = pct + '%';
+    }
+
+    if (run.phase === 'error' && run.error) gmMsg(run.error, 'bad');
+
+    const list = $('gm-list');
+    list.textContent = '';
+    if (!data.projects.length) {
+      list.appendChild(el('div', 'gm-empty', 'No searches yet. Enter a keyword and a town above.'));
+      return;
+    }
+    for (const p of data.projects) list.appendChild(gmRow(p, running));
+  }
+
+  async function gmRefresh() {
+    try {
+      gmRender(await api('GET', '/api/gmap/projects'));
+    } catch (err) {
+      gmMsg(err.message, 'bad');
+    }
+  }
+
+  async function gmPost(path, body, btn) {
+    if (gm.busy) return;
+    gm.busy = true;
+    if (btn) btn.disabled = true;
+    gmMsg('');
+    try {
+      const r = await api('POST', path, body);
+      // An unfinished project covering the same search: offer to continue it rather
+      // than silently re-spending searches that already succeeded.
+      if (r && r.started === false && r.existing) {
+        gmMsg('"' + r.existing.id + '" already covers this search ('
+          + r.existing.status + ', ' + r.existing.stats.companies
+          + ' companies). Use Resume below to continue it without re-spending searches.', 'warn');
+      }
+      gm.sig = '';
+      await gmRefresh();
+    } catch (err) {
+      gmMsg(err.message, 'bad');
+    } finally {
+      gm.busy = false;
+      if (btn) btn.disabled = false;
+      gmPoll();
+    }
+  }
+
+  function gmPoll() {
+    if (gm.timer) clearTimeout(gm.timer);
+    const running = !$('gm-live').hidden;
+    gm.timer = setTimeout(async () => { await gmRefresh(); gmPoll(); }, running ? 2000 : 15000);
+  }
+
+  $('gm-start').addEventListener('click', () => {
+    const keywords = $('gm-kw').value.trim();
+    const places = $('gm-pl').value.trim();
+    if (!keywords || !places) { gmMsg('Enter at least one keyword and one town.', 'warn'); return; }
+    gmPost('/api/gmap/projects', { keywords, places }, $('gm-start'));
+  });
+
+  for (const id of ['gm-kw', 'gm-pl']) {
+    $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') $('gm-start').click(); });
+  }
+
+  gmRefresh();
+  gmPoll();
+
+  // ------------------------------------------------------------------ recon
+  // A scan is started from the CLI and takes minutes, so this page READS what
+  // is on disk rather than driving one. No polling: scan.json only changes when
+  // a scan finishes, and a 3s poll would repaint an open project under the user.
+  const rc = { domain: null };
+
+  function rcRow(p) {
+    const row = el('button', 'rc-row' + (p.domain === rc.domain ? ' on' : ''));
+    row.type = 'button';
+
+    const left = el('div');
+    left.appendChild(el('div', 'gm-id', p.domain));
+    left.appendChild(el('div', 'gm-sub', 'scanned ' + new Date(p.scannedAt).toLocaleString()));
+    row.appendChild(left);
+
+    const nums = el('div', 'gm-nums');
+    nums.innerHTML = '<b>' + p.routes + '</b> routes · '
+      + p.snapshotsOk + '/' + p.routes + ' snapshots · '
+      + p.verified + ' verified reads'
+      + (p.failed ? ' · <span class="rc-bad">' + p.failed + ' failed</span>' : '');
+    row.appendChild(nums);
+
+    row.appendChild(el('div', 'gm-acts', p.domain === rc.domain ? 'Hide' : 'Open'));
+    row.addEventListener('click', () => {
+      if (rc.domain === p.domain) { rc.domain = null; $('rc-detail').hidden = true; rcRefresh(); return; }
+      rc.domain = p.domain;
+      rcOpen(p.domain);
+    });
+    return row;
+  }
+
+  /** One route: what was frozen, what the API said, and what is unstable. */
+  function rcRoute(p) {
+    const box = el('div', 'rc-route');
+
+    const head = el('div', 'rc-head');
+    let path = p.routeKey;
+    try { path = new URL(p.routeKey).pathname || '/'; } catch (e) {}
+    head.appendChild(el('div', 'rc-path', path));
+    if (p.title) head.appendChild(el('div', 'rc-title', p.title));
+    box.appendChild(head);
+
+    const snap = p.snapshot;
+    let snapText;
+    if (!snap) snapText = 'no snapshot';
+    else if (snap.error) snapText = 'snapshot FAILED — ' + snap.error;
+    else snapText = 'snapshot ' + Math.round(snap.bytes / 1024) + ' KB · '
+      + (snap.styleSheets == null ? 'not checked' : snap.styleSheets + ' stylesheets');
+    const meta = el('div', 'rc-meta');
+    meta.appendChild(el('span', snap && snap.error ? 'rc-bad' : '', snapText));
+    const table = p.table ? p.table.rows + ' rows × ' + p.table.columns + ' cols' : 'no table';
+    meta.appendChild(el('span', '', '  ·  ' + table));
+    if (p.skipped && p.skipped.length) {
+      meta.appendChild(el('span', '', '  ·  ' + p.skipped.length + ' controls awaiting approval'));
+    }
+    box.appendChild(meta);
+
+    for (const x of (p.xhr || [])) {
+      // ✓ is the ONLY state an automation may be written against: replayed AND
+      // agreed with the screen. ✗ is a live endpoint returning the wrong set,
+      // which is the trap this whole scan exists to catch — it must not read as
+      // a lesser ✓, so it is coloured like a failure.
+      const ok = x.replayable === 'yes' && x.matchesScreen === 'yes';
+      const bad = x.matchesScreen === 'no';
+      const line = el('div', 'rc-api');
+      line.appendChild(el('span', 'mark ' + (ok ? 'rc-ok' : bad ? 'rc-bad' : 'rc-unk'), ok ? '✓' : bad ? '✗' : '?'));
+      line.appendChild(el('span', '', x.method + ' ' + x.urlPattern));
+      const note = bad && x.apiRowCount != null && x.screenRowCount != null
+        ? '  api ' + x.apiRowCount + ' rows vs screen ' + x.screenRowCount
+        : ok ? '  verified' : '  ' + (x.replayNote || x.replayable || 'unknown');
+      line.appendChild(el('span', 'rc-unk', note));
+      box.appendChild(line);
+    }
+
+    const v = p.verdict || {};
+    // The traps. An element that held 5 rows early and 27 once settled is the
+    // exact thing that makes a scraper return a confident wrong number.
+    for (const t of (v.unstable || [])) {
+      box.appendChild(el('div', 'rc-trap', '⚠ ' + t.probe + ' — ' + t.earlyCount + ' rows at '
+        + t.earlyAt + 'ms, ' + t.finalCount + ' at ' + t.finalAt + 'ms'));
+    }
+    for (const l of (v.loadingTexts || [])) {
+      box.appendChild(el('div', 'rc-trap', '⚠ "' + l.text + '" is a loading state, gone by ' + l.goneAt + 'ms'));
+    }
+    if (v.waitOn) {
+      box.appendChild(el('div', 'rc-meta', 'wait on /' + v.waitOn.pattern + '/'));
+    }
+    // Disclosures, not findings — a blind window means the verdict above is
+    // partial, and an empty trace is never "clean" (buildplan §6).
+    for (const n of (v.notes || [])) box.appendChild(el('div', 'rc-title', n));
+    return box;
+  }
+
+  async function rcOpen(domain) {
+    const detail = $('rc-detail');
+    detail.hidden = false;
+    $('rc-detail-head').textContent = domain + ' — loading…';
+    $('rc-routes').textContent = '';
+    try {
+      const scan = await api('GET', '/api/recon/projects/' + encodeURIComponent(domain));
+      $('rc-detail-head').textContent = domain + ' — ' + scan.pages.length + ' routes, '
+        + scan.failed.length + ' failed';
+      const host = $('rc-routes');
+      for (const p of scan.pages) host.appendChild(rcRoute(p));
+      for (const f of scan.failed) host.appendChild(el('div', 'rc-route rc-bad', f.url + ' — ' + f.error));
+    } catch (err) {
+      $('rc-detail-head').textContent = domain + ' — ' + err.message;
+    }
+    rcRefresh();
+  }
+
+  async function rcRefresh() {
+    try {
+      const data = await api('GET', '/api/recon/projects');
+      const list = $('rc-list');
+      list.textContent = '';
+      if (!data.projects.length) {
+        list.appendChild(el('div', 'gm-empty', 'No scans yet. Run: recon scan https://<site>/'));
+        return;
+      }
+      for (const p of data.projects) list.appendChild(rcRow(p));
+    } catch (err) {
+      $('rc-list').textContent = '';
+      $('rc-list').appendChild(el('div', 'gm-empty', err.message));
+    }
+  }
+
+  rcRefresh();
 
   refresh();
   startPoll();

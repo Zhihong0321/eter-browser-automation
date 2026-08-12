@@ -4,6 +4,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DAEMON_PORT } from './config.js';
 import type { VaultService } from './service.js';
+import { runAutomation, searchAutomations } from './registry.js';
+import { createProject, findUnfinished, listProjects, loadProject, projectDir } from './gmapproject.js';
+import { finish as finishProject, isRunning, runState, startBackground } from './gmaprun.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 // Works from both src/ (tsx) and dist/ (built) layouts.
@@ -42,18 +45,39 @@ export function createServer(svc: VaultService): http.Server {
     return v;
   };
 
+  /** Accepts ["a","b"] or "a, b" — the UI sends a plain text field. */
+  const asList = (v: unknown): string[] =>
+    (Array.isArray(v) ? v.map(String) : String(v ?? '').split(','))
+      .map((x) => x.trim())
+      .filter(Boolean);
+
+  /** Project ids reach the filesystem, so '..' must never survive the URL. */
+  const safeId = (v: string): string => {
+    if (!v || v.includes('..')) throw new Error(`Bad project id "${v}".`);
+    return v;
+  };
+
+  /** Every session route accepts an optional profile; absent means the agent profile. */
+  const prof = (v: unknown): string | undefined => (typeof v === 'string' && v.trim() ? v.trim() : undefined);
+
   const routes: [string, RegExp, Handler][] = [
     ['GET', /^\/api\/status$/, async () => svc.status()],
+    ['GET', /^\/api\/status\/([\w.-]+)$/, async (_b, p) => svc.status(p[0])],
+
+    // Chrome profiles. One profile is one Chrome and one set of logins, so a job
+    // with its own profile cannot be killed by another job's browser.
+    ['GET', /^\/api\/profiles$/, async () => ({ profiles: svc.listProfiles() })],
+    ['POST', /^\/api\/profiles$/, async (b) => svc.createProfile(str(b.id), b.label as string | undefined)],
     ['GET', /^\/api\/ready$/, async () => ({ sessions: svc.readySessions() })],
 
     // Add ANY site: the body carries the URL the user typed.
-    ['POST', /^\/api\/sessions$/, async (b) => svc.addSession(str(b.url), b.label as string | undefined)],
-    ['POST', /^\/api\/sessions\/([\w.-]+)\/open$/, async (_b, p) => svc.openSession(p[0])],
-    ['POST', /^\/api\/sessions\/([\w.-]+)\/confirm$/, async (_b, p) => svc.confirmSession(p[0])],
-    ['POST', /^\/api\/sessions\/([\w.-]+)\/check$/, async (b, p) => svc.checkSession(p[0], b.deep !== false)],
-    ['POST', /^\/api\/sessions\/([\w.-]+)\/rename$/, async (b, p) => svc.renameSession(p[0], str(b.label))],
-    ['DELETE', /^\/api\/sessions\/([\w.-]+)$/, async (_b, p) => svc.removeSession(p[0])],
-    ['POST', /^\/api\/check-all$/, async (b) => ({ sessions: await svc.checkAll(b.deep !== false) })],
+    ['POST', /^\/api\/sessions$/, async (b) => svc.addSession(str(b.url), b.label as string | undefined, prof(b.profile))],
+    ['POST', /^\/api\/sessions\/([\w.-]+)\/open$/, async (b, p) => svc.openSession(p[0], prof(b.profile))],
+    ['POST', /^\/api\/sessions\/([\w.-]+)\/confirm$/, async (b, p) => svc.confirmSession(p[0], prof(b.profile))],
+    ['POST', /^\/api\/sessions\/([\w.-]+)\/check$/, async (b, p) => svc.checkSession(p[0], b.deep !== false, prof(b.profile))],
+    ['POST', /^\/api\/sessions\/([\w.-]+)\/rename$/, async (b, p) => svc.renameSession(p[0], str(b.label), prof(b.profile))],
+    ['DELETE', /^\/api\/sessions\/([\w.-]+)$/, async (b, p) => svc.removeSession(p[0], prof(b.profile))],
+    ['POST', /^\/api\/check-all$/, async (b) => ({ sessions: await svc.checkAll(b.deep !== false, prof(b.profile)) })],
 
     ['POST', /^\/api\/browser\/open$/, async () => {
       await svc.navigate('about:blank');
@@ -70,6 +94,8 @@ export function createServer(svc: VaultService): http.Server {
     ['POST', /^\/api\/browser\/screenshot$/, async () => svc.screenshot()],
     ['POST', /^\/api\/browser\/eval$/, async (b) => svc.evaluate(str(b.expr))],
 
+    ['GET', /^\/api\/recon\/projects$/, async () => ({ projects: svc.reconProjects() })],
+    ['GET', /^\/api\/recon\/projects\/([\w.-]+)$/, async (_b, p) => svc.reconProject(safeId(p[0]))],
     ['POST', /^\/api\/recon\/probe$/, async (b) => svc.reconProbe(str(b.url), num(b.windowMs, 8000))],
     ['POST', /^\/api\/recon\/scan$/, async (b) =>
       svc.reconScan(str(b.url), {
@@ -86,12 +112,76 @@ export function createServer(svc: VaultService): http.Server {
     ['POST', /^\/api\/fb\/my-posts$/, async (b) => ({ posts: await svc.fbReadMyPosts(num(b.limit, 5)) })],
     ['POST', /^\/api\/fb\/feed$/, async (b) => ({ posts: await svc.fbReadFeed(num(b.limit, 5)) })],
     ['POST', /^\/api\/fb\/comment$/, async (b) => svc.fbComment(str(b.postUrl), str(b.text))],
+    ['POST', /^\/api\/fb\/recon$/, async (b) => svc.fbRecon({
+      topic: str(b.topic),
+      sources: Array.isArray(b.sources) ? (b.sources as string[]) : undefined,
+      minScore: typeof b.minScore === 'number' ? b.minScore : undefined,
+      profile: prof(b.profile),
+    })],
+    ['GET', /^\/api\/fb\/recon\/projects$/, async () => ({ projects: svc.fbReconProjects() })],
+    ['GET', /^\/api\/fb\/recon\/projects\/([\w.-]+)$/, async (_b, p) => svc.fbReconProject(safeId(p[0]))],
+
+    // The automation registry — a scan over the cards under src/automations/.
+    // Two generic endpoints stand in for N typed ones, so adding an automation is
+    // adding a file, with nothing here to update.
+    ['POST', /^\/api\/automations\/search$/, async (b) => ({
+      automations: searchAutomations(typeof b.query === 'string' ? b.query : '', num(b.limit, 10)),
+    })],
+    ['POST', /^\/api\/automations\/run$/, async (b) => ({
+      result: await runAutomation(svc, str(b.id), (b.args ?? {}) as Record<string, unknown>),
+    })],
+
+    // ---------------------------------------------------------- gmap-recon
+    // A harvest lasts minutes to hours, so starting one returns immediately and the
+    // UI polls. runState() is the live view; project.json is the durable one.
+    ['GET', /^\/api\/gmap\/projects$/, async () => ({ projects: listProjects(), run: runState() })],
+
+    ['POST', /^\/api\/gmap\/projects$/, async (b) => {
+      const keywords = asList(b.keywords);
+      const places = asList(b.places);
+      if (!keywords.length || !places.length) throw new Error('Need at least one keyword and one town.');
+      if (isRunning()) throw new Error(runState().projectId
+        ? `A search is already running ("${runState().projectId}"). Wait for it to finish.`
+        : 'A search is already running.');
+
+      // Guard a half-finished campaign: the Google searches already spent are the
+      // scarce resource, not the disk space.
+      const open = b.force === true ? null : findUnfinished(keywords, places);
+      if (open) return { existing: open, started: false };
+
+      const meta = createProject(keywords, places);
+      const r = startBackground(svc, meta);
+      if (!r.started) throw new Error(r.reason ?? 'Could not start.');
+      return { project: meta, started: true };
+    }],
+
+    ['POST', /^\/api\/gmap\/projects\/([\w.-]+)\/resume$/, async (_b, p) => {
+      const meta = loadProject(safeId(p[0]));
+      if (meta.status === 'complete') throw new Error(`${meta.id} is already complete.`);
+      const r = startBackground(svc, meta);
+      if (!r.started) throw new Error(r.reason ?? 'Could not start.');
+      return { project: meta, started: true };
+    }],
+
+    ['POST', /^\/api\/gmap\/projects\/([\w.-]+)\/report$/, async (_b, p) => {
+      const meta = loadProject(safeId(p[0]));
+      svc.gmapUseProject(projectDir(meta.id));
+      return finishProject(svc, meta);
+    }],
   ];
 
   return http.createServer((req, res) => {
-    void (async () => {
-      const url = new URL(req.url ?? '/', 'http://127.0.0.1');
-      const pathname = url.pathname;
+    const handled = (async () => {
+      // A malformed request line must not be able to take the daemon down.
+      // `new URL('//', base)` throws ERR_INVALID_URL, and inside an async
+      // handler that surfaces as an unhandled rejection — which killed the
+      // whole process mid-sweep, silently, on a request nobody sent on purpose.
+      let pathname: string;
+      try {
+        pathname = new URL(req.url ?? '/', 'http://127.0.0.1').pathname;
+      } catch {
+        return send(res, 400, { error: `Bad request path: ${req.url}` });
+      }
 
       if (pathname === '/health') return send(res, 200, { ok: true, service: 'eter-browser' });
 
@@ -99,6 +189,37 @@ export function createServer(svc: VaultService): http.Server {
         const file = uiFile();
         if (!file) return send(res, 500, { error: 'dashboard not found' });
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+        return res.end(fs.readFileSync(file));
+      }
+
+      // The report and spreadsheet are generated FILES, not JSON, so they are
+      // served directly rather than through the route table.
+      // gmap-review-radar writes reviews.html / reviews.csv into the SAME project
+      // folder, so it needs no route of its own — only two more filenames here.
+      const ASSETS: Record<string, { file: string; type: string; download?: string }> = {
+        report: { file: 'report.html', type: 'text/html; charset=utf-8' },
+        csv: { file: 'leads.csv', type: 'text/csv; charset=utf-8', download: '.csv' },
+        reviews: { file: 'reviews.html', type: 'text/html; charset=utf-8' },
+        reviewscsv: { file: 'reviews.csv', type: 'text/csv; charset=utf-8', download: '-reviews.csv' },
+      };
+      const asset = pathname.match(/^\/gmap\/(report|csv|reviews|reviewscsv)\/([\w.-]+)$/);
+      if (req.method === 'GET' && asset) {
+        const [, kind, id] = asset;
+        if (id.includes('..')) return send(res, 400, { error: 'Bad project id' });
+        const spec = ASSETS[kind];
+        const file = path.join(projectDir(id), spec.file);
+        if (!fs.existsSync(file)) {
+          return send(res, 404, {
+            error: kind.startsWith('reviews')
+              ? `No reviews for "${id}" yet — run: node radar.mjs ${id}`
+              : `No ${kind} for "${id}" yet — run the search first.`,
+          });
+        }
+        res.writeHead(200, {
+          'content-type': spec.type,
+          'cache-control': 'no-store',
+          ...(spec.download ? { 'content-disposition': `attachment; filename="${id}${spec.download}"` } : {}),
+        });
         return res.end(fs.readFileSync(file));
       }
 
@@ -116,6 +237,16 @@ export function createServer(svc: VaultService): http.Server {
 
       send(res, 404, { error: `No route for ${req.method} ${pathname}` });
     })();
+
+    // The last line of defence. Anything that escapes the per-route try above is
+    // a bug, but a bug must cost one request, not the daemon and every sweep it
+    // is running.
+    handled.catch((err: unknown) => {
+      const detail = err instanceof Error ? err.message : String(err);
+      console.error(`[api] unhandled failure on ${req.method} ${req.url}: ${detail}`);
+      if (!res.headersSent) send(res, 500, { error: detail });
+      else res.end();
+    });
   });
 }
 

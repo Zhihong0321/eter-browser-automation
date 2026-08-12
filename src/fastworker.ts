@@ -34,7 +34,9 @@ export interface FastWorkerConfig {
 
 /** null when unconfigured — callers decide whether that is fatal. */
 export function fastWorkerConfig(): FastWorkerConfig | null {
-  const apiKey = process.env.FASTWORKER_API_KEY;
+  // Falls back to the StepFun key: one account key serves both this
+  // OpenAI-compatible surface and the Agent SDK's Anthropic one.
+  const apiKey = process.env.FASTWORKER_API_KEY ?? process.env.STEPFUN_API_KEY;
   const baseUrl = process.env.FASTWORKER_BASE_URL;
   const model = process.env.FASTWORKER_MODEL;
   if (!apiKey || !baseUrl || !model) return null;

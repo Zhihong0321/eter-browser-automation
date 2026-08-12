@@ -206,6 +206,31 @@ const READ_FEED = ([cardSel, linkSel, phoneSrc]: [string, string, string]) => {
     .filter((c): c is NonNullable<typeof c> => c !== null);
 };
 
+/**
+ * Runs IN PAGE on a DETAIL page. Google skips the results list when a query matches
+ * one business strongly, navigating straight to /maps/place/ — there is no feed
+ * there, which showed up as a 45s selector timeout and a silent zero.
+ */
+const READ_PLACE = () => {
+  const items = Array.from(document.querySelectorAll('[data-item-id]'));
+  const byId = (prefix: string): Element | undefined =>
+    items.find((e) => (e.getAttribute('data-item-id') ?? '').startsWith(prefix));
+  const clean = (s: string | null | undefined): string => (s ?? '').replace(/\s+/g, ' ').trim();
+
+  const phoneEl = byId('phone:tel:');
+  const addrEl = byId('address');
+  const siteEl = byId('authority');
+
+  return {
+    name: clean(document.querySelector('h1')?.textContent),
+    address: clean(addrEl?.getAttribute('aria-label')).replace(/^Address:\s*/i, '') || null,
+    phone: phoneEl ? (phoneEl.getAttribute('data-item-id') ?? '').replace('phone:tel:', '') : null,
+    website: siteEl?.getAttribute('href') ?? null,
+    category: clean(document.querySelector('button[jsaction*="category"]')?.textContent) || null,
+    stars: document.querySelector('[aria-label*="star" i]')?.getAttribute('aria-label') ?? '',
+  };
+};
+
 const num = (s: string | null): number | null => {
   if (!s) return null;
   const n = Number(s.replace(/,/g, ''));
@@ -257,11 +282,28 @@ export async function searchPlace(page: Page, keyword: string, place: string): P
 
   // Readiness is the DATA'S SHAPE — at least one place link inside the feed — never a
   // fixed timeout and never a container's mere presence (rules #13, #14).
-  await page.waitForFunction(
-    ([f, l]: [string, string]) => (document.querySelector(f)?.querySelectorAll(l).length ?? 0) > 0,
-    [FEED, LINK] as [string, string],
-    { timeout: BOOT_MS, polling: 250 },
-  );
+  // Single-result redirect: Maps went straight to one business instead of a list.
+  if (/\/maps\/place\//.test(page.url())) {
+    const one = await readSinglePlace(page);
+    return { businesses: one ? [one] : [], found: one ? 1 : 0, hitCap: false, curve: [one ? 1 : 0] };
+  }
+
+  try {
+    await page.waitForFunction(
+      ([f, l]: [string, string]) => (document.querySelector(f)?.querySelectorAll(l).length ?? 0) > 0,
+      [FEED, LINK] as [string, string],
+      { timeout: BOOT_MS, polling: 250 },
+    );
+  } catch {
+    // A stale Chrome on the same profile answers navigation but renders nothing, so
+    // the honest report is "the page never showed results", plus where to look.
+    const at = page.url();
+    throw new Error(
+      `no results feed after ${BOOT_MS / 1000}s at ${at}. Either Google served an ` +
+        'unexpected page, or another Chrome is already using the gmaprecon profile ' +
+        '(close it and retry).',
+    );
+  }
 
   const curve: number[] = [];
   let last = -1;
@@ -315,6 +357,35 @@ export async function searchPlace(page: Page, keyword: string, place: string): P
 
   // `ended` is a real end-of-list marker; a bare plateau is only a soft cap.
   return { businesses, found: businesses.length, hitCap: !ended, curve };
+}
+
+/** One business, read off a detail page reached by a single-result redirect. */
+async function readSinglePlace(page: Page): Promise<BusinessInput | null> {
+  await page
+    .waitForFunction(() => !!document.querySelector('[data-item-id]'), null, { timeout: 20_000, polling: 250 })
+    .catch(() => {});
+
+  const p = await page.evaluate(READ_PLACE);
+  const href = page.url();
+  const placeId = placeKey(href);
+  if (!placeId || !p.name) return null;
+
+  const ll = href.match(LATLNG_RE);
+  const stars = p.stars.match(/([\d.]+)\s*stars?\s+([\d,]+)\s*review/i);
+  return {
+    placeId,
+    name: p.name,
+    address: p.address,
+    lat: ll ? Number(ll[1]) : null,
+    lng: ll ? Number(ll[2]) : null,
+    phone: p.phone,
+    website: p.website,
+    category: p.category,
+    rating: num(stars?.[1] ?? null),
+    reviews: num(stars?.[2] ?? null),
+    hours: null,
+    mapsUrl: href,
+  };
 }
 
 // ------------------------------------------------------- stage 2: website enrich

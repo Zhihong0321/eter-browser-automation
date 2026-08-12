@@ -10,10 +10,20 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { BrowserContext, Locator, Page } from 'patchright';
 import { analyzeSettle, assertReconAllowed, captureSettle, detectChallenge, type SettleTrace, type SettleVerdict } from './recon.js';
 import { collectDom, partitionByPolicy, type PageDom, type SkippedControl, type TableShape, type UiElement } from './recon-dom.js';
-import { captureNetwork, probeReplay, usefulEndpoints, type XhrRecord } from './recon-net.js';
+import { captureSnapshot, findMonolith, snapshotFileName, type SnapshotRecord } from './recon-capture.js';
+import {
+  captureNetwork,
+  isVerifiedRead,
+  probeReplay,
+  reconcileNote,
+  reconcileRows,
+  usefulEndpoints,
+  type XhrRecord,
+} from './recon-net.js';
 
 const MAX_PAGES = 40;
 
@@ -28,6 +38,8 @@ export interface TabScan {
 
 export interface PageScan {
   routeKey: string;
+  /** The frozen page, when snapshots were enabled. Part 3 annotates this file. */
+  snapshot?: SnapshotRecord;
   navPath: string[];
   url: string;
   title: string;
@@ -57,6 +69,12 @@ export interface ScanOptions {
   maxPages?: number;
   /** Explored in a second pass after the human ticks them. Keyed "role::name". */
   approved?: string[];
+  /**
+   * Where frozen pages go. Set by `scanSite`; absent means no snapshots, which
+   * is what a bare `scanPage` call gets. REAL customer rows land here — the
+   * vault, never the repo.
+   */
+  snapshotDir?: string;
 }
 
 /** Turn an inventory entry back into something clickable. */
@@ -99,6 +117,24 @@ async function waitForStableTable(page: Page, quietMs = 1200, capMs = 8000): Pro
   }
 }
 
+/**
+ * Open the file we just wrote and count the stylesheets that actually loaded.
+ *
+ * A scratch tab, never the scan's tab — the scan page is mid-measurement and
+ * navigating it away would destroy the state being captured. `file://` is
+ * outside the site origin, so the page's own CSP meta is the only thing gating
+ * the load, which is precisely what is under test.
+ */
+async function countStyleSheets(ctx: BrowserContext, file: string): Promise<number> {
+  const probe = await ctx.newPage();
+  try {
+    await probe.goto(pathToFileURL(file).href, { waitUntil: 'load', timeout: 20_000 });
+    return await probe.evaluate(() => document.styleSheets.length);
+  } finally {
+    await probe.close().catch(() => {});
+  }
+}
+
 /** Scan one route: settle, inventory, tabs, network. */
 export async function scanPage(
   ctx: BrowserContext,
@@ -119,6 +155,24 @@ export async function scanPage(
 
   const dom: PageDom = await page.evaluate(collectDom);
   const { clickable, skipped } = partitionByPolicy(dom.elements);
+
+  // Freeze the page BEFORE the tab loop: this is the state that was settled,
+  // inventoried and reconciled, and the tab clicks below deliberately mutate
+  // it. Per-tab-state captures belong to Part 3's rescan, where the approved
+  // state is the unit being scanned.
+  let snapshot: SnapshotRecord | undefined;
+  if (opts.snapshotDir) {
+    const html = await page.content().catch(() => '');
+    snapshot = html
+      ? await captureSnapshot({
+          html,
+          url: trace.url,
+          outDir: opts.snapshotDir,
+          fileName: snapshotFileName(url),
+          renderCheck: (file) => countStyleSheets(ctx, file),
+        })
+      : { file: null, bytes: 0, nonce: null, styleSheets: null, error: 'page.content() unavailable' };
+  }
 
   // Tab-like states are the reason this pass exists. On admin.atap.solar the
   // payment states are not separate URLs, so a link-only crawl records one
@@ -154,9 +208,13 @@ export async function scanPage(
 
   const xhr = await net.finish();
   await probeReplay(ctx, xhr);
+  // Main table first, then every tab state's table — each one was rendered on
+  // this route while these responses were being captured.
+  reconcileRows(xhr, [dom.table?.rows, ...tabs.map((t) => t.table?.rows)]);
 
   return {
     routeKey: url,
+    snapshot,
     navPath,
     url: trace.url,
     title: trace.title,
@@ -218,6 +276,17 @@ export async function scanSite(
     notes: [],
   };
 
+  // Snapshots are on by default and land beside scan.json. Checked once, up
+  // front: a missing binary should read as one line in the report, not as 13
+  // identical per-route errors.
+  const snapshotDir = opts.snapshotDir ?? path.join(outDir, 'snapshots');
+  if (findMonolith()) {
+    opts = { ...opts, snapshotDir };
+  } else {
+    opts = { ...opts, snapshotDir: undefined };
+    scan.notes.push('No snapshots: monolith not found — winget install --id Y2Z.Monolith, or set MONOLITH_PATH.');
+  }
+
   const root = await scanPage(ctx, page, rootUrl, [], opts);
   scan.pages.push(root);
 
@@ -266,7 +335,18 @@ export function formatScan(scan: SiteScan): string {
       L.push(`    ${mark} tab      ${tab.name} → ${tab.table ? `${tab.table.rows} rows` : (tab.error ?? 'no table')}`);
     }
     for (const e of usefulEndpoints(p.xhr)) {
-      L.push(`      API      ${e.method} ${e.urlPattern} ✓ replayable${e.rowCount !== undefined ? ` (${e.rowCount} rows)` : ''}`);
+      const mark = isVerifiedRead(e) ? '✓' : e.matchesScreen === 'no' ? '✗' : '?';
+      L.push(`      API    ${mark} ${e.method} ${e.urlPattern} — ${reconcileNote(e)}`);
+    }
+    if (p.snapshot) {
+      L.push(
+        // Bytes alone once reported 17 blank pages as a clean run. The
+        // stylesheet count is the number that says the file is usable, so it
+        // prints beside the size and an error outranks both.
+        p.snapshot.file && !p.snapshot.error
+          ? `      snapshot ${path.basename(p.snapshot.file)}  ${Math.round(p.snapshot.bytes / 1024)} KB  ${p.snapshot.styleSheets ?? '?'} stylesheets`
+          : `      snapshot FAILED — ${p.snapshot.error ?? 'unknown'}`,
+      );
     }
     if (p.skipped.length) L.push(`      skipped  ${p.skipped.length} controls awaiting your approval`);
   }

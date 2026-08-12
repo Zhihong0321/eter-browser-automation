@@ -8,6 +8,7 @@ effect:   write
 needs:    []
 ---*/
 
+import type { ExportResult } from '../../leads.js';
 import type { VaultService } from '../../service.js';
 
 /**
@@ -20,4 +21,4 @@ import type { VaultService } from '../../service.js';
 export const run = (
   svc: VaultService,
   { file, withPhoneOnly, withEmailOnly }: { file: string; withPhoneOnly?: boolean; withEmailOnly?: boolean },
-) => svc.gmapExport(file, { withPhoneOnly, withEmailOnly });
+): ExportResult => svc.gmapExport(file, { withPhoneOnly, withEmailOnly });
