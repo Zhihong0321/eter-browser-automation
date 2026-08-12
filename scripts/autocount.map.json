@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Log Out",
+    "role": "Link",
+    "selector": "body>div>div>div>div:nth-of-type(2)>button",
+    "box": {
+      "x": 1123,
+      "y": 123,
+      "w": 65,
+      "h": 25
+    },
+    "capturedAt": "2026-08-12T17:18:07.380Z",
+    "url": "https://accounting.autocountcloud.com/"
+  },
+  {
+    "name": "Subscription Portal",
+    "role": "Button",
+    "selector": "body>div>div>div>div:nth-of-type(2)>div:nth-of-type(4)>div>div>div:nth-of-type(4)>div>div>div:nth-of-type(1)>div:nth-of-type(1)>div>div",
+    "box": {
+      "x": 466,
+      "y": 233,
+      "w": 148,
+      "h": 34
+    },
+    "capturedAt": "2026-08-12T17:18:07.382Z",
+    "url": "https://accounting.autocountcloud.com/"
+  },
+  {
+    "name": "Create New Company",
+    "role": "Button",
+    "selector": "body>div>div>div>div:nth-of-type(2)>div:nth-of-type(4)>div>div>div:nth-of-type(4)>div>div>div:nth-of-type(1)>div:nth-of-type(2)>div>div",
+    "box": {
+      "x": 619,
+      "y": 233,
+      "w": 162,
+      "h": 34
+    },
+    "capturedAt": "2026-08-12T17:18:07.382Z",
+    "url": "https://accounting.autocountcloud.com/"
+  },
+  {
+    "name": "Search",
+    "role": "Text Field",
+    "selector": "body>div>div>div>div:nth-of-type(2)>div:nth-of-type(4)>div>div>div:nth-of-type(4)>div>div>div:nth-of-type(3)>div>div>div>div>div:nth-of-type(1)>input",
+    "box": {
+      "x": 961,
+      "y": 234,
+      "w": 159,
+      "h": 34
+    },
+    "capturedAt": "2026-08-12T17:18:07.382Z",
+    "url": "https://accounting.autocountcloud.com/"
+  },
+  {
+    "name": "Macam Yes",
+    "role": "Link",
+    "selector": "body>div>div>div>div:nth-of-type(2)>div:nth-of-type(4)>div>div>div:nth-of-type(6)>div>div>div>div>table>tbody>tr:nth-of-type(1)>td:nth-of-type(1)>button",
+    "box": {
+      "x": 474,
+      "y": 323,
+      "w": 69,
+      "h": 21
+    },
+    "capturedAt": "2026-08-12T17:18:07.382Z",
+    "url": "https://accounting.autocountcloud.com/"
+  },
+  {
+    "name": "View",
+    "role": "Button",
+    "selector": "body>div>div>div>div:nth-of-type(2)>div:nth-of-type(4)>div>div>div:nth-of-type(6)>div>div>div>div>table>tbody>tr:nth-of-type(1)>td:nth-of-type(3)>button:nth-of-type(1)",
+    "box": {
+      "x": 1007,
+      "y": 323,
+      "w": 35,
+      "h": 25
+    },
+    "capturedAt": "2026-08-12T17:18:07.382Z",
+    "url": "https://accounting.autocountcloud.com/"
+  },
+  {
+    "name": "Settings",
+    "role": "Button",
+    "selector": "body>div>div>div>div:nth-of-type(2)>div:nth-of-type(4)>div>div>div:nth-of-type(6)>div>div>div>div>table>tbody>tr:nth-of-type(1)>td:nth-of-type(3)>button:nth-of-type(2)",
+    "box": {
+      "x": 1049,
+      "y": 323,
+      "w": 35,
+      "h": 25
+    },
+    "capturedAt": "2026-08-12T17:18:07.382Z",
+    "url": "https://accounting.autocountcloud.com/"
+  }
+]
