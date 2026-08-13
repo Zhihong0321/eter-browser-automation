@@ -7,6 +7,34 @@ Companion: `docs/STUPID-MISTAKE-LOG.md` (2026-08-13 entry) is the evidence for w
 
 ---
 
+## 0. READ FIRST — what is NOT built
+
+The method is proven. Almost none of the plumbing is. Do not assume anything below exists.
+
+| Not built | What that means in practice |
+|---|---|
+| **Nothing dispatches to lane 2** | `recon-agent` does not know this lane exists. There is no fallback, no lane switching, no failure detector (§8). Lane 2 runs **only** when a human types the command. Wiring it up means editing lane 1's files, which §5 forbids without an explicit, cold decision. |
+| **`--emit` compiles ONE flow, not any flow** | It has hardcoded map paths, hardcoded name regexes (`/log ?in/`, `/^macam yes$/`) and a hardcoded template. It proves "map → runnable script" for the AutoCount login. A **general** map→script compiler is not written. |
+| **Controls under ~20 px do not correlate** | Measured, not feared: ~16 px of coordinate error against a 12×12 px box. Row-level icon buttons are unreachable. Strict containment drops them (fails closed, correctly). |
+| **The element table misses plain text and `tel:` links** | Only `input,button,a,select,textarea,img,label,[role],[onclick]` are collected. Half of the drops on `admin.atap.solar` were this — the model named things the table never contained. |
+| **Map keys are model-authored and can be wrong** | `Re-scan Dates` was named "Re-schedule". Geometry was right; the name was not. Any lookup *by name* inherits this. |
+| **One page per run** | No multi-page crawl, no retries, no caching, no concurrency. Each run maps exactly one page. |
+| **The `Back to login` hop is a hardcoded constant** | The single selector in `xray.mjs` that lane 2 did not compile for itself. It needs a logout-page map. |
+| **No tests, no error handling, nothing in `src/`** | `scripts/xray.mjs` is a marked prototype. It imports `dist/fastworker.js` read-only and touches no lane-1 file. The acceptance test is manual: run it twice. |
+| **Only ever run against logged-in sites in the `agent` profile** | Two sites, three pages. Never against a site with bot detection — that is lane 3 and explicitly out of scope (§8). |
+
+**Suggested order for the next session** (each is independent; none requires the others):
+
+1. Widen the element table — cheapest, safe, recovers half the drops on dense pages.
+2. Decide small-control correlation: nearest-box-within-tolerance vs. staying strictly fail-closed.
+   This is a **judgement call**, not a patch — it trades §9's "never invent a selector" guarantee.
+3. Generalise `--emit` into a real map → script compiler.
+4. §8's failure detector. Still your call, still touches lane 1, still to be made cold.
+
+Committed on `main`: `116fbd7` (the lane), `3ab96d7` (the generalisation probe).
+
+---
+
 ## 1. Why
 
 Lane 1 (the existing crawler) reads the DOM and clicks by selector. That is a **bet that the
@@ -242,7 +270,7 @@ control size, not of page or site.**
 
 **Fail-closed held: 21 misses, zero invented selectors.** §9's third bullet did its job.
 
-### Still open
+### Still open (the detail behind §0)
 
 - **Small-control correlation.** Strict containment drops anything under ~20 px. A
   nearest-box-within-tolerance rule would recover most of them, but it deliberately weakens the
