@@ -1,7 +1,13 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { chromium, type BrowserContext, type Page } from 'patchright';
 import { DEFAULT_PROFILE_ID } from './config.js';
 import { RateLimiter } from './human.js';
 import type { Vault } from './vault.js';
+
+/** How long a rescued session cookie is allowed to live once we pin it to disk. */
+const SESSION_COOKIE_TTL_MS = 30 * 24 * 60 * 60_000;
+const SESSION_COOKIE_FILE = 'session-cookies.json';
 
 export type BrowserState = 'stopped' | 'starting' | 'running';
 
@@ -87,6 +93,48 @@ export class BrowserManager {
     };
   }
 
+  #cookieCachePath(): string {
+    return path.join(this.vault.profileDir(this.profileId), SESSION_COOKIE_FILE);
+  }
+
+  /**
+   * Carry non-persistent cookies across a Chrome restart.
+   *
+   * Chrome only writes cookies to disk if the site gave them an expiry, so a
+   * site that authenticates with a session cookie is signed out the moment the
+   * idle timer closes the browser — and the user is told "session cookie gone"
+   * on the next check, which reads like the check destroyed it. AutoCount Cloud
+   * is the reference case: its IdentityServer cookie
+   * (.AspNetCore.Identity.Application, on auth.autocountcloud.com) is
+   * non-persistent unless "remember me" was ticked, so nothing survived a close.
+   *
+   * We save those cookies ourselves on shutdown and put them back on launch with
+   * a real expiry. Persistent cookies are left alone — Chrome already handles
+   * them, and rewriting them here would only fight its own store.
+   */
+  async #saveSessionCookies(ctx: BrowserContext): Promise<void> {
+    try {
+      const all = await ctx.cookies();
+      const transient = all.filter((c) => c.value && (!c.expires || c.expires <= 0));
+      const stamped = transient.map((c) => ({ ...c, expires: (Date.now() + SESSION_COOKIE_TTL_MS) / 1000 }));
+      fs.writeFileSync(this.#cookieCachePath(), JSON.stringify(stamped));
+    } catch {
+      /* best effort — never block shutdown on this */
+    }
+  }
+
+  async #restoreSessionCookies(ctx: BrowserContext): Promise<void> {
+    const file = this.#cookieCachePath();
+    if (!fs.existsSync(file)) return;
+    try {
+      const saved = JSON.parse(fs.readFileSync(file, 'utf8')) as Awaited<ReturnType<BrowserContext['cookies']>>;
+      const live = saved.filter((c) => c.expires * 1000 > Date.now());
+      if (live.length) await ctx.addCookies(live);
+    } catch {
+      /* a corrupt cache just means the user signs in again */
+    }
+  }
+
   /** Launch (or reuse) the persistent context. Never call outside `run()`. */
   async #ensure(): Promise<BrowserContext> {
     if (this.#ctx) return this.#ctx;
@@ -118,6 +166,7 @@ export class BrowserManager {
       this.#ctx = ctx;
       this.#state = 'running';
       this.#startedAt = Date.now();
+      await this.#restoreSessionCookies(ctx);
       return ctx;
     } catch (err) {
       this.#state = 'stopped';
@@ -235,7 +284,10 @@ export class BrowserManager {
     this.#ctx = null;
     this.#state = 'stopped';
     this.#startedAt = null;
-    if (ctx) await ctx.close().catch(() => {});
+    if (ctx) {
+      await this.#saveSessionCookies(ctx);
+      await ctx.close().catch(() => {});
+    }
   }
 
   #clearIdle(): void {
@@ -254,6 +306,10 @@ export class BrowserManager {
     // tab would keep Chrome alive indefinitely.
     for (const p of this.#pinned) if (p.isClosed()) this.#pinned.delete(p);
     if (this.#pinned.size > 0) return;
+
+    // Snapshot now as well: if the user closes the Chrome window by hand we never
+    // get a shutdown hook, and the in-memory session cookies would be lost.
+    if (this.#ctx) void this.#saveSessionCookies(this.#ctx);
 
     this.#idleTimer = setTimeout(() => void this.close(), ms);
     this.#idleTimer.unref?.();

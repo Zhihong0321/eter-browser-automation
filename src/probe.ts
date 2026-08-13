@@ -58,12 +58,45 @@ const LOGIN_PATH = /(^|\/)(login|log-in|signin|sign-in|sso|auth|authenticate|ses
 const CHALLENGE_PATH = /(checkpoint|challenge|verify|two[-_]?factor|2fa|captcha|confirmemail)/i;
 
 /**
+ * The registrable-ish domain of an origin: "accounting.autocountcloud.com" ->
+ * "autocountcloud.com". Naive last-two-labels, widened to three for the common
+ * two-part public suffixes, which is enough to keep siblings together without
+ * shipping a public-suffix list.
+ */
+function baseDomain(origin: string): string {
+  const host = new URL(origin).hostname.toLowerCase();
+  const parts = host.split('.');
+  if (parts.length <= 2) return host;
+  const tail2 = parts.slice(-2).join('.');
+  if (/^(co|com|net|org|gov|edu|ac)\.[a-z]{2}$/.test(tail2)) return parts.slice(-3).join('.');
+  return tail2;
+}
+
+/**
+ * Cookies belonging to the site as a whole, not just the exact origin.
+ *
+ * `ctx.cookies(origin)` only returns what that one host would send, which loses
+ * the session entirely on federated logins: AutoCount Cloud is the reference
+ * case — the app on accounting.autocountcloud.com holds its OIDC token in
+ * sessionStorage and sets no cookie of its own, while the only durable
+ * credential is the IdentityServer cookie on auth.autocountcloud.com.
+ */
+async function siteCookies(ctx: BrowserContext, origin: string) {
+  const base = baseDomain(origin);
+  const all = await ctx.cookies();
+  return all.filter((c) => {
+    const d = c.domain.replace(/^\./, '').toLowerCase();
+    return d === base || d.endsWith(`.${base}`);
+  });
+}
+
+/**
  * Cookie names to remember for a session, captured the moment the user confirms
  * they signed in. httpOnly cookies are the session tokens on essentially every
  * site, so preferring them avoids memorising analytics junk that churns.
  */
 export async function learnCookies(ctx: BrowserContext, origin: string): Promise<string[]> {
-  const cookies = await ctx.cookies(origin);
+  const cookies = await siteCookies(ctx, origin);
   const httpOnly = cookies.filter((c) => c.httpOnly && c.value).map((c) => c.name);
   if (httpOnly.length) return [...new Set(httpOnly)].sort();
   // Some sites keep the token in a readable cookie; fall back to persistent ones.
@@ -78,7 +111,7 @@ export async function quickProbe(ctx: BrowserContext, rec: SessionRecord): Promi
     return { status: 'unknown', detail: 'Login state for this site can only be read from the live page' };
   }
 
-  const cookies = await ctx.cookies(rec.origin);
+  const cookies = await siteCookies(ctx, rec.origin);
   const byName = new Map(cookies.map((c) => [c.name, c]));
 
   if (!rec.cookieNames.length) {

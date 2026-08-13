@@ -1,0 +1,301 @@
+[
+  {
+    "name": "Dashboard",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(1)>a",
+    "box": {
+      "x": 16,
+      "y": 96,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.245Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "SEDA Applications",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(2)>a",
+    "box": {
+      "x": 16,
+      "y": 146,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Invoices",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(3)>a",
+    "box": {
+      "x": 16,
+      "y": 196,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Invoice Audit",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(4)>a",
+    "box": {
+      "x": 16,
+      "y": 246,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Engineering",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(5)>a",
+    "box": {
+      "x": 16,
+      "y": 296,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Payments",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(6)>a",
+    "box": {
+      "x": 16,
+      "y": 346,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Customers",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(7)>a",
+    "box": {
+      "x": 16,
+      "y": 396,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Referrals",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(8)>a",
+    "box": {
+      "x": 16,
+      "y": 446,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Catalog",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(9)>a",
+    "box": {
+      "x": 16,
+      "y": 496,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Users",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(10)>a",
+    "box": {
+      "x": 16,
+      "y": 546,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Activity Log",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(11)>a",
+    "box": {
+      "x": 16,
+      "y": 596,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.246Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Manage Company",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(12)>a",
+    "box": {
+      "x": 16,
+      "y": 646,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Customer Service",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>nav>div:nth-of-type(13)>a",
+    "box": {
+      "x": 16,
+      "y": 696,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Logout",
+    "role": "Link",
+    "selector": "body>div:nth-of-type(2)>aside>div:nth-of-type(2)>form>button",
+    "box": {
+      "x": 16,
+      "y": 859,
+      "w": 223,
+      "h": 44
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Auto-Reconcile",
+    "role": "Button",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(1)>div:nth-of-type(2)>button:nth-of-type(1)",
+    "box": {
+      "x": 645,
+      "y": 47,
+      "w": 153,
+      "h": 57
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Diagnose Invoices",
+    "role": "Button",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(1)>div:nth-of-type(2)>button:nth-of-type(2)",
+    "box": {
+      "x": 810,
+      "y": 47,
+      "w": 171,
+      "h": 57
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Re-schedule",
+    "role": "Button",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(1)>div:nth-of-type(2)>button:nth-of-type(3)",
+    "box": {
+      "x": 993,
+      "y": 47,
+      "w": 148,
+      "h": 57
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Pending Verification",
+    "role": "Tab",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(2)>button:nth-of-type(1)",
+    "box": {
+      "x": 288,
+      "y": 144,
+      "w": 207,
+      "h": 46
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Verified Payments",
+    "role": "Tab",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(2)>button:nth-of-type(2)",
+    "box": {
+      "x": 495,
+      "y": 144,
+      "w": 194,
+      "h": 46
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Fully Paid Invoices",
+    "role": "Tab",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(2)>button:nth-of-type(3)",
+    "box": {
+      "x": 689,
+      "y": 144,
+      "w": 196,
+      "h": 46
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Update Method",
+    "role": "Tab",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(2)>button:nth-of-type(4)",
+    "box": {
+      "x": 885,
+      "y": 144,
+      "w": 176,
+      "h": 46
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Search",
+    "role": "Text Field",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(3)>div:nth-of-type(1)>form>div:nth-of-type(1)>div>input",
+    "box": {
+      "x": 313,
+      "y": 239,
+      "w": 384,
+      "h": 41
+    },
+    "capturedAt": "2026-08-12T18:04:03.247Z",
+    "url": "https://admin.atap.solar/payments"
+  },
+  {
+    "name": "Message",
+    "role": "Button",
+    "selector": "body>div:nth-of-type(2)>main>div>div:nth-of-type(3)>div:nth-of-type(2)>table>tbody>tr:nth-of-type(1)>td:nth-of-type(2)>div>div:nth-of-type(2)>span>a",
+    "box": {
+      "x": 735,
+      "y": 429,
+      "w": 12,
+      "h": 12
+    },
+    "capturedAt": "2026-08-12T18:04:03.248Z",
+    "url": "https://admin.atap.solar/payments"
+  }
+]

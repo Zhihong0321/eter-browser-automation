@@ -17,9 +17,15 @@ for (const l of fs.readFileSync('.env', 'utf8').split('\n')) {
 const NO_VISION = process.argv.includes('--no-vision');
 const LOGIN = process.argv.includes('--login'); // target the auth page, not Select Company
 const PROFILE = 'E:\\eter-browser\\profiles\\agent';
-const TARGET = 'https://accounting.autocountcloud.com/';
-const MAP = LOGIN ? 'scripts/autocount-login.map.json' : 'scripts/autocount.map.json';
-const SHOT = LOGIN ? 'scripts/xray-shot-login.png' : 'scripts/xray-shot.png';
+// --url=<any page> points the lane at a different site. Without it, everything
+// below behaves exactly as it did for AutoCount.
+const ARG_URL = process.argv.find((a) => a.startsWith('--url='))?.slice(6);
+const TARGET = ARG_URL ?? 'https://accounting.autocountcloud.com/';
+const HOST = new URL(TARGET).hostname;
+const MAP = ARG_URL ? `scripts/${HOST}.map.json`
+  : LOGIN ? 'scripts/autocount-login.map.json' : 'scripts/autocount.map.json';
+const SHOT = ARG_URL ? `scripts/xray-${HOST}.png`
+  : LOGIN ? 'scripts/xray-shot-login.png' : 'scripts/xray-shot.png';
 const EMAIL = 'zhihong@eternalgy.me'; // Chrome autofills the password once this is filled
 // The control the replay clicks, matched on the name VISION gave it.
 const ACT = LOGIN ? /log ?in|sign ?in|submit/i : /^macam yes$/i;
@@ -120,7 +126,7 @@ const page = ctx.pages()[0] ?? (await ctx.newPage());
 try {
   console.log('step: goto', TARGET);
   await page.goto(TARGET, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(7000);
+  await page.waitForTimeout(ARG_URL ? 12000 : 7000); // client-rendered pages need longer
   console.log('  landed:', page.url(), '|', await page.title());
 
   // The login page only exists while logged out. Get there by clicking the Log Out
@@ -160,7 +166,9 @@ try {
       `Screenshot of a web page. List EVERY interactive control you can see: text fields, checkboxes, links, buttons.\n` +
       `One per line, exactly this format and nothing else:\nNAME | ROLE | x,y\n` +
       `x,y is the control's centre, normalised 0-1000. NAME is what a human would call it.`,
-      { images: [imageDataUrl(SHOT)], maxTokens: 3000, timeoutMs: 90_000 },
+      // 3000 was not enough on a 28-control page: the reasoning consumed the whole
+      // budget and the answer came back empty. Budget scales with page density.
+      { images: [imageDataUrl(SHOT)], maxTokens: 8000, timeoutMs: 120_000 },
     );
     console.log(`  ${ans.ms} ms | ${ans.outputTokens} tok | reasoning ${ans.reasoningChars} chars`);
     console.log(ans.text.split('\n').map((l) => '   ' + l).join('\n'));
@@ -199,6 +207,7 @@ try {
 
     const cands = map.filter((e) => ACT.test(e.name.trim()));
     const target = cands.find((e) => /button|submit/i.test(e.role)) ?? cands[0];
+    if (!target) { console.log('\n  no ACT match on this map — survival check only, nothing clicked'); await ctx.close(); process.exit(0); }
     const before = { url: page.url(), title: await page.title() };
     if (LOGIN) {
       const email = map.find((e) => /e-?mail|user/i.test(e.name));

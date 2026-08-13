@@ -48,6 +48,13 @@ export interface ReconOptions {
   seen?: Set<string>;
   /** Live progress sink. Absent means the sweep runs silently. */
   reporter?: RunReporter;
+  /**
+   * Checked between every scroll round and every page open. A sweep can run for
+   * minutes across hundreds of posts, so "wait for it to finish" is not an
+   * acceptable answer to "stop" — the user must be able to end it and keep
+   * whatever it has already harvested.
+   */
+  shouldStop?: () => boolean;
 }
 
 export interface ReconSummary {
@@ -182,6 +189,12 @@ async function sweepSource(
       if (score >= minScore) found.push({ post, spec, score });
     }
 
+    if (opts.shouldStop?.()) {
+      problems.push(`${sourceLabel(spec)}: stopped by the user`);
+      opts.reporter?.event('sweep', `${sourceLabel(spec)} — stopped by the user`);
+      break;
+    }
+
     if (budgetExhausted) break;
     dry = fresh === 0 ? dry + 1 : 0;
     // `seen` starts empty per run, so its size IS the run's scanned total.
@@ -226,6 +239,7 @@ export async function runReconSweep(page: Page, opts: ReconOptions): Promise<Rec
   let scanned = 0;
   const candidates: Candidate[] = [];
   for (const spec of opts.sources.filter(isSweepable)) {
+    if (opts.shouldStop?.()) break;
     const before = seen.size;
     const hits = await sweepSource(page, spec, opts, seen, problems);
     scanned += seen.size - before;
@@ -290,6 +304,10 @@ export async function runReconSweep(page: Page, opts: ReconOptions): Promise<Rec
   let opened = 0;
   let commentsRead = 0;
   for (const target of openTargets) {
+    if (opts.shouldStop?.()) {
+      problems.push('Stopped by the user before every thread was opened.');
+      break;
+    }
     try {
       await opts.limiter.takePageOpen();
     } catch (err) {

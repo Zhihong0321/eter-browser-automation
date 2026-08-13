@@ -159,16 +159,26 @@ export function collectDom(): PageDom {
   const navLinkSel = NAV_SEL.split(',')
     .map((s) => `${s.trim()} a[href]`)
     .join(', ');
-  for (const a of Array.from(document.querySelectorAll(navLinkSel))) {
-    // SVG anchors expose href as an SVGAnimatedString, not a string.
-    const href = (a as HTMLAnchorElement).href;
-    if (typeof href !== 'string' || !href.startsWith(location.origin)) continue;
-    const clean = href.split('#')[0];
-    if (clean === location.href.split('#')[0] || navSeen.has(clean)) continue;
-    navSeen.add(clean);
-    navLinks.push({ name: nameOf(a) || clean, href: clean });
-    if (navLinks.length >= 120) break;
-  }
+  // A landmark-scoped pass first: on a server-rendered app it finds the menu and
+  // nothing else. But an SPA shell often builds its sidebar out of plain divs —
+  // AutoCount Cloud renders 39 same-origin links, every one of them inNav=false,
+  // so the scoped pass returned 0 and the crawl stopped at one page. Falling back
+  // to every same-origin link is noisier, never blinder.
+  const collect = (sel: string): void => {
+    for (const a of Array.from(document.querySelectorAll(sel))) {
+      // SVG anchors expose href as an SVGAnimatedString, not a string.
+      const href = (a as HTMLAnchorElement).href;
+      if (typeof href !== 'string' || !href.startsWith(location.origin)) continue;
+      const clean = href.split('#')[0];
+      if (clean === location.href.split('#')[0] || navSeen.has(clean)) continue;
+      navSeen.add(clean);
+      navLinks.push({ name: nameOf(a) || clean, href: clean });
+      if (navLinks.length >= 120) break;
+    }
+  };
+
+  collect(navLinkSel);
+  if (!navLinks.length) collect('a[href]');
 
   return { elements, table, navLinks };
 }

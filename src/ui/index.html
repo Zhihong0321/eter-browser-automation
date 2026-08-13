@@ -424,6 +424,28 @@
     </div>
   </section>
 
+  <section id="sec-fbrecon">
+    <div class="sec-head">
+      <h2>Facebook prospecting (fb-recon)</h2>
+      <span class="count" id="fbrecon-count">0</span>
+    </div>
+    <div class="panel">
+      <div class="row" style="flex-wrap:wrap;gap:8px;align-items:center;">
+        <input id="fbrecon-topic" placeholder="topic, e.g. e-invoice" style="max-width:200px;">
+        <input id="fbrecon-source" placeholder="group URL (blank = search the topic)" style="flex:1;min-width:260px;">
+        <input id="fbrecon-score" type="number" min="0" value="0" title="gate threshold" style="max-width:80px;">
+        <select id="fbrecon-profile" style="max-width:170px;"></select>
+        <button class="btn primary" id="btn-fbrecon-run">Run sweep</button>
+        <button class="btn small" id="btn-fbrecon-stop" disabled>Stop</button>
+      </div>
+      <p class="hint" id="fbrecon-note" style="margin:10px 0 0;">
+        Read only — it never likes, comments, joins or messages. Every run is a new project with its own
+        report; nothing is ever overwritten. A sweep takes a few minutes and progress appears below.
+      </p>
+      <div id="fbrecon-projects" style="margin-top:12px;"></div>
+    </div>
+  </section>
+
   <section id="sec-fb">
     <div class="sec-head">
       <h2>Try it — Facebook</h2>
@@ -480,6 +502,22 @@
     </div>
 
     <div class="panel">
+      <div class="gm-form">
+        <label>Site URL
+          <input id="rc-url" placeholder="https://admin.atap.solar/" autocomplete="off">
+        </label>
+        <button class="btn primary" id="rc-start">Start scan</button>
+      </div>
+      <div class="hint">
+        Crawls the site's nav once, freezes each route and replays its API calls. Takes
+        minutes and holds the browser &mdash; leave this page open until it finishes.
+        Never clicks a button on its own; controls it refuses are listed per route for
+        you to approve.
+      </div>
+      <div id="rc-msg" class="gm-msg" hidden></div>
+    </div>
+
+    <div class="panel">
       <div class="subhead">Projects</div>
       <div id="rc-list" class="gm-list"></div>
       <div class="hint">
@@ -515,6 +553,7 @@
     /** Which Chrome profile the page is showing. Every session call carries it. */
     profile: 'agent',
     profileSig: '',
+    fbReconTimer: null,
   };
 
   const $ = (id) => document.getElementById(id);
@@ -760,6 +799,94 @@
     }));
     row.appendChild(input);
     row.appendChild(add);
+  }
+
+  /**
+   * fb-recon: start a sweep and watch it. The sweep runs in the daemon and writes
+   * its project file live, so this only has to read that file — there is no
+   * separate progress channel to fall out of sync with.
+   */
+  function paintFbRecon(s) {
+    const sel = $('fbrecon-profile');
+    const profiles = (s && s.profiles) || [];
+    const want = sel.value || 'fbrecon';
+    if (sel.dataset.sig !== JSON.stringify(profiles.map((p) => p.id))) {
+      sel.dataset.sig = JSON.stringify(profiles.map((p) => p.id));
+      sel.textContent = '';
+      profiles.forEach((p) => {
+        const o = el('option');
+        o.value = p.id;
+        o.textContent = p.label;
+        sel.appendChild(o);
+      });
+      // Prefer a profile that actually has Facebook signed in.
+      const fb = profiles.find((p) => (p.sessions || []).some((x) => x.id === 'facebook-com' && x.status === 'ready'));
+      sel.value = profiles.some((p) => p.id === want) ? want : (fb ? fb.id : (profiles[0] || {}).id);
+    }
+  }
+
+  function renderFbReconProjects(projects) {
+    $('fbrecon-count').textContent = String(projects.length);
+    const host = $('fbrecon-projects');
+    host.textContent = '';
+    if (!projects.length) {
+      host.appendChild(el('span', 'hint', 'No sweeps yet.'));
+      return;
+    }
+    projects.slice(0, 8).forEach((p) => {
+      const row = el('div', 'card');
+      row.style.marginBottom = '8px';
+
+      const top = el('div', 'card-top');
+      const name = el('span', 'name', p.topic);
+      top.appendChild(name);
+      const tone = p.status === 'done' ? 'ok' : p.status === 'running' ? 'warn' : 'bad';
+      const pill = el('span', 'pill ' + tone);
+      pill.appendChild(el('span', 'dot'));
+      pill.appendChild(document.createTextNode(p.status));
+      top.appendChild(pill);
+      row.appendChild(top);
+
+      const c = p.counters || {};
+      row.appendChild(el('div', 'meta',
+        c.scanned + ' scanned · ' + c.gated + ' gated · ' +
+        c.totalContacts + ' contacts (' + c.newContacts + ' new, ' + c.knownContacts + ' seen before)'));
+
+      const last = (p.events || [])[(p.events || []).length - 1];
+      if (last) row.appendChild(el('div', 'detail', last.phase + ': ' + last.detail));
+
+      const actions = el('div', 'actions');
+      const open = el('a', 'btn small', 'Open report');
+      open.href = '/fb-recon/report/' + encodeURIComponent(p.id);
+      open.target = '_blank';
+      actions.appendChild(open);
+      const csv = el('a', 'btn small', 'CSV');
+      csv.href = '/fb-recon/csv/' + encodeURIComponent(p.id);
+      actions.appendChild(csv);
+      row.appendChild(actions);
+
+      host.appendChild(row);
+    });
+  }
+
+  async function refreshFbRecon() {
+    try {
+      const r = await api('GET', '/api/fb/recon/projects');
+      renderFbReconProjects(r.projects || []);
+
+      // The Stop button is only enabled while a sweep is actually in flight, so
+      // it never lies about being able to stop something.
+      const live = (r.run && r.run.running) || false;
+      const stop = $('btn-fbrecon-stop');
+      if (stop.dataset.busy !== '1') stop.disabled = !live;
+      stop.textContent = (r.run && r.run.stopping) ? 'Stopping…' : 'Stop';
+      $('btn-fbrecon-run').disabled = live;
+
+      if (live || (r.projects || []).some((p) => p.status === 'running')) {
+        clearTimeout(state.fbReconTimer);
+        state.fbReconTimer = setTimeout(refreshFbRecon, 3000);
+      }
+    } catch { /* daemon down; the banner already says so */ }
   }
 
   function paintSessions(s) {
@@ -1146,6 +1273,36 @@
   $('btn-close').addEventListener('click', (ev) => {
     run(ev.currentTarget, () => api('POST', '/api/browser/close')).catch(() => {});
   });
+  $('btn-fbrecon-run').addEventListener('click', (ev) => {
+    const btn = ev.currentTarget;
+    run(btn, async () => {
+      const topic = $('fbrecon-topic').value.trim();
+      const source = $('fbrecon-source').value.trim();
+      if (!topic) throw new Error('Give it a topic, e.g. "e-invoice".');
+      const body = {
+        topic: topic,
+        sources: source ? [source.indexOf(':') > 0 && source.indexOf('http') !== 0 ? source : 'group:' + source] : undefined,
+        minScore: Number($('fbrecon-score').value || 0),
+        profile: $('fbrecon-profile').value || undefined,
+      };
+      const started = await api('POST', '/api/fb/recon', body);
+      $('fbrecon-note').textContent =
+        'Sweep started: ' + started.projectId + '. It runs for a few minutes; this panel updates as it goes.';
+      refreshFbRecon();
+    }).catch(() => {});
+  });
+
+  $('btn-fbrecon-stop').addEventListener('click', (ev) => {
+    const btn = ev.currentTarget;
+    run(btn, async () => {
+      const r = await api('POST', '/api/fb/recon/stop');
+      $('fbrecon-note').textContent = r.stopping
+        ? 'Stopping ' + r.projectId + ' — it finishes within a few seconds and keeps everything found so far.'
+        : 'Nothing is running.';
+      refreshFbRecon();
+    }).catch(() => {});
+  });
+
   $('btn-check-all').addEventListener('click', (ev) => {
     run(ev.currentTarget, () => api('POST', '/api/check-all', { deep: true })).catch(() => {});
   });
@@ -1163,6 +1320,7 @@
       state.lastError = null;
       paintHeader(s);
       paintProfiles(s);
+      paintFbRecon(s);
       paintSessions(s);
       paintAdd(s);
       paintReadiness(s);
@@ -1475,6 +1633,46 @@
       $('rc-list').appendChild(el('div', 'gm-empty', err.message));
     }
   }
+
+  function rcMsg(text, tone) {
+    const box = $('rc-msg');
+    if (!text) { box.hidden = true; box.textContent = ''; return; }
+    box.hidden = false;
+    box.className = 'gm-msg ' + (tone || 'warn');
+    box.textContent = text;
+  }
+
+  // A scan runs to completion inside this one request — minutes, holding the
+  // browser. There is no progress channel, so the button stays busy for the
+  // whole run rather than pretending it finished. Browser fetch has no default
+  // timeout; the dead-daemon message in the CLI is Node's fetch timing out, not
+  // the daemon dying (buildplan §5).
+  $('rc-start').addEventListener('click', async () => {
+    const url = $('rc-url').value.trim();
+    if (!url) { rcMsg('Enter a site URL.', 'warn'); return; }
+    const btn = $('rc-start');
+    if (btn.dataset.busy === '1') return;
+    btn.dataset.busy = '1';
+    btn.disabled = true;
+    const label = btn.textContent;
+    btn.textContent = 'Scanning…';
+    rcMsg('Scanning ' + url + ' — this takes minutes. Keep this page open.', 'warn');
+    try {
+      const r = await api('POST', '/api/recon/scan', { url, maxPages: 40, windowMs: 8000 });
+      const pages = (r && r.pages) ? r.pages.length : 0;
+      const failed = (r && r.failed) ? r.failed.length : 0;
+      rcMsg('Done — ' + pages + ' routes, ' + failed + ' failed.', failed ? 'warn' : 'ok');
+      await rcRefresh();
+    } catch (err) {
+      rcMsg(err.message, 'bad');
+    } finally {
+      btn.dataset.busy = '';
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  });
+
+  $('rc-url').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('rc-start').click(); });
 
   rcRefresh();
 

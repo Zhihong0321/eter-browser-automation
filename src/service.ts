@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { BrowserContext, Page } from 'patchright';
 import { BrowserManager } from './browser.js';
 import { DEFAULT_PROFILE_ID } from './config.js';
+import { askChatGpt, CHATGPT_PROFILE, type ChatGptAnswer } from './chatgpt.js';
 import { commentOnPost, readFeed, readMyPosts, type FbPost } from './facebook.js';
 import * as gmap from './gmaprecon.js';
 import { humanClick, humanType, pause } from './human.js';
@@ -70,6 +71,8 @@ export class VaultService {
   #gmapProjectDir: string | null = null;
   /** The id of the fb-recon sweep in flight, if any. One at a time — see fbRecon. */
   #fbReconActive: string | null = null;
+  /** Set by fbReconStop; the engine checks it between rounds. */
+  #fbReconStopping = false;
 
   /**
    * One BrowserManager per Chrome profile, created on first use.
@@ -304,6 +307,20 @@ export class VaultService {
     );
   }
 
+  // -------------------------------------------------------- chatgpt actions
+
+  /**
+   * Ask ChatGPT one question and get one answer back.
+   *
+   * Runs in the "openai" profile, which is its own Chrome — a question in
+   * flight cannot be killed by whatever the agent profile is doing, and vice
+   * versa. browserFor().run() serializes calls, so concurrent callers queue
+   * instead of fighting over the tab.
+   */
+  async chatgptAsk(question: string): Promise<ChatGptAnswer> {
+    return this.browserFor(CHATGPT_PROFILE).run((_ctx, page) => askChatGpt(page, question));
+  }
+
   // ------------------------------------------------------- facebook actions
 
   async fbReadMyPosts(limit = 5): Promise<FbPost[]> {
@@ -350,12 +367,13 @@ export class VaultService {
       savePack(packDir, pack);
     }
 
-    // `feed` is the fallback, NOT a recommendation. Measured on a real account:
-    // 16 posts, zero buying questions, and several business Pages that pass as
-    // "people". Groups are where the leads are, so a source-less run says so in
-    // its own output rather than returning an honest-looking empty harvest.
+    // A source-less run searches the TOPIC. `feed` used to be the fallback and
+    // it was wrong: the home feed is whatever Facebook decided to show you, so a
+    // run with a keyword in it swept 33 unrelated posts and never once used the
+    // keyword to decide where to look. Searching is thinner than a group but it
+    // is at least about the thing that was asked for.
     const usedDefault = !opts.sources?.length;
-    const sourceStrings = usedDefault ? ['feed'] : opts.sources!;
+    const sourceStrings = usedDefault ? ['search'] : opts.sources!;
     // Parse BEFORE the project directory exists: a typo in a source is a usage
     // error, and it should not leave a failed project behind.
     const specs = sourceStrings.map(parseSource);
@@ -385,8 +403,8 @@ export class VaultService {
     });
     if (usedDefault) {
       project.setProblems([
-        'No sources given, so this run swept the home feed only. On a real account the feed carries ' +
-          'almost no buying questions — pass group:<url> for the groups you have joined.',
+        `No sources given, so this run searched Facebook for "${opts.topic}". Search results are thin ` +
+          '— pass group:<url> for the groups you have joined to get the buying questions.',
       ]);
     }
 
@@ -397,6 +415,7 @@ export class VaultService {
     // The project file IS the progress channel — it is written live — so there
     // is no second source of truth to keep in sync.
     this.#fbReconActive = project.id;
+    this.#fbReconStopping = false;
     void this.#fbReconSweep(
       project,
       { pack: pack!, specs, limiter, minScore: opts.minScore, profileId },
@@ -433,6 +452,7 @@ export class VaultService {
           contacts,
           minScore: run.minScore,
           reporter: project,
+          shouldStop: () => this.#fbReconStopping,
         }),
       );
 
@@ -467,6 +487,7 @@ export class VaultService {
       project.fail(err);
     } finally {
       this.#fbReconActive = null;
+      this.#fbReconStopping = false;
       this.#writeProjectIndex(projectsRoot);
     }
   }
@@ -480,6 +501,25 @@ export class VaultService {
       // The index is a convenience over data that already exists on disk.
       // Failing to write it must not fail a completed harvest.
     }
+  }
+
+  /**
+   * Stop the sweep in flight.
+   *
+   * Cooperative, not a kill: the engine checks between scroll rounds and page
+   * opens, so the run stops within a few seconds and KEEPS everything it has
+   * already harvested — the project finishes as `done` with a note saying it was
+   * stopped, rather than being thrown away.
+   */
+  fbReconStop(): { stopping: boolean; projectId: string | null } {
+    if (!this.#fbReconActive) return { stopping: false, projectId: null };
+    this.#fbReconStopping = true;
+    return { stopping: true, projectId: this.#fbReconActive };
+  }
+
+  /** Whether a sweep is in flight, for the dashboard's Stop button. */
+  fbReconRunning(): { running: boolean; projectId: string | null; stopping: boolean } {
+    return { running: !!this.#fbReconActive, projectId: this.#fbReconActive, stopping: this.#fbReconStopping };
   }
 
   /** Every fb-recon project on disk, newest first. */

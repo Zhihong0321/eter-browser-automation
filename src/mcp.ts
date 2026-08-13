@@ -313,6 +313,32 @@ export function createMcpServer(): McpServer {
     ),
   );
 
+  // ------------------------------------------------------------- chatgpt
+
+  server.registerTool(
+    'chatgpt_ask',
+    {
+      title: 'Ask ChatGPT a question',
+      description:
+        'A free text-in / text-out reasoning engine, driven through the signed-in ChatGPT web UI. Ask a ' +
+        'plain-language question, get plain text back. It is NOT an API: there is no system prompt, no ' +
+        'temperature, no model choice, no token counts, and no guaranteed JSON — asking for a strict ' +
+        'schema will sometimes get prose instead. Every call runs in a temporary chat and is completely ' +
+        'STATELESS: it remembers nothing between calls, so a follow-up question must repeat whatever ' +
+        'context it needs. One question at a time; concurrent callers queue behind each other and a ' +
+        'question takes roughly 4-10 seconds. Best for second opinions, summarising, classifying and ' +
+        'drafting, where a wrong answer is cheap. Returns ok:false rather than a partial answer, so ' +
+        'never treat a failed call as a short reply.',
+      inputSchema: {
+        question: z
+          .string()
+          .describe('The question, in plain language, exactly as you would type it into a chat box.'),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    handler(async ({ question }: { question: string }) => call('POST', '/api/chatgpt/ask', { question })),
+  );
+
   // ------------------------------------------------------------- facebook
 
   server.registerTool(

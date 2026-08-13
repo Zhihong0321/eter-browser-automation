@@ -21,7 +21,21 @@
  *     answer, so there is a floor here and an explicit error.
  *   - `stop` sequences break it outright — they cut the reasoning stream and
  *     the content is empty. Never pass one.
+ *
+ * IT IS MULTIMODAL. This was originally written as text-only on an assumption,
+ * never on a test. Measured 2026-08-13 by posting a 198 KB PNG of a login page:
+ *
+ *   - OpenAI-style `content: [{type:'text'}, {type:'image_url'}]` → HTTP 200.
+ *   - It read the screen correctly: named every input, the checkbox, the link,
+ *     and the submit button — on a page whose HTML has no accessible names.
+ *   - Coordinates come back NORMALIZED to 0–1000, not in image pixels, and they
+ *     are accurate: [603, 659] on a 2403x1401 shot resolved to (1449, 923)
+ *     against a true button centre of (1448, 924). Multiply by width/1000 and
+ *     height/1000 and the point is clickable.
+ *   - ~16s for a full-page screenshot question. Fine once per page, not per click.
  */
+import fs from 'node:fs';
+import path from 'node:path';
 
 const MIN_MAX_TOKENS = 1500;
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -54,6 +68,25 @@ export interface FastAskOptions {
   maxTokens?: number;
   timeoutMs?: number;
   signal?: AbortSignal;
+  /**
+   * Images to send with the prompt. Each is a `data:` URL (see `imageDataUrl`)
+   * or an http(s) URL. Empty or omitted keeps the request text-only, byte for
+   * byte as before.
+   */
+  images?: string[];
+}
+
+const IMAGE_MIME: Record<string, string> = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+};
+
+/** A screenshot on disk → the `data:` URL `images` wants. */
+export function imageDataUrl(file: string): string {
+  const mime = IMAGE_MIME[path.extname(file).toLowerCase()] ?? 'image/png';
+  return `data:${mime};base64,${fs.readFileSync(file).toString('base64')}`;
 }
 
 export interface FastAnswer {
@@ -65,6 +98,18 @@ export interface FastAnswer {
 }
 
 const TERSE_SYSTEM = 'You are a fast classifier. Do not explain. Output only what is asked for, nothing else.';
+
+/**
+ * A plain string when there are no images, so a text-only call is exactly the
+ * request it always was. The array form is only built when images are present.
+ */
+function userContent(prompt: string, images?: string[]): unknown {
+  if (!images?.length) return prompt;
+  return [
+    { type: 'text', text: prompt },
+    ...images.map((url) => ({ type: 'image_url', image_url: { url } })),
+  ];
+}
 
 /**
  * Ask the fast worker one question. Throws on anything that would otherwise
@@ -93,7 +138,7 @@ export async function fastAsk(prompt: string, opts: FastAskOptions = {}): Promis
       max_tokens: maxTokens,
       messages: [
         { role: 'system', content: opts.system ?? TERSE_SYSTEM },
-        { role: 'user', content: prompt },
+        { role: 'user', content: userContent(prompt, opts.images) },
       ],
       // Deliberately no `stop`: it truncates the reasoning stream and the
       // answer comes back empty.

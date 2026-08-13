@@ -109,6 +109,8 @@ export function createServer(svc: VaultService): http.Server {
     ['POST', /^\/api\/wa\/read$/, async (b) => svc.waReadChat(str(b.target), num(b.limit, 20))],
     ['POST', /^\/api\/wa\/send$/, async (b) => svc.waSend(str(b.target), str(b.text))],
 
+    ['POST', /^\/api\/chatgpt\/ask$/, async (b) => svc.chatgptAsk(str(b.question))],
+
     ['POST', /^\/api\/fb\/my-posts$/, async (b) => ({ posts: await svc.fbReadMyPosts(num(b.limit, 5)) })],
     ['POST', /^\/api\/fb\/feed$/, async (b) => ({ posts: await svc.fbReadFeed(num(b.limit, 5)) })],
     ['POST', /^\/api\/fb\/comment$/, async (b) => svc.fbComment(str(b.postUrl), str(b.text))],
@@ -118,7 +120,12 @@ export function createServer(svc: VaultService): http.Server {
       minScore: typeof b.minScore === 'number' ? b.minScore : undefined,
       profile: prof(b.profile),
     })],
-    ['GET', /^\/api\/fb\/recon\/projects$/, async () => ({ projects: svc.fbReconProjects() })],
+    ['POST', /^\/api\/fb\/recon\/stop$/, async () => svc.fbReconStop()],
+    ['GET', /^\/api\/fb\/recon\/running$/, async () => svc.fbReconRunning()],
+    ['GET', /^\/api\/fb\/recon\/projects$/, async () => ({
+      projects: svc.fbReconProjects(),
+      run: svc.fbReconRunning(),
+    })],
     ['GET', /^\/api\/fb\/recon\/projects\/([\w.-]+)$/, async (_b, p) => svc.fbReconProject(safeId(p[0]))],
 
     // The automation registry — a scan over the cards under src/automations/.
@@ -189,6 +196,25 @@ export function createServer(svc: VaultService): http.Server {
         const file = uiFile();
         if (!file) return send(res, 500, { error: 'dashboard not found' });
         res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+        return res.end(fs.readFileSync(file));
+      }
+
+      // fb-recon project files, served straight from the project directory so the
+      // dashboard can open a report the same way it opens a gmap one.
+      const fbAsset = pathname.match(/^\/fb-recon\/(report|csv)\/([\w.-]+)$/);
+      if (req.method === 'GET' && fbAsset) {
+        const [, kind, id] = fbAsset;
+        if (id.includes('..')) return send(res, 400, { error: 'Bad project id' });
+        const file = path.join(
+          svc.vault.home, 'fb-recon', 'projects', id,
+          kind === 'report' ? 'report.html' : 'contacts.csv',
+        );
+        if (!fs.existsSync(file)) return send(res, 404, { error: `No ${kind} for "${id}".` });
+        res.writeHead(200, {
+          'content-type': kind === 'report' ? 'text/html; charset=utf-8' : 'text/csv; charset=utf-8',
+          'cache-control': 'no-store',
+          ...(kind === 'csv' ? { 'content-disposition': `attachment; filename="${id}.csv"` } : {}),
+        });
         return res.end(fs.readFileSync(file));
       }
 
