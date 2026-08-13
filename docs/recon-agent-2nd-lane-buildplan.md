@@ -1,7 +1,8 @@
 # recon-agent — 2nd lane (visual) — MVP buildplan
 
 Status: **BUILT and verified 2026-08-13**, the same day it was written. Steps 1–7 all pass on two
-AutoCount pages, including the login page. Implementation: `scripts/xray.mjs`. Results in §11.
+AutoCount pages, including the login page, and the lane has been shown to generalise to a second,
+unrelated app. Implementation: `scripts/xray.mjs`. Results and the measured failure mode in §11.
 Companion: `docs/STUPID-MISTAKE-LOG.md` (2026-08-13 entry) is the evidence for why this exists.
 
 ---
@@ -58,6 +59,9 @@ what you touched, emit a lane-1 script. Slow once, fast forever.
 | Vision cost, measured per page | 9.9 s / 616 tok (Select Company, 7 controls); 16.8 s / 1274 tok (login, 5 controls) |
 | Structural `nth-of-type` paths survive a reload | 12/12 compiled selectors resolved to exactly 1 element on a fresh load, across two pages |
 | Log Out does not land on the login form | it lands on a confirmation page; the form needs a second hop ("Back to login") |
+| **Correlation accuracy is a function of control SIZE, not page** | 22/22 on controls ≥40 px tall; 1/7 on 12×12 px row icons, where the model's point was ~16 px off — more than the box tolerates |
+| Vision token budget scales with page density | 3000 tok was fine for 7 controls, came back **silently empty** at 28 (reasoning ate the budget). Now 8000 |
+| Model-authored names can be wrong while geometry is right | it called `Re-scan Dates` "Re-schedule" — correct box, correct selector, wrong key |
 
 Cost is why the flow below is **script-navigate first, vision only on arrival** — never per click.
 
@@ -185,6 +189,7 @@ node scripts/xray.mjs --login              # log out, hop to the form, map it
 node scripts/xray.mjs --login --no-vision  # replay the login, zero model calls
 node scripts/xray.mjs --logout             # log out and stop
 node scripts/xray.mjs --emit               # step 7: compile both maps into a runnable script
+node scripts/xray.mjs --url=<any page>     # point the lane at a different site entirely
 ```
 
 **Page A — Select Company.** 28 hit-tested visible elements. One vision call named 7 controls;
@@ -214,11 +219,40 @@ IN: https://accounting.autocountcloud.com/dashboard | Dashboard - AutoCount Acco
 That is §3's claim discharged: **slow once, fast forever.** ~27 s of vision, once, produced a
 script that logs into AutoCount in ~30 s of pure wall-clock with zero model calls.
 
+### Page C — a different app entirely (`admin.atap.solar/payments`)
+
+The only question the AutoCount runs could not answer: is this a method, or an AutoCount trick?
+Run with `--url=`, no site-specific anything, an app the lane had never seen.
+
+44 controls on screen, 28 in the element table, **23 correlated and 21 dropped** — and the split
+is not random:
+
+| | result |
+|---|---|
+| Sidebar nav, header buttons, tab bar, search box (13 links + 8 buttons + 1 input) | **22/22 correlated** |
+| 12×12 px WhatsApp icons inside table rows | **1/7** — and the 1 was luck |
+| Row text ("CHAN JIA WEI"), `Call` links | 0 — they were never in the element table to match against |
+
+All 23 emitted selectors resolved to exactly 1 element on a fresh load.
+
+**So §9's second risk is now measured, not feared.** The model put "Message" at `711,490`; the real
+box is at `701,506`. ~16 px of error against a control that tolerates ±6. Everything ≥40 px tall
+correlated perfectly on the first look at an unfamiliar app. **The lane's accuracy is a function of
+control size, not of page or site.**
+
+**Fail-closed held: 21 misses, zero invented selectors.** §9's third bullet did its job.
+
 ### Still open
 
+- **Small-control correlation.** Strict containment drops anything under ~20 px. A
+  nearest-box-within-tolerance rule would recover most of them, but it deliberately weakens the
+  fail-closed guarantee, so it is a decision, not a patch.
+- **The element table misses non-interactive text and `tel:` links** — half of page C's drops were
+  this, not the model. Widening the query is cheap and safe.
+- **Names are model-authored and can be wrong** (`Re-scan Dates` → "Re-schedule"). Anything that
+  looks a control up *by name* inherits that. Geometry was right in every such case.
 - The `Back to login` hop is a **hardcoded constant** pasted from a prior run — the one selector
   in the file lane 2 did not compile for itself. It needs a logout-page map like everything else.
-- Correlation is still n=2 pages. Both were sparse. §9's dense-page risk is untested.
 - §8's failure detector remains deferred, and it now has one more piece of evidence: run 1 aimed
   at the login page and landed on Select Company, and the *only* reason that was noticed is that
   the script prints `url | title` on arrival. "I asked for X, did I land on X?" is that cheap.
