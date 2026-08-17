@@ -33,14 +33,31 @@ export function resolveVaultHome(flagHome?: string): string {
 export const DEFAULT_PROFILE_ID = 'agent';
 
 /**
- * Optional intent classifier. Unset means fb-recon runs on its regex gate
- * alone, which is a supported configuration — the pack is tuned for recall, so
- * the cost of no classifier is noise in the contact list, not missed leads.
- * Any OpenAI-compatible /chat/completions endpoint works.
+ * The classifier that puts a type on every message. Any OpenAI-compatible
+ * /chat/completions endpoint works.
+ *
+ * It falls back to the fast worker the repo is already configured with, because
+ * requiring a SECOND set of variables for the same endpoint is how this ended up
+ * silently disabled: measured 2026-08-13, every contact ever harvested carried
+ * the fallback label, and nothing anywhere said the classifier had never run.
+ * Unset everything and fb-recon still collects every message and sender — you
+ * lose the seller/owner/buyer labels, never the people.
+ *
+ * Read as a FUNCTION, never as a module-level const. cli.ts calls
+ * `process.loadEnvFile('.env')` in its body, but ESM evaluates every import
+ * first — so a const here captures the environment as it was BEFORE .env was
+ * loaded, which is empty. Measured 2026-08-13: that alone silently disabled the
+ * classifier for a whole live sweep, and the only reason it was caught is that
+ * every row carried "no classifier configured" in its `why`.
  */
-export const FBRECON_LLM_URL = process.env.FBRECON_LLM_URL ?? '';
-export const FBRECON_LLM_KEY = process.env.FBRECON_LLM_KEY ?? '';
-export const FBRECON_LLM_MODEL = process.env.FBRECON_LLM_MODEL ?? '';
+export function fbReconLlm(): { url: string; key: string; model: string } {
+  const fast = process.env.FASTWORKER_BASE_URL?.trim().replace(/\/$/, '') ?? '';
+  return {
+    url: process.env.FBRECON_LLM_URL?.trim() || (fast ? `${fast}/chat/completions` : ''),
+    key: process.env.FBRECON_LLM_KEY?.trim() || process.env.STEPFUN_API_KEY?.trim() || '',
+    model: process.env.FBRECON_LLM_MODEL?.trim() || process.env.FASTWORKER_MODEL?.trim() || '',
+  };
+}
 
 export const DEFAULTS = {
   /** Close the browser after this long with no activity. 0 = keep it open forever. */

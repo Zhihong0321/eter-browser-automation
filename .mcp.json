@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "notebooklm": {
+      "command": "E:\\000\\001-browser-use-v2\\.venv-notebooklm\\Scripts\\notebooklm-mcp.exe",
+      "args": ["--log-level", "WARNING"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "engine v2 self-test — list + create customer + create quotation, ONE launch",
+  "profile": "E:\\eter-browser\\profiles\\agent",
+  "site": "https://accounting.autocountcloud.com",
+  "entry": "Macam Yes",
+  "tasks": [
+    { "op": "list", "route": "/debtor", "label": "DEBTORS BEFORE" },
+    {
+      "op": "create",
+      "route": "/debtor",
+      "action": "New",
+      "ensureAbsent": "ENGINE TEST",
+      "fields": [
+        { "label": "Customer Code", "auto": { "column": "Customer Code", "format": "300-A%03d" }, "saveAs": "cust" },
+        { "label": "Company Name", "value": "ENGINE TEST" },
+        { "label": "Phone", "tab": "General", "value": "0100000000" }
+      ],
+      "save": "Save",
+      "verify": { "contains": "ENGINE TEST" }
+    },
+    {
+      "op": "create",
+      "route": "/quotation",
+      "action": "New",
+      "gridMarker": "Total (inc)",
+      "ensureAbsent": "ENGINE TEST",
+      "fields": [
+        { "label": "Customer", "type": "lookup", "value": "$cust", "match": "ENGINE TEST" },
+        { "label": "Date", "type": "date", "value": "2026-08-13" }
+      ],
+      "lines": [{ "Description": "engine v2 self-test line", "Unit Price": "1" }],
+      "save": "Save",
+      "verify": { "contains": "ENGINE TEST" }
+    }
+  ]
+}

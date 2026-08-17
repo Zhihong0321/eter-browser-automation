@@ -24,5 +24,19 @@ contacts.json
 .env.*
 !.env.example
 
+# Service-account key files (Google JSON keys). Same rule as .env: a published
+# repo must never carry a private key, and these arrive as whole files rather
+# than as a line in .env, so they need their own home.
+.secrets/
+
 # Repo-local Claude home for the Agent SDK (src/agent.ts) — never commit.
 .agent-home/
+
+# Python venv holding notebooklm-py (the NotebookLM MCP server). Machine-local
+# binaries, ~200MB; rebuilt from docs/notebooklm-setup.md.
+.venv-notebooklm/
+
+# Diffs and temporary audits
+*.diff
+.legion-autocount-report-audit.json
+

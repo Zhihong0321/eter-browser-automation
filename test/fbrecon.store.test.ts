@@ -19,7 +19,7 @@ function contact(over: Partial<FbContact> = {}): FbContact {
     waLinks: [],
     emails: [],
     evidence: [],
-    intent: 'researching',
+    intent: 'owner',
     score: 3,
     firstSeen: '2026-08-12T00:00:00.000Z',
     lastSeen: '2026-08-12T00:00:00.000Z',
@@ -76,11 +76,25 @@ test('contact fields union across sightings', () => {
   assert.deepEqual(c.emails, ['a@b.com']);
 });
 
-test('intent only ever upgrades, never downgrades', () => {
+test('type only ever upgrades, never downgrades', () => {
   const map: ContactMap = new Map();
-  mergeContact(map, contact({ intent: 'buying' }));
+  mergeContact(map, contact({ intent: 'buyer' }));
   mergeContact(map, contact({ intent: 'none' }));
-  assert.equal(map.get('ali.bin.abu')!.intent, 'buying');
+  assert.equal(map.get('ali.bin.abu')!.intent, 'buyer');
+});
+
+test('someone who once asked to buy is not demoted to seller by a later post', () => {
+  const map: ContactMap = new Map();
+  mergeContact(map, contact({ intent: 'buyer' }));
+  mergeContact(map, contact({ intent: 'seller' }));
+  assert.equal(map.get('ali.bin.abu')!.intent, 'buyer');
+});
+
+test('a legacy type from an older ledger loses to any current one', () => {
+  const map: ContactMap = new Map();
+  mergeContact(map, contact({ intent: 'researching' as never }));
+  mergeContact(map, contact({ intent: 'buyer' }));
+  assert.equal(map.get('ali.bin.abu')!.intent, 'buyer', 'unknown ranks must not pin the old label');
 });
 
 test('score keeps the maximum and lastSeen advances', () => {

@@ -1,6 +1,17 @@
 import type { Page } from 'patchright';
 import { humanClick, humanScroll, humanType, pause, sleep } from './human.js';
 
+/**
+ * The enrolled Chrome profile holding the Facebook login.
+ *
+ * Anything reading a Page must run here, not on the default agent profile. Facebook
+ * serves a logged-out visitor a login wall over the content: the page still renders,
+ * the scrape still "succeeds", and it returns a thin subset — a follower count and
+ * little else — with no error to say why. A stage that quietly returns 20% of the
+ * data is worse than one that fails, so the profile is named rather than defaulted.
+ */
+export const FACEBOOK_PROFILE = 'facebook';
+
 export interface FbPost {
   index: number;
   author: string | null;

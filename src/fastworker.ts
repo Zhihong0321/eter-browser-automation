@@ -93,6 +93,15 @@ export interface FastAnswer {
   text: string;
   ms: number;
   outputTokens: number;
+  /**
+   * Prompt tokens the provider billed. Matters most for vision calls, where a
+   * screenshot is the overwhelming majority of the request — a full-page shot
+   * dwarfs the prompt beside it, so an output-only count understates a review
+   * by an order of magnitude.
+   */
+  inputTokens: number;
+  /** Model id as the provider echoed it back, for the usage ledger. */
+  model: string;
   /** Length of the reasoning the model produced anyway. Useful for cost sanity. */
   reasoningChars: number;
 }
@@ -148,7 +157,8 @@ export async function fastAsk(prompt: string, opts: FastAskOptions = {}): Promis
   const ms = Date.now() - t0;
   const body = (await res.json().catch(() => ({}))) as {
     choices?: { message?: { content?: string; reasoning_content?: string; reasoning?: string }; finish_reason?: string }[];
-    usage?: { completion_tokens?: number };
+    usage?: { completion_tokens?: number; prompt_tokens?: number };
+    model?: string;
     error?: { message?: string };
   };
 
@@ -170,7 +180,14 @@ export async function fastAsk(prompt: string, opts: FastAskOptions = {}): Promis
     );
   }
 
-  return { text, ms, outputTokens: body.usage?.completion_tokens ?? 0, reasoningChars };
+  return {
+    text,
+    ms,
+    outputTokens: body.usage?.completion_tokens ?? 0,
+    inputTokens: body.usage?.prompt_tokens ?? 0,
+    model: body.model ?? cfg.model,
+    reasoningChars,
+  };
 }
 
 /**

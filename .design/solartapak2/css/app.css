@@ -1,0 +1,465 @@
+/* ============================================
+   SolarTapak — Design System & Styles
+   ============================================ */
+
+/* ----- Design Tokens ----- */
+:root {
+  /* Palette */
+  --color-primary:       #0F2B46;
+  --color-primary-light: #1B4168;
+  --color-accent:        #E8A838;
+  --color-accent-hover:  #D4952E;
+  --color-accent-light:  #FDF3E0;
+  --color-bg:            #F8F6F0;
+  --color-bg-alt:        #F0ECE3;
+  --color-text:          #1A1A1A;
+  --color-text-soft:     #5A5A5A;
+  --color-text-inverse:  #FFFFFF;
+  --color-border:        #D9D4CA;
+  --color-success:       #2E7D32;
+  --color-whatsapp:      #25D366;
+
+  /* Type scale (major second) */
+  --text-xs:     0.75rem;   /* 12px */
+  --text-sm:     0.875rem;  /* 14px */
+  --text-base:   1rem;      /* 16px */
+  --text-md:     1.125rem;  /* 18px */
+  --text-lg:     1.375rem;  /* 22px */
+  --text-xl:     1.75rem;   /* 28px */
+  --text-2xl:    2.25rem;   /* 36px */
+  --text-3xl:    3rem;      /* 48px */
+  --text-4xl:    3.75rem;   /* 60px */
+
+  --leading-tight:  1.15;
+  --leading:        1.5;
+  --leading-relaxed: 1.65;
+
+  /* Spacing scale (4px base) */
+  --space-1:   0.25rem;   /*  4px */
+  --space-2:   0.5rem;    /*  8px */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;      /* 80px */
+  --space-24:  6rem;      /* 96px */
+
+  /* Layout */
+  --max-width: 72rem;     /* 1152px */
+  --radius:     0.5rem;
+  --radius-lg:  0.75rem;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg:  0 8px 30px rgba(0,0,0,0.12);
+  --transition: 200ms ease;
+}
+
+/* ----- Reset & Base ----- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* ----- Typography ----- */
+h1, h2, h3 {
+  line-height: var(--leading-tight);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-lg); }
+
+@media (min-width: 48em) {
+  h1 { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+  h3 { font-size: var(--text-xl); }
+}
+
+p { max-width: 65ch; }
+
+/* ----- Container ----- */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* ----- Buttons ----- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.4;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition), box-shadow var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  border-color: var(--color-accent);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.btn-whatsapp {
+  background: var(--color-whatsapp);
+  color: #fff;
+  border-color: var(--color-whatsapp);
+}
+
+.btn-whatsapp:hover {
+  background: #20BD5A;
+  border-color: #20BD5A;
+}
+
+.btn-whatsapp svg {
+  flex-shrink: 0;
+}
+
+.btn-large {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-md);
+  border-radius: var(--radius-lg);
+}
+
+/* ----- Section ----- */
+.section {
+  padding: var(--space-16) 0;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--color-text-soft);
+  font-size: var(--text-md);
+  max-width: 56ch;
+  margin: 0 auto var(--space-12);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+}
+
+.hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 43, 70, 0.85) 0%,
+    rgba(15, 43, 70, 0.55) 100%
+  );
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content {
+  max-width: 48rem;
+  padding: var(--space-12) 0;
+}
+
+.hero h1 {
+  color: var(--color-text-inverse);
+  margin-bottom: var(--space-6);
+}
+
+.hero p {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: var(--space-8);
+  max-width: 48ch;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* ============================================
+   BENEFITS
+   ============================================ */
+.benefits {
+  background: var(--color-bg);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+@media (min-width: 40em) {
+  .benefits-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.benefit-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.benefit-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.benefit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto var(--space-5);
+  border-radius: 50%;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.benefit-card h3 {
+  margin-bottom: var(--space-3);
+}
+
+.benefit-card p {
+  color: var(--color-text-soft);
+  font-size: var(--text-sm);
+  margin: 0 auto;
+}
+
+/* ============================================
+   PROCESS
+   ============================================ */
+.process {
+  background: var(--color-bg-alt);
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  counter-reset: step;
+}
+
+@media (min-width: 40em) {
+  .process-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.process-step {
+  position: relative;
+  text-align: center;
+  counter-increment: step;
+}
+
+.process-step::before {
+  content: counter(step);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto var(--space-4);
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.process-step h3 {
+  margin-bottom: var(--space-2);
+}
+
+.process-step p {
+  color: var(--color-text-soft);
+  font-size: var(--text-sm);
+  margin: 0 auto;
+}
+
+/* Connector line between steps (desktop) */
+@media (min-width: 40em) {
+  .process-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 1.5rem;
+    right: calc(-1 * var(--space-5));
+    width: calc(var(--space-10) - var(--space-2));
+    height: 2px;
+    background: var(--color-border);
+  }
+}
+
+/* ============================================
+   CONTACT
+   ============================================ */
+.contact {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  text-align: center;
+}
+
+.contact .section-title {
+  color: var(--color-text-inverse);
+}
+
+.contact .section-subtitle {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+.contact-info p {
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+.contact-whatsapp {
+  display: flex;
+  justify-content: center;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.site-footer {
+  background: var(--color-primary);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+.site-footer p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--text-sm);
+  margin: 0 auto;
+}
+
+.site-footer a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+}
+
+.site-footer a:hover {
+  color: var(--color-accent);
+}
+
+/* ============================================
+   RESPONSIVE TWEAKS
+   ============================================ */
+@media (max-width: 30em) {
+  .hero { min-height: 80vh; }
+  .hero h1 { font-size: var(--text-2xl); }
+  .hero p { font-size: var(--text-base); }
+  .btn-large { width: 100%; text-align: center; }
+  .hero-actions { flex-direction: column; }
+  .section { padding: var(--space-12) 0; }
+  .benefit-card { padding: var(--space-6) var(--space-4); }
+}
+
+/* ============================================
+   ACCESSIBILITY: reduced motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

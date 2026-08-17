@@ -13,7 +13,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-export type Intent = 'buying' | 'researching' | 'seller' | 'none';
+/**
+ * Group Recon's three kinds of person, and nothing else.
+ *
+ * A topical Facebook group contains exactly three sorts of poster, and which one
+ * someone is decides whether you message them at all:
+ *
+ *   seller — pitching, showing product, "PM me for price". A competitor.
+ *   owner  — already bought. Asking how to use it, complaining, showing it off.
+ *   buyer  — hasn't bought. Mostly asking questions.
+ *
+ * `none` means the classifier could not tell, NOT that the person was rejected.
+ * Group Recon records everyone; the type is a label on the row, never a filter.
+ */
+export type Intent = 'seller' | 'owner' | 'buyer' | 'none';
 export type SourceKind = 'group' | 'search' | 'thread' | 'feed';
 export type Role = 'author' | 'commenter';
 
@@ -44,8 +57,19 @@ export interface FbContact {
 
 export type ContactMap = Map<string, FbContact>;
 
-/** Higher wins on merge. A person who once asked to buy stays a buyer. */
-const INTENT_RANK: Record<Intent, number> = { none: 0, seller: 1, researching: 2, buying: 3 };
+/**
+ * Higher wins on merge. Someone who ever asked a buying question stays a buyer
+ * even if a later post of theirs reads like idle chat.
+ *
+ * Read through `rank()`, never indexed directly: ledgers written before this
+ * vocabulary existed hold values like "researching", and `undefined > n` is
+ * false in a way that silently keeps the wrong label.
+ */
+const INTENT_RANK: Record<Intent, number> = { none: 0, seller: 1, owner: 2, buyer: 3 };
+
+function rank(intent: Intent): number {
+  return INTENT_RANK[intent] ?? 0;
+}
 
 function union(a: string[], b: string[]): string[] {
   return [...new Set([...a, ...b])];
@@ -105,7 +129,7 @@ export function mergeContact(map: ContactMap, incoming: FbContact): boolean {
   existing.waLinks = union(existing.waLinks, incoming.waLinks);
   existing.emails = union(existing.emails, incoming.emails);
   existing.score = Math.max(existing.score, incoming.score);
-  if (INTENT_RANK[incoming.intent] > INTENT_RANK[existing.intent]) existing.intent = incoming.intent;
+  if (rank(incoming.intent) > rank(existing.intent)) existing.intent = incoming.intent;
   if (incoming.firstSeen < existing.firstSeen) existing.firstSeen = incoming.firstSeen;
   if (incoming.lastSeen > existing.lastSeen) existing.lastSeen = incoming.lastSeen;
 

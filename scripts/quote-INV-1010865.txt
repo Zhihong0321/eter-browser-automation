@@ -1,0 +1,305 @@
+← MOBILE VIEW
+A4 PAGE
+INV-1010865
+COLOR
+PRINT
+DOWNLOAD PDF
+E
+ETERNALGY
+Solar PV Planner
+QUOTATION
+·
+Quotation / Invoice
+INV-1010865
+PAGE 1 OF 3
+
+QUOTATION / INVOICE
+
+QUOTATION
+
+Thank you for choosing Eternalgy. Below is the full breakdown of your solar system, warranty, and payment information.
+
+PREPARED FOR
+
+ah MAO
+
+QUOTE #
+
+INV-1010865
+
+ISSUED
+20 Jul 2026
+VALID UNTIL
+—
+SALES
+GAN ZHI HONG
+BILL TO
+
+ah MAO
+
+60123334442
+
+PROJECT DETAILS
+SUBJECT
+Solar PV System
+PACKAGE
+[3P] STRING SAJ JINKO 16 PCS
+PACKAGE TYPE
+Residential
+SYSTEM SIZE
+10.40 kWp
+SYSTEM SIZE
+10.40 kWp
+PANELS
+16
+PANEL RATING
+650 W
+INVERTER
+—
+01
+LINE ITEMS
+LINE ITEMS	QTY	UNIT	TOTAL
+
+16X 650W JinkoSolar TIGER NEO 3.0 Panel N-Type TOPCon
+1X [3P] SAJ R6 8KW String Inverter · 1X SEDA ATAP Application · TNB Smart Meter Application · Solar System Architecture Design · Electrical System Design · Roof and Site Surveying · Roof Panel Installation · Electrical Works · SkyLift · · Included solar components: · - MIBET Solar Mounting Structure · - MasterTec Solar DC Cable · - MEGA AC Cable
+	1.00	RM 29990.00	RM 29990.00
+TOTAL DUE	RM 29990.00
+ETERNALGY SDN BHD · SOLAR PV PLANNER
+PRINTER FRIENDLY VERSION
+PAGE 1 OF 3
+E
+ETERNALGY
+Solar PV Planner
+02 / COMPONENTS & SAVINGS
+·
+Quotation / Invoice
+INV-1010865
+PAGE 2 OF 3
+02
+KEY COMPONENTS
+PV MODULE
+Jinko Tiger Neo 3
+
+Built for durability, stronger low-light production, and better hot-weather performance.
+
+DURABILITY
+3× IEC tested
+LOW LIGHT
+95–98% @ 200 W/m²
+TEMP COEFF.
+−0.26 %/°C
+DEGRADATION
+−0.35 %/yr
+INCLUDED
+INVERTER
+SAJ Inverter
+
+Three-phase string inverter tied to the linked package for stable AC conversion.
+
+PHASE
+3-Phase
+FUNCTION
+String inverter
+BRAND
+SAJ
+TOPOLOGY
+Transformerless
+INCLUDED
+CABLING
+MasterTec Cable
+
+Electrical cable support covering safe routing, durable installation, and clean site execution.
+
+TYPE
+PV-rated DC
+INSULATION
+XLPE / UV
+ROUTING
+Rooftop · Conduit
+GRADE
+MasterTec
+INCLUDED
+03
+MONTHLY BILL PROJECTION
+CURRENT BILL
+RM 504.67
+→
+AFTER SOLAR
+RM 148.33
+MONTHLY SAVING
+RM 356.34
+YEAR 1 RETURN: RM 4276.08
+
+Estimates only. Actual performance depends on weather, shading, roof orientation, and usage patterns.
+
+04
+PAYMENT DETAILS
+PAYMENT SCHEDULE
+APPLIES FROM 1 JUL 2026
+5%
+DOWNPAYMENT
+Upon signing up
+75%
+SEDA APPROVED + BEFORE INSTALLATION
+After SEDA approval, before installation starts
+20%
+INSTALLATION COMPLETION
+After installation complete
+BANK	MAYBANK
+ACCOUNT NAME	ETERNALGY SDN BHD
+ACCOUNT NO	501534157918
+REFERENCE	INV-1010865
+ETERNALGY SDN BHD · SOLAR PV PLANNER
+PRINTER FRIENDLY VERSION
+PAGE 2 OF 3
+E
+ETERNALGY
+Solar PV Planner
+03 / SIGN-OFF
+·
+Quotation / Invoice
+INV-1010865
+PAGE 3 OF 3
+05
+WARRANTY
+
+Workmanship
+
+1 Year Roof Leaking Warranty
+3 Years Workmanship Warranty
+
+650W JinkoSolar Panel N-Type TOPCon
+
+12 Years Product Warranty
+30 Years Linear Power Warranty
+
+[3P] SAJ R6 8KW String Inverter
+
+10 YEARS WARRANTY
+
+3 Year MSIG All-Risk Solar System Coverage up to RM10000 assured
+
+3 Year MSIG All-Risk Solar System Coverage up to RM10000 assured
+
+MIBET Solar Mounting Structure
+
+10 Years
+
+06
+TERMS & CONDITIONS
+PRIVACY POLICY
+1. Collection of Personal Information:
+We may collect the following types of personal information from you:
+Contact Information: Including your name, address, email address, and phone number.
+Installation Address: Necessary for site visits and project planning.
+Financial Information: Payment details and related financial information for billing purposes.
+
+2. Use of Personal Information:
+We will use your personal information for the following purposes:
+SEDA ATAP SOLAR Quota Application: To facilitate the application for ATAP SOLAR quota with SEDA Malaysia, we will use the required information provided by you.
+
+Installation Planning: We may share your information with our EPCC partner to plan and execute the installation of the solar PV system upon approval by SEDA Malaysia.
+
+3. Sharing of Personal Information:
+We may share your personal information with third parties in the following situations:
+SEDA Malaysia: We will share the necessary information required for the ATAP SOLAR quota application with SEDA Malaysia.
+
+EPCC Partner: We will provide your information to our EPCC partner for the sole purpose of facilitating the installation process upon SEDA approval. Our EPCC partner is bound by confidentiality agreements to protect your data.
+
+4. Data Security:
+We take reasonable and appropriate measures to safeguard your personal information. Access to your data is restricted to authorized personnel and is protected through security measures, including encryption and access controls.
+
+5. Data Retention:
+We will retain your personal information only for the period required to fulfill the purposes outlined in this Privacy Policy or as required by applicable laws and regulations.
+
+6. Consent:
+By engaging our services, you consent to the collection and use of your personal information as outlined in this Privacy Policy.
+
+7. Changes to Privacy Policy:
+Eternalgy Sdn Bhd reserves the right to amend or update this Privacy Policy as necessary. Any changes will be communicated to you in writing.
+
+8. Contact Information:
+If you have any questions or concerns regarding our Privacy Policy, or if you wish to access, update, or delete your personal information, please contact us at:
+
+Eternalgy Sdn Bhd
+Address: 23-01, Jalan Mutiara Emas 10/19, Taman Mount Austin, 81100 Johor Bahru, Johor.
+Phone: 601121-0000-99
+Email: admin@eternalgy.com
+
+This Privacy Policy is effective as of 1 AUG 2023. Your continued engagement with our services indicates your acceptance of this policy.
+
+WARRANTY POLICY
+Solar Panel Product Warranty
+Beginning on the Warranty Start Date and for the Limited Product Warranty Period，Panel manufactorer warrants that the Module and its respective DC connectors and cables (hereinafter referred to as the “Products”) will be free from material defects in workmanship which impair the performance of the Products. Material defects shall not include changes in appearance or normal wear and tear of the Products. 
+
+Solar Panel Power Warranty
+Beginning on Warranty Start Date and for the first year following the Warranty Start Date, Panel manufactorer warrants that the Degradation Rate of Modules shall not exceed the applicable First Year Degradation Rate; for each year after the first year, the Degradation Rate of Modules shall not exceed the applicable Annual Degradation Rate, as set forth at Table below.
+
+Workmanship Warranty
+During the period of the warranty where Eternalgy Sdn Bhd’s workmanship has resulted in a defective installation then Eternalgy Sdn Bhd will, at its absolute discretion, either carry out any repairs or replacements necessary to allow proper functioning of the Solar PV system.
+
+Roof Leaking Warranty
+During the period of the warranty where Eternalgy Sdn Bhd’s workmanship has resulted in a Roof Leakage then Eternalgy Sdn Bhd will, at its absolute discretion, either carry out any repairs to fix the roof condition. The covered cost of Roof Repair shall not exceed 20% of the project final price.
+
+Warranty Repairs and Unauthorised Works
+All defects or issues arising during the warranty period shall be reported to the Company promptly, and all inspection and rectification works shall be carried out solely by the Company or its authorised contractors. Any inspection, repair, modification, or dismantling works carried out by the Customer or any third party without the Company's prior written consent shall not be claimable or reimbursable from the Company under any circumstances, shall void the warranty in respect of the affected works, and the Company shall bear no liability for any costs, damages, or losses arising therefrom.
+
+REFUND POLICY
+Eternalgy Sdn Bhd (hereinafter referred to as "Eternalgy") is committed to providing high-quality solar PV installation services in Malaysia. We understand that sometimes circumstances may arise that necessitate refunds. This Refund Policy outlines the terms and conditions governing refunds for our services.
+
+Our Payment Terms:
+5% Downpayment upon Signing Up: Customers are required to make a 5% downpayment of the total project cost upon signing up for our solar PV installation services.
+
+75% Upon SEDA Approved + Before Installation: Upon approval by the Sustainable Energy Development Authority (SEDA) Malaysia and before installation starts, customers are required to make an additional payment of 75% of the total project cost.
+
+20% After Installation Complete: The remaining 20% of the total project cost is due upon the completion of the installation.
+
+Our Refund Policy:
+5% Downpayment Refund (Before SEDA Application): Customers who have made the initial 5% downpayment may request a refund, excluding a non-refundable administrative fee of RM600. This refund request must be made before the SEDA application process commences.
+
+5% + 75% Refund (After SEDA Application): Customers who have paid the 5% downpayment and the subsequent 75% fee but wish to cancel their project after SEDA approval may request a refund. This refund will be subject to deductions, including a non-refundable administrative fee of RM600 , RM600 site survey, engineering design fee and  SEDA application fee of RM300. (Total of RM1500 for completed project milestone)
+
+20% Payment After Installation Complete (Non-Refundable): The 20% payment made upon the completion of the installation is non-refundable. This payment covers the cost of products and services provided by Eternalgy and includes any applicable warranties for the installed solar PV system.
+
+Warranty Coverage:
+Please note that once the installation is complete and the full payment has been made, the products and services provided by Eternalgy are covered under warranty as specified in our warranty policy. Customers may refer to the warranty policy for details regarding warranty coverage and procedures for warranty claims.
+
+Refund Request Process:
+To request a refund, customers must submit their request in writing to Eternalgy's customer support team. The request should include the customer's name, contact information, project details, and the reason for the refund request. Refund requests will be processed in accordance with the terms outlined in this Refund Policy.
+
+
+For any inquiries or refund requests, please contact our customer support team at:
+Eternalgy Sdn Bhd
+Address: 23-01, Jalan Mutiara Emas 10/19, Taman Mount Austin, 81100 Johor Bahru, Johor.
+Phone: 601121-0000-99
+Email: admin@eternalgy.com
+
+Eternalgy Sdn Bhd reserves the right to amend or update this Refund Policy at its discretion. Customers are encouraged to review this policy periodically for any changes. This policy is effective as of 1st Aug 2023.
+07
+CUSTOMER ACKNOWLEDGEMENT
+
+By signing, the customer agrees to all terms in this quotation.
+
+Awaiting signature
+AH MAO
+PREPARED FORah MAO
+QUOTE #INV-1010865
+ISSUED20 Jul 2026
+Registered & Certified
+ETERNALGY SDN BHD · MALAYSIA
+CIDB Registered Contractor
+0120250324-WP152634 · G3 · Cat B · CE · ME
+SEDA Solar PV Service Provider
+SEDA/RPVSP/2024/321
+SEDA Solar PV Investor
+Eternalgy Sdn Bhd
+MyHijau Equipment Cert
+SAJ Inverter · MyHS00025/25
+
+JOIN OUR REFERRER PROGRAM
+
+Scan to refer friends & family and earn rewards · referral.atap.solar/webchat
+
+ETERNALGY SDN BHD · SOLAR PV PLANNER
+PRINTER FRIENDLY VERSION
+PAGE 3 OF 3

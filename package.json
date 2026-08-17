@@ -19,10 +19,16 @@
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.3.228",
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "axe-core": "^4.13.0",
+    "clean-css": "^5.3.3",
+    "html-minifier-terser": "^7.2.0",
     "patchright": "^1.61.1",
+    "sharp": "^0.35.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/clean-css": "^4.2.11",
+    "@types/html-minifier-terser": "^7.0.2",
     "@types/node": "^26.2.0",
     "tsx": "^4.23.12",
     "typescript": "^7.0.2"

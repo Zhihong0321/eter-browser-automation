@@ -53,7 +53,8 @@ export function finish(svc: VaultService, meta: ProjectMeta): { csv: string; htm
   syncStats(meta, svc.gmapStatus());
   const csv = svc.gmapExport(path.join(dir, 'leads.csv'), {}).file;
   const html = path.join(dir, 'report.html');
-  fs.writeFileSync(html, renderReport(meta, svc.gmapRows()), 'utf8');
+  // Dossiers go in too, so the written file needs no daemon to show its research.
+  fs.writeFileSync(html, renderReport(meta, svc.gmapRows(), svc.leadStore().allDossiers()), 'utf8');
   saveProject(meta);
   return { csv, html };
 }

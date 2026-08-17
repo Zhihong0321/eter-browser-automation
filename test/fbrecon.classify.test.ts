@@ -7,51 +7,59 @@ const ITEMS: ClassifyItem[] = [
   { id: 'b', text: 'we supply solar, dealer wanted' },
 ];
 
-test('pass-through marks every item interested with unknown intent', async () => {
+test('pass-through labels nothing but keeps everything', async () => {
   const out = await passThroughClassifier.classify('solar', ITEMS);
-  assert.equal(out.length, 2);
-  assert.ok(out.every((v) => v.interested));
-  assert.ok(out.every((v) => v.intent === 'researching'));
+  assert.equal(out.length, 2, 'no classifier must still return every item');
+  assert.ok(out.every((v) => v.intent === 'none'));
 });
 
 test('parseVerdicts reads a clean JSON array', () => {
-  const raw = '[{"id":"a","interested":true,"intent":"buying","why":"asks price"},{"id":"b","interested":false,"intent":"seller","why":"vendor"}]';
+  const raw = '[{"id":"a","type":"buyer","why":"asks price"},{"id":"b","type":"seller","why":"vendor"}]';
   const out = parseVerdicts(raw, ITEMS);
   assert.equal(out.length, 2);
-  assert.equal(out[0].intent, 'buying');
-  assert.equal(out[1].interested, false);
+  assert.equal(out[0].intent, 'buyer');
+  assert.equal(out[1].intent, 'seller');
+});
+
+test('an owner is distinguished from a buyer', () => {
+  const raw = '[{"id":"a","type":"owner","why":"complains about their own panels"}]';
+  assert.equal(parseVerdicts(raw, ITEMS)[0].intent, 'owner');
+});
+
+test('the older "intent" key is still accepted', () => {
+  const raw = '[{"id":"a","intent":"buyer","why":"x"}]';
+  assert.equal(parseVerdicts(raw, ITEMS)[0].intent, 'buyer');
 });
 
 test('parseVerdicts survives a fenced code block wrapper', () => {
-  const raw = '```json\n[{"id":"a","interested":true,"intent":"buying","why":"x"}]\n```';
-  assert.equal(parseVerdicts(raw, ITEMS)[0].intent, 'buying');
+  const raw = '```json\n[{"id":"a","type":"buyer","why":"x"}]\n```';
+  assert.equal(parseVerdicts(raw, ITEMS)[0].intent, 'buyer');
 });
 
 test('parseVerdicts survives prose before and after the array', () => {
-  const raw = 'Here you go:\n[{"id":"a","interested":true,"intent":"buying","why":"x"}]\nHope that helps!';
+  const raw = 'Here you go:\n[{"id":"a","type":"buyer","why":"x"}]\nHope that helps!';
   assert.equal(parseVerdicts(raw, ITEMS).length, 2);
 });
 
-test('an unparseable response falls back to keeping every item', () => {
+test('an unparseable response still returns every item, unlabelled', () => {
   const out = parseVerdicts('the model apologised instead of answering', ITEMS);
-  assert.equal(out.length, 2);
-  assert.ok(out.every((v) => v.interested), 'a broken classifier must not silently delete leads');
+  assert.equal(out.length, 2, 'a broken classifier must not silently delete people');
+  assert.ok(out.every((v) => v.intent === 'none'));
 });
 
-test('an unrecognised intent value is coerced rather than thrown', () => {
-  const raw = '[{"id":"a","interested":true,"intent":"very-hot","why":"x"}]';
-  assert.equal(parseVerdicts(raw, ITEMS)[0].intent, 'researching');
+test('an unrecognised type is coerced to none rather than thrown', () => {
+  const raw = '[{"id":"a","type":"very-hot","why":"x"}]';
+  assert.equal(parseVerdicts(raw, ITEMS)[0].intent, 'none');
 });
 
 test('verdicts for ids we never sent are discarded', () => {
-  const raw = '[{"id":"zzz","interested":true,"intent":"buying","why":"hallucinated"}]';
+  const raw = '[{"id":"zzz","type":"buyer","why":"hallucinated"}]';
   assert.ok(!parseVerdicts(raw, ITEMS).some((v) => v.id === 'zzz'));
 });
 
 test('an item the model omitted is kept, not dropped', () => {
-  const raw = '[{"id":"a","interested":true,"intent":"buying","why":"x"}]';
-  const out = parseVerdicts(raw, ITEMS);
-  const b = out.find((v) => v.id === 'b');
+  const raw = '[{"id":"a","type":"buyer","why":"x"}]';
+  const b = parseVerdicts(raw, ITEMS).find((v) => v.id === 'b');
   assert.ok(b, 'omitted item must still appear');
-  assert.equal(b!.interested, true);
+  assert.equal(b!.intent, 'none');
 });

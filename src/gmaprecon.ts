@@ -454,23 +454,40 @@ export async function enrichSite(website: string, timeoutMs = 10_000): Promise<E
     throw new Error(`unparseable website url: ${website}`);
   }
 
-  let merged: EnrichInput | null = null;
-  for (const p of CONTACT_PATHS) {
-    const ctl = AbortSignal.timeout(timeoutMs);
-    let html: string;
-    try {
-      const res = await fetch(new URL(p, base), {
-        signal: ctl,
-        redirect: 'follow',
-        headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0 Safari/537.36' },
-      });
-      if (!res.ok) continue;
-      html = (await res.text()).slice(0, 400_000);
-    } catch {
-      continue; // one dead path must not sink the whole business
-    }
+  // All four paths at once.
+  //
+  // These used to run one after another, stopping early once an email turned up.
+  // That is quick on a site that prints one on its homepage and pathological on a
+  // site that prints none anywhere: four sequential 10s timeouts, 40 seconds spent
+  // to learn nothing — and "no email anywhere" is the common case on the rows this
+  // pipeline works. Four concurrent requests to one small-business site is nothing
+  // next to the page-speed benchmark the same pipeline already runs against it, and
+  // every caller iterates businesses sequentially, so this widens the fan-out
+  // against a single host at a time and never across hosts.
+  const pages = await Promise.all(
+    CONTACT_PATHS.map(async (p) => {
+      try {
+        const res = await fetch(new URL(p, base), {
+          signal: AbortSignal.timeout(timeoutMs),
+          redirect: 'follow',
+          headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0 Safari/537.36' },
+        });
+        if (!res.ok) return null;
+        return extractContacts((await res.text()).slice(0, 400_000), base.hostname);
+      } catch {
+        return null; // one dead path must not sink the whole business
+      }
+    }),
+  );
 
-    const found = extractContacts(html, base.hostname);
+  // Merged in CONTACT_PATHS order rather than completion order, so the homepage
+  // still outranks /about for every single-valued field — the priority the
+  // early-exit loop had, kept now that all four always run. Dropping the exit also
+  // means the later pages' socials get merged instead of discarded, which is strictly
+  // more contact data for the same wall time.
+  let merged: EnrichInput | null = null;
+  for (const found of pages) {
+    if (!found) continue;
     merged = merged
       ? {
           email: merged.email ?? found.email,
@@ -481,8 +498,6 @@ export async function enrichSite(website: string, timeoutMs = 10_000): Promise<E
           linkedin: merged.linkedin ?? found.linkedin,
         }
       : found;
-
-    if (merged.email) break; // an email is the expensive field; stop once we have one
   }
 
   if (!merged) throw new Error('no reachable page');

@@ -32,6 +32,9 @@ function send(res: http.ServerResponse, code: number, body: unknown): void {
   res.writeHead(code, {
     'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store',
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, DELETE, OPTIONS',
+    'access-control-allow-headers': 'content-type',
   });
   res.end(payload);
 }
@@ -96,6 +99,8 @@ export function createServer(svc: VaultService): http.Server {
 
     ['GET', /^\/api\/recon\/projects$/, async () => ({ projects: svc.reconProjects() })],
     ['GET', /^\/api\/recon\/projects\/([\w.-]+)$/, async (_b, p) => svc.reconProject(safeId(p[0]))],
+    ['GET', /^\/api\/recon\/v3\/projects$/, async () => ({ projects: svc.reconV3Projects() })],
+    ['GET', /^\/api\/recon\/v3\/projects\/([\w.-]+)$/, async (_b, p) => svc.reconV3Project(safeId(p[0]))],
     ['POST', /^\/api\/recon\/probe$/, async (b) => svc.reconProbe(str(b.url), num(b.windowMs, 8000))],
     ['POST', /^\/api\/recon\/scan$/, async (b) =>
       svc.reconScan(str(b.url), {
@@ -104,12 +109,29 @@ export function createServer(svc: VaultService): http.Server {
         maxPages: num(b.maxPages, 40),
         approved: Array.isArray(b.approved) ? (b.approved as string[]) : [],
       })],
+    ['POST', /^\/api\/recon\/v3\/scan$/, async (b) =>
+      svc.reconV3Scan(str(b.url), {
+        maxPages: num(b.maxPages, 40),
+        concurrency: num(b.concurrency, 3),
+        settleQuietMs: num(b.settleQuietMs, 650),
+        settleCapMs: num(b.settleCapMs, 3500),
+        replay: b.replay !== false,
+        replayConcurrency: num(b.replayConcurrency, 4),
+        replayLimit: num(b.replayLimit, 12),
+        screenshots: b.screenshots !== false,
+        fullPage: b.fullPage === true,
+        exploreTabs: b.exploreTabs === true,
+      }, prof(b.profile))],
 
     ['POST', /^\/api\/wa\/chats$/, async (b) => ({ chats: await svc.waListChats(num(b.limit, 20)) })],
     ['POST', /^\/api\/wa\/read$/, async (b) => svc.waReadChat(str(b.target), num(b.limit, 20))],
     ['POST', /^\/api\/wa\/send$/, async (b) => svc.waSend(str(b.target), str(b.text))],
 
     ['POST', /^\/api\/chatgpt\/ask$/, async (b) => svc.chatgptAsk(str(b.question))],
+
+    ['GET', /^\/api\/nlm\/notebooks$/, async () => ({ notebooks: await svc.nlmListNotebooks() })],
+    ['POST', /^\/api\/nlm\/ask$/, async (b) => svc.nlmAsk(str(b.notebookId), str(b.question))],
+    ['POST', /^\/api\/nlm\/notebooks$/, async (b) => svc.nlmCreateNotebook(str(b.title))],
 
     ['POST', /^\/api\/fb\/my-posts$/, async (b) => ({ posts: await svc.fbReadMyPosts(num(b.limit, 5)) })],
     ['POST', /^\/api\/fb\/feed$/, async (b) => ({ posts: await svc.fbReadFeed(num(b.limit, 5)) })],
@@ -118,6 +140,7 @@ export function createServer(svc: VaultService): http.Server {
       topic: str(b.topic),
       sources: Array.isArray(b.sources) ? (b.sources as string[]) : undefined,
       minScore: typeof b.minScore === 'number' ? b.minScore : undefined,
+      maxRounds: typeof b.maxRounds === 'number' ? b.maxRounds : undefined,
       profile: prof(b.profile),
     })],
     ['POST', /^\/api\/fb\/recon\/stop$/, async () => svc.fbReconStop()],
@@ -175,6 +198,38 @@ export function createServer(svc: VaultService): http.Server {
       svc.gmapUseProject(projectDir(meta.id));
       return finishProject(svc, meta);
     }],
+
+    ['GET', /^\/api\/gmap\/businesses\/([^/]+)\/dossier$/, async (_b, p) => {
+      const placeId = decodeURIComponent(p[0]);
+      const dossier = svc.gmapGetDossier(placeId);
+      if (!dossier) return { found: false, dossier: null };
+      return { found: true, dossier };
+    }],
+
+    ['POST', /^\/api\/gmap\/businesses\/([^/]+)\/deep-research$/, async (b, p) => {
+      const placeId = decodeURIComponent(p[0]);
+      const dossier = await svc.gmapDeepResearch(placeId, {
+        enableBrowserScrape: b.enableBrowserScrape !== false,
+        // Both opt-in: see the notes in runCompanyDeepResearch.
+        enableNotebookLm: b.enableNotebookLm === true,
+        enableNewpages: b.enableNewpages === true,
+        // The research stage is the slowest by far (~2 min) and the only one that
+        // needs the ChatGPT login, so it must be switchable off without losing the
+        // rest of the pipeline.
+        enableChatGpt: b.enableChatGpt !== false,
+        // Second-pass research through agy — opt-in: it needs a ChatGPT brief to
+        // build on and shells out to a separate CLI running unattended. See the
+        // notes on `useAgy` in runCompanyDeepResearch.
+        enableAgy: b.enableAgy === true,
+        // On by default: it only fires when the company actually has a website, and
+        // it is the one stage that measures something we can sell a fix for.
+        enablePageInsight: b.enablePageInsight !== false,
+        // On by default: no browser, no auth, ~1.8s worst case, and it is what tells
+        // a crawl that found nothing apart from a website that was never there.
+        enableDomain: b.enableDomain !== false,
+      });
+      return { success: true, dossier };
+    }],
   ];
 
   return http.createServer((req, res) => {
@@ -192,6 +247,15 @@ export function createServer(svc: VaultService): http.Server {
 
       if (pathname === '/health') return send(res, 200, { ok: true, service: 'eter-browser' });
 
+      if (req.method === 'OPTIONS') {
+        res.writeHead(204, {
+          'access-control-allow-origin': '*',
+          'access-control-allow-methods': 'GET, POST, DELETE, OPTIONS',
+          'access-control-allow-headers': 'content-type',
+        });
+        return res.end();
+      }
+
       if (req.method === 'GET' && (pathname === '/' || pathname === '/index.html')) {
         const file = uiFile();
         if (!file) return send(res, 500, { error: 'dashboard not found' });
@@ -201,19 +265,24 @@ export function createServer(svc: VaultService): http.Server {
 
       // fb-recon project files, served straight from the project directory so the
       // dashboard can open a report the same way it opens a gmap one.
-      const fbAsset = pathname.match(/^\/fb-recon\/(report|csv)\/([\w.-]+)$/);
+      const FB_ASSETS: Record<string, { file: string; type: string; download?: string }> = {
+        report: { file: 'report.html', type: 'text/html; charset=utf-8' },
+        csv: { file: 'contacts.csv', type: 'text/csv; charset=utf-8', download: '.csv' },
+        // Every message with its sender, one row each — the raw harvest, before
+        // it is collapsed into one record per person.
+        messages: { file: 'messages.json', type: 'application/json; charset=utf-8' },
+      };
+      const fbAsset = pathname.match(/^\/fb-recon\/(report|csv|messages)\/([\w.-]+)$/);
       if (req.method === 'GET' && fbAsset) {
         const [, kind, id] = fbAsset;
         if (id.includes('..')) return send(res, 400, { error: 'Bad project id' });
-        const file = path.join(
-          svc.vault.home, 'fb-recon', 'projects', id,
-          kind === 'report' ? 'report.html' : 'contacts.csv',
-        );
+        const spec = FB_ASSETS[kind];
+        const file = path.join(svc.vault.home, 'fb-recon', 'projects', id, spec.file);
         if (!fs.existsSync(file)) return send(res, 404, { error: `No ${kind} for "${id}".` });
         res.writeHead(200, {
-          'content-type': kind === 'report' ? 'text/html; charset=utf-8' : 'text/csv; charset=utf-8',
+          'content-type': spec.type,
           'cache-control': 'no-store',
-          ...(kind === 'csv' ? { 'content-disposition': `attachment; filename="${id}.csv"` } : {}),
+          ...(spec.download ? { 'content-disposition': `attachment; filename="${id}${spec.download}"` } : {}),
         });
         return res.end(fs.readFileSync(file));
       }

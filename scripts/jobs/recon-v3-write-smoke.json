@@ -1,0 +1,23 @@
+{
+  "name": "Recon V3 write smoke — marked trial customer",
+  "profile": "E:\\eter-browser\\profiles\\agent",
+  "site": "https://accounting.autocountcloud.com",
+  "entry": "Macam Yes",
+  "tasks": [
+    { "op": "list", "route": "/debtor", "label": "READ GATE — CUSTOMERS BEFORE" },
+    {
+      "op": "create",
+      "route": "/debtor",
+      "action": "New",
+      "ensureAbsent": "RECON V3 TEST 20260813",
+      "fields": [
+        { "label": "Customer Code", "auto": { "column": "Customer Code", "format": "300-V%03d" }, "saveAs": "customerCode" },
+        { "label": "Company Name", "value": "RECON V3 TEST 20260813" },
+        { "label": "Phone", "tab": "General", "value": "0100000000" }
+      ],
+      "save": "Save",
+      "verify": { "contains": "RECON V3 TEST 20260813" }
+    },
+    { "op": "list", "route": "/debtor", "label": "WRITE VERIFY — CUSTOMERS AFTER" }
+  ]
+}

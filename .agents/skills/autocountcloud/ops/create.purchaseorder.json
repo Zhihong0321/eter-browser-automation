@@ -1,0 +1,70 @@
+{
+  "op": "create.purchaseorder",
+  "table": "purchaseorder",
+  "needs": [
+    {
+      "field": "purchaseorder.f.supplier",
+      "ask_user_for": "Supplier",
+      "control": "dropdown",
+      "pick_from_table": "creditor"
+    },
+    {
+      "field": "purchaseorder.f.name",
+      "ask_user_for": "Name",
+      "control": "input"
+    },
+    {
+      "field": "purchaseorder.f.email",
+      "ask_user_for": "Email",
+      "control": "input"
+    },
+    {
+      "field": "purchaseorder.f.p_o_no",
+      "ask_user_for": "P/O No.",
+      "control": "dropdown",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "purchaseorder.f.address",
+      "ask_user_for": "Address",
+      "control": "text area"
+    },
+    {
+      "field": "purchaseorder.f.credit_term",
+      "ask_user_for": "Credit Term",
+      "control": "dropdown",
+      "pick_from_table": "creditterm"
+    },
+    {
+      "field": "purchaseorder.f.date",
+      "ask_user_for": "Date",
+      "control": "date picker"
+    },
+    {
+      "field": "purchaseorder.f.currency",
+      "ask_user_for": "Currency",
+      "control": "dropdown",
+      "pick_from_table": "currency"
+    },
+    {
+      "field": "purchaseorder.f.rate",
+      "ask_user_for": "Rate",
+      "control": "input"
+    }
+  ],
+  "steps": [
+    "navigate to /purchaseorder",
+    "click \"New\"",
+    "fill \"Supplier\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+    "fill \"P/O No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+    "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+    "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "click \"Save\"",
+    "verify: the new row appears in the purchaseorder grid"
+  ]
+}

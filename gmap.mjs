@@ -1,9 +1,11 @@
 // gmap-recon — project runner (command line).
 //
-//   node gmap.mjs new "solar installer" "Klang, Kajang"   create a project and run it
-//   node gmap.mjs list                                     every project and its status
-//   node gmap.mjs resume <project-id>                      continue an unfinished one
-//   node gmap.mjs report <project-id>                      rebuild and open the report
+//   node gmap.mjs new "<keywords>" "<towns>"   create a project and run it
+//   node gmap.mjs town "<towns>"                search all businesses in a town (no product keyword)
+//   node gmap.mjs list                          every project and its status
+//   node gmap.mjs resume <project-id>           continue an unfinished one
+//   node gmap.mjs report <project-id>           rebuild and open the report
+//   node gmap.mjs research [project] <name>     run Deep Research on a company
 //
 // The same job is available in the dashboard at http://127.0.0.1:7676 — both drive
 // the identical run engine in dist/gmaprun.js, so behaviour cannot diverge.
@@ -26,13 +28,17 @@ function usage(msg) {
   GMAP-RECON
 
     node gmap.mjs new "<keywords>" "<towns>"   create a project and run it
+    node gmap.mjs town "<towns>"                search all businesses in a town (no keyword limit)
     node gmap.mjs list                          every project and its status
     node gmap.mjs resume <project-id>           continue an unfinished project
     node gmap.mjs report <project-id>           rebuild and open the report
+    node gmap.mjs research [project-id] <name>  run Deep Research pipeline on a company
 
-  Example
+  Examples
 
+    node gmap.mjs town "Eco Majestic, Semenyih"
     node gmap.mjs new "solar panel installer" "Petaling Jaya, Shah Alam, Klang"
+    node gmap.mjs research "ACE MULTIMEDIA TECH"
 
   Commas separate several keywords or towns. Ctrl+C is safe — resume picks up
   exactly where it stopped and never re-spends a search that already succeeded.
@@ -90,10 +96,19 @@ async function run(meta) {
 
 if (!cmd || cmd === 'help' || cmd === '--help') usage();
 
-if (cmd === 'new') {
-  const keywords = asList(rest[0]);
-  const places = asList(rest[1]);
-  if (!keywords.length || !places.length) usage('Need both keywords and towns.');
+if (cmd === 'new' || cmd === 'town') {
+  let keywords;
+  let places;
+
+  if (cmd === 'town') {
+    keywords = ['businesses in'];
+    places = asList(rest[0]);
+    if (!places.length) usage('Need at least one town name.');
+  } else {
+    keywords = asList(rest[0]);
+    places = asList(rest[1]);
+    if (!keywords.length || !places.length) usage('Need both keywords and towns.');
+  }
 
   const existing = rest.includes('--force') ? null : findUnfinished(keywords, places);
   if (existing) {
@@ -117,7 +132,7 @@ if (cmd === 'new') {
 } else if (cmd === 'list') {
   const all = listProjects();
   if (!all.length) {
-    console.log(`\n  No projects yet. Start one:\n    node gmap.mjs new "solar installer" "Klang"\n`);
+    console.log(`\n  No projects yet. Start one:\n    node gmap.mjs town "Klang"\n`);
     process.exit(0);
   }
   console.log(`\n  ${all.length} project(s) in ${projectsRoot()}\n`);
@@ -137,6 +152,58 @@ if (cmd === 'new') {
     const out = finish(svc, meta);
     console.log(`\n  ${out.html}\n`);
     openFile(out.html);
+  });
+} else if (cmd === 'research') {
+  const projects = listProjects();
+  if (!projects.length) usage('No projects found. Run a search first.');
+
+  let targetProject = projects[0];
+  let query = rest.join(' ').trim();
+
+  // If first arg matches a project ID
+  if (rest.length >= 2 && projects.some((p) => p.id === rest[0])) {
+    targetProject = loadProject(rest[0]);
+    query = rest.slice(1).join(' ').trim();
+  }
+
+  if (!query) usage('Specify a company name or place ID to research.');
+
+  await withService(async (svc) => {
+    svc.gmapUseProject(projectDir(targetProject.id));
+    const store = svc.leadStore();
+    const rows = store.rows();
+    const match = rows.find(
+      (r) => r.placeId === query || r.name.toLowerCase().includes(query.toLowerCase()),
+    );
+
+    if (!match) {
+      console.log(`\n  Company "${query}" not found in project ${targetProject.id}.\n`);
+      process.exit(1);
+    }
+
+    console.log(`\n  ⚡ RUNNING DEEP RESEARCH: ${match.name}`);
+    console.log(`  Project: ${targetProject.id} · Place ID: ${match.placeId}\n`);
+
+    const dossier = await svc.gmapDeepResearch(match.placeId, { enableBrowserScrape: true });
+
+    console.log('────────────────────────────────────────────────────────────────────');
+    console.log(`  VERDICT:          ${dossier.verdict} (Legitimacy Score: ${dossier.legitimacyScore}/100)`);
+    if (dossier.newpages?.ssm) {
+      console.log(`  SSM REGISTRATION: ${dossier.newpages.ssm}`);
+    }
+    if (dossier.contactMatrix.whatsapp) {
+      console.log(`  WHATSAPP DIRECT:  ${dossier.contactMatrix.whatsapp}`);
+    }
+    if (dossier.contactMatrix.primaryEmail) {
+      console.log(`  PRIMARY EMAIL:    ${dossier.contactMatrix.primaryEmail}`);
+    }
+    if (dossier.contactMatrix.keyContacts.length) {
+      console.log('  KEY CONTACTS:');
+      dossier.contactMatrix.keyContacts.forEach((c) => console.log(`    - ${c.name} (${c.role}) [${c.source}]`));
+    }
+    console.log('────────────────────────────────────────────────────────────────────\n');
+    console.log(dossier.executiveSummary);
+    console.log('\n  Saved to project database.\n');
   });
 } else {
   usage(`Unknown command "${cmd}".`);

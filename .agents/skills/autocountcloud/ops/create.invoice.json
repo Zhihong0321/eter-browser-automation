@@ -1,0 +1,84 @@
+{
+  "op": "create.invoice",
+  "table": "invoice",
+  "needs": [
+    {
+      "field": "invoice.f.customer",
+      "ask_user_for": "Customer",
+      "control": "dropdown",
+      "pick_from_table": "debtor"
+    },
+    {
+      "field": "invoice.f.name",
+      "ask_user_for": "Name",
+      "control": "input"
+    },
+    {
+      "field": "invoice.f.email",
+      "ask_user_for": "Email",
+      "control": "input"
+    },
+    {
+      "field": "invoice.f.invoice_no",
+      "ask_user_for": "Invoice No.",
+      "control": "dropdown",
+      "pick_from_table": "purchaseinvoice",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "invoice.f.address",
+      "ask_user_for": "Address",
+      "control": "textarea"
+    },
+    {
+      "field": "invoice.f.sales_agent",
+      "ask_user_for": "Sales Agent",
+      "control": "dropdown",
+      "pick_from_table": "salesagent"
+    },
+    {
+      "field": "invoice.f.credit_term",
+      "ask_user_for": "Credit Term",
+      "control": "dropdown",
+      "pick_from_table": "creditterm"
+    },
+    {
+      "field": "invoice.f.date",
+      "ask_user_for": "Date",
+      "control": "date picker"
+    },
+    {
+      "field": "invoice.f.currency",
+      "ask_user_for": "Currency",
+      "control": "dropdown",
+      "pick_from_table": "currency"
+    },
+    {
+      "field": "invoice.f.rate",
+      "ask_user_for": "Rate",
+      "control": "input"
+    },
+    {
+      "field": "invoice.f.deposit_payment_amount",
+      "ask_user_for": "Deposit Payment Amount",
+      "control": "input"
+    }
+  ],
+  "steps": [
+    "navigate to /invoice",
+    "click \"New\"",
+    "fill \"Customer\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+    "fill \"Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+    "fill \"Sales Agent\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+    "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Deposit Payment Amount\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "click \"Save\"",
+    "verify: the new row appears in the invoice grid"
+  ]
+}

@@ -326,7 +326,10 @@ export function createMcpServer(): McpServer {
         'schema will sometimes get prose instead. Every call runs in a temporary chat and is completely ' +
         'STATELESS: it remembers nothing between calls, so a follow-up question must repeat whatever ' +
         'context it needs. One question at a time; concurrent callers queue behind each other and a ' +
-        'question takes roughly 4-10 seconds. Best for second opinions, summarising, classifying and ' +
+        'question takes roughly 4-10 seconds. The question is typed into a chat box, so its SIZE costs ' +
+        'real time: under ~12KB is fast, ~50KB takes about a minute, and past that the call fails on ' +
+        'its own deadline rather than answering. Send the relevant extract, not a whole document. ' +
+        'Best for second opinions, summarising, classifying and ' +
         'drafting, where a wrong answer is cheap. Returns ok:false rather than a partial answer, so ' +
         'never treat a failed call as a short reply.',
       inputSchema: {
@@ -336,7 +339,21 @@ export function createMcpServer(): McpServer {
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    handler(async ({ question }: { question: string }) => call('POST', '/api/chatgpt/ask', { question })),
+    handler(async ({ question }: { question: string }) => {
+      const result = await call('POST', '/api/chatgpt/ask', { question }) as {
+        ok?: unknown;
+        error?: unknown;
+      };
+      // HTTP success means the daemon handled the request, not that ChatGPT did.
+      // Surface a domain failure as an MCP tool error so agents cannot mistake an
+      // `ok:false` JSON payload for a successful answer.
+      if (result?.ok === false) {
+        throw new Error(typeof result.error === 'string' && result.error
+          ? result.error
+          : 'ChatGPT did not return an answer.');
+      }
+      return result;
+    }),
   );
 
   // ------------------------------------------------------------- facebook
@@ -433,11 +450,29 @@ export function createMcpServer(): McpServer {
           .optional()
           .describe('Where to look. Defaults to ["feed"]. e.g. ["group:https://www.facebook.com/groups/xyz", "search"].'),
         minScore: z.number().int().optional().describe('Gate threshold. Lower finds more and noisier. Defaults to 3.'),
+        maxRounds: z
+          .number()
+          .int()
+          .optional()
+          .describe(
+            'How deep to scroll each source, in rounds. Defaults to 150 (~10 min, ~100-165 posts). ' +
+              'Raise for a big group; the sweep still stops early when the source runs dry.',
+          ),
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    handler(async ({ topic, sources, minScore }: { topic: string; sources?: string[]; minScore?: number }) =>
-      call('POST', '/api/fb/recon', { topic, sources, minScore }),
+    handler(
+      async ({
+        topic,
+        sources,
+        minScore,
+        maxRounds,
+      }: {
+        topic: string;
+        sources?: string[];
+        minScore?: number;
+        maxRounds?: number;
+      }) => call('POST', '/api/fb/recon', { topic, sources, minScore, maxRounds }),
     ),
   );
 

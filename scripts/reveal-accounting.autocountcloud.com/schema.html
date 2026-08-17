@@ -1,0 +1,343 @@
+<title>Schema — accounting.autocountcloud.com</title>
+<style>
+ body{background:#12141a;color:#e6e6e6;font:14px/1.55 ui-sans-serif,system-ui,sans-serif;margin:0;padding:26px 30px}
+ h1{font-size:20px;margin:0 0 2px} h2{font-size:14px;margin:24px 0 6px;color:#7fd1ff;text-transform:uppercase;letter-spacing:.5px}
+ h2 em{color:#6b7482;font-style:normal;text-transform:none;letter-spacing:0;font-size:12px;margin-left:8px}
+ .sum{color:#939db0;margin-bottom:6px} .sum b{color:#fff}
+ .ent{background:#1a1e26;border:1px solid #272d38;border-radius:8px;padding:11px 13px;margin:7px 0}
+ .hd{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+ .eid{font-family:ui-monospace,monospace;color:#8ee6a8;font-size:13px}
+ .lbl{color:#fff;font-weight:600} code{color:#ffd479;font-size:12px}
+ .crud{margin-left:auto} .crud .v{display:inline-block;width:18px;text-align:center;border:1px solid #333a45;border-radius:3px;margin-left:2px;color:#454c58;font-size:11px}
+ .crud .v.on{background:#2b6ea8;color:#fff;border-color:#2b6ea8}
+ .row{margin-top:7px;display:flex;gap:4px;flex-wrap:wrap;align-items:baseline}
+ .row b{color:#6f7a8a;font-size:10px;text-transform:uppercase;min-width:74px;letter-spacing:.4px}
+ .chip{background:#232935;border-radius:4px;padding:1px 6px;font-size:12px;display:inline-flex;gap:5px;align-items:baseline}
+ .chip i{font-style:normal;font-size:9px;color:#6f7a8a;text-transform:uppercase}
+ .chip u{text-decoration:none;font-size:10px;color:#e8cd8a}
+ .chip.key{background:#2a2740} .chip.number{background:#1f3040} .chip.date{background:#203026} .chip.enum{background:#33291f}
+ .chip.f{background:#24303a} .chip.f.req{background:#3d2733;box-shadow:inset 0 0 0 1px #6d3b4d}
+ .path{margin-top:8px;font-size:12px;color:#9fd0f5;background:#151b23;border-left:2px solid #2b6ea8;padding:5px 9px;border-radius:0 4px 4px 0}
+ .path.miss{color:#ffb37a;border-color:#7a5330}
+</style>
+<h1>Schema — accounting.autocountcloud.com</h1>
+<div class="sum"><b>43</b> tables ·
+ <b>290</b> columns ·
+ <b>27</b> creatable ·
+ <b>8</b> with a traced write path ·
+ <b>68</b> foreign keys</div>
+<div class="sum">Required write fields are outlined in red — that is what a caller must supply.
+ <b>&rarr;name</b> on a field means it points at another table.</div>
+<h2>Documents <em>transactional tables — full CRUD</em></h2>
+<div class="ent" id="quotation">
+  <div class="hd"><span class="eid">quotation</span><span class="lbl">Quotation</span>
+    <code>/quotation</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 11</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Customer Code<i>key</i><u>&rarr;debtor</u></span><span class="chip text">Customer Name<i>text</i><u>&rarr;debtor</u></span><span class="chip text">Agent<i>text</i><u>&rarr;salesagent</u></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Subtotal (ex)<i>number</i></span><span class="chip number">Total<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 10</b><span class="chip f ">Customer<i>dropdown</i><u>&rarr;debtor</u></span><span class="chip f ">Name<i>input</i></span><span class="chip f ">Email<i>input</i></span><span class="chip f ">Quotation No.<i>dropdown</i></span><span class="chip f ">Address<i>textarea</i></span><span class="chip f ">Sales Agent<i>dropdown</i><u>&rarr;salesagent</u></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Payment Term<i>input</i></span><span class="chip f ">Currency<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Rate<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/quotation</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="invoice">
+  <div class="hd"><span class="eid">invoice</span><span class="lbl">Invoice</span>
+    <code>/invoice</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 12</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Customer Code<i>key</i><u>&rarr;debtor</u></span><span class="chip text">Customer Name<i>text</i><u>&rarr;debtor</u></span><span class="chip text">Agent<i>text</i><u>&rarr;salesagent</u></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Subtotal (ex)<i>number</i></span><span class="chip number">Total<i>number</i></span><span class="chip number">Outstanding<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 11</b><span class="chip f ">Customer<i>dropdown</i><u>&rarr;debtor</u></span><span class="chip f ">Name<i>input</i></span><span class="chip f ">Email<i>input</i></span><span class="chip f ">Invoice No.<i>dropdown</i><u>&rarr;purchaseinvoice</u></span><span class="chip f ">Address<i>textarea</i></span><span class="chip f ">Sales Agent<i>dropdown</i><u>&rarr;salesagent</u></span><span class="chip f ">Credit Term<i>dropdown</i><u>&rarr;creditterm</u></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Currency<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Rate<i>input</i></span><span class="chip f ">Deposit Payment Amount<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/invoice</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="creditnote">
+  <div class="hd"><span class="eid">creditnote</span><span class="lbl">Credit Note</span>
+    <code>/creditnote</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 12</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Customer Code<i>key</i><u>&rarr;debtor</u></span><span class="chip text">Customer Name<i>text</i><u>&rarr;debtor</u></span><span class="chip text">Agent<i>text</i><u>&rarr;salesagent</u></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Subtotal (ex)<i>number</i></span><span class="chip number">Total<i>number</i></span><span class="chip number">Outstanding<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 11</b><span class="chip f ">Customer<i>dropdown</i><u>&rarr;debtor</u></span><span class="chip f ">Name<i>input</i></span><span class="chip f ">Email<i>input</i></span><span class="chip f ">C/N No.<i>dropdown</i></span><span class="chip f ">Address<i>text area</i></span><span class="chip f ">Sales Agent<i>dropdown</i><u>&rarr;salesagent</u></span><span class="chip f ">Our Invoice No.<i>input</i><u>&rarr;invoice</u></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Reason<i>text area</i></span><span class="chip f ">Currency<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Rate<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/creditnote</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="purchaseorder">
+  <div class="hd"><span class="eid">purchaseorder</span><span class="lbl">Purchase Order</span>
+    <code>/purchaseorder</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 10</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Supplier Code<i>key</i><u>&rarr;creditor</u></span><span class="chip text">Supplier Name<i>text</i><u>&rarr;creditor</u></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Subtotal (ex)<i>number</i></span><span class="chip number">Total<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 9</b><span class="chip f ">Supplier<i>dropdown</i><u>&rarr;creditor</u></span><span class="chip f ">Name<i>input</i></span><span class="chip f ">Email<i>input</i></span><span class="chip f ">P/O No.<i>dropdown</i></span><span class="chip f ">Address<i>text area</i></span><span class="chip f ">Credit Term<i>dropdown</i><u>&rarr;creditterm</u></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Currency<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Rate<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/purchaseorder</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="purchaseinvoice">
+  <div class="hd"><span class="eid">purchaseinvoice</span><span class="lbl">Purchase Invoice</span>
+    <code>/purchaseinvoice</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 12</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip text">Supplier Invoice<i>text</i><u>&rarr;invoice</u></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Supplier Code<i>key</i><u>&rarr;creditor</u></span><span class="chip text">Supplier Name<i>text</i><u>&rarr;creditor</u></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Subtotal (ex)<i>number</i></span><span class="chip number">Total<i>number</i></span><span class="chip number">Outstanding<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 9</b><span class="chip f ">Supplier<i>dropdown</i><u>&rarr;creditor</u></span><span class="chip f ">Name<i>input</i></span><span class="chip f ">Credit Term<i>dropdown</i><u>&rarr;creditterm</u></span><span class="chip f ">Supplier Invoice No.<i>input</i><u>&rarr;invoice</u></span><span class="chip f ">P/I No.<i>dropdown</i></span><span class="chip f ">Address<i>textarea</i></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Currency<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Rate<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/purchaseinvoice</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="purchasereturn">
+  <div class="hd"><span class="eid">purchasereturn</span><span class="lbl">Purchase Return</span>
+    <code>/purchasereturn</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 12</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip text">Supplier C/N<i>text</i><u>&rarr;creditor</u></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Supplier Code<i>key</i><u>&rarr;creditor</u></span><span class="chip text">Supplier Name<i>text</i><u>&rarr;creditor</u></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Subtotal (ex)<i>number</i></span><span class="chip number">Total<i>number</i></span><span class="chip number">Outstanding<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 11</b><span class="chip f ">Supplier<i>dropdown</i><u>&rarr;creditor</u></span><span class="chip f ">Name<i>input</i></span><span class="chip f ">Supplier C/N No.<i>input</i><u>&rarr;creditor</u></span><span class="chip f ">Supplier Invoice No.<i>input</i><u>&rarr;invoice</u></span><span class="chip f ">P/R No.<i>dropdown</i></span><span class="chip f ">Address<i>textarea</i></span><span class="chip f ">Reason<i>input</i></span><span class="chip f ">Credit Term<i>dropdown</i><u>&rarr;creditterm</u></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Currency<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Rate<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/purchasereturn</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="cashbookentry">
+  <div class="hd"><span class="eid">cashbookentry</span><span class="lbl">Cash Book Entry</span>
+    <code>/cashbookentry</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 11</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip enum">Type<i>enum</i></span><span class="chip text">Pay To / Receive From<i>text</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Net Total<i>number</i></span><span class="chip number">Local Net Total<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="journalentry">
+  <div class="hd"><span class="eid">journalentry</span><span class="lbl">Journal Entry</span>
+    <code>/journalentry</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 8</b><span class="chip key">2 Doc. No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Curr.<i>text</i></span><span class="chip number">Curr. Rate<i>number</i></span><span class="chip number">Net Total<i>number</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 5</b><span class="chip f ">Description<i>text input</i></span><span class="chip f ">Voucher No.<i>dropdown</i></span><span class="chip f ">Journal Type<i>dropdown</i><u>&rarr;journaltype</u></span><span class="chip f ">Currency Code<i>dropdown</i><u>&rarr;currency</u></span><span class="chip f ">Date<i>date picker</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/journalentry</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>V</b></div>
+</div>
+<div class="ent" id="knockoffentry">
+  <div class="hd"><span class="eid">knockoffentry</span><span class="lbl">Knock Off Entry</span>
+    <code>/knockoffentry</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 8</b><span class="chip key">2 Knock Off No.<i>key</i></span><span class="chip date">1 Date<i>date</i></span><span class="chip key">Customer/Supplier Code<i>key</i><u>&rarr;debtor</u></span><span class="chip text">Company Name<i>text</i></span><span class="chip key">Curr. Code<i>key</i></span><span class="chip number">Total Amount<i>number</i></span><span class="chip text">Gain/Loss<i>text</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="row wr"><b>write 8</b><span class="chip f ">Customer/Supplier Code<i>dropdown</i><u>&rarr;debtor</u></span><span class="chip f ">Knock Off No.<i>dropdown</i></span><span class="chip f ">Company Name<i>input</i></span><span class="chip f ">Currency Code<i>input</i><u>&rarr;currency</u></span><span class="chip f ">Date<i>date picker</i></span><span class="chip f ">Search<i>input</i></span><span class="chip f ">Total Applied Amount<i>input</i></span><span class="chip f ">Gain/(Loss)<i>input</i></span></div>
+    <div class="path">CREATE &rarr; open <code>/knockoffentry</code> &rarr; click <b>New</b> &rarr; form at <code></code> &rarr; click <b>S</b></div>
+</div>
+<div class="ent" id="bankreconciliation">
+  <div class="hd"><span class="eid">bankreconciliation</span><span class="lbl">Bank Reconciliation</span>
+    <code>/bankreconciliation</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 6</b><span class="chip date">Bank Statement Date<i>date</i><u>&rarr;profitandlossstatement</u></span><span class="chip number">Account Balance<i>number</i><u>&rarr;trialbalance</u></span><span class="chip number">Actual Bank Statement Balance<i>number</i><u>&rarr;trialbalance</u></span><span class="chip number">System Bank Statement Balance<i>number</i><u>&rarr;trialbalance</u></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="banktransactions">
+  <div class="hd"><span class="eid">banktransactions</span><span class="lbl">Bank Transactions</span>
+    <code>/banktransactions</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 7</b><span class="chip date">Date<i>date</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Reference<i>text</i></span><span class="chip text">Spent<i>text</i></span><span class="chip text">Received<i>text</i></span><span class="chip enum">Status<i>enum</i></span><span class="chip text">Action<i>text</i></span></div>
+  
+</div>
+<h2>Master data <em>the tables documents point at</em></h2>
+<div class="ent" id="banksettings_mbb">
+  <div class="hd"><span class="eid">banksettings_mbb</span><span class="lbl">Bank Settings</span>
+    <code>/banksettings/mbb</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip key">Hong Leong Bank Account No.<i>key</i><u>&rarr;account</u></span><span class="chip text">Bank Account<i>text</i><u>&rarr;account</u></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip text">Bank Account Description<i>text</i><u>&rarr;account</u></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="currency">
+  <div class="hd"><span class="eid">currency</span><span class="lbl">Currency</span>
+    <code>/currency</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 8</b><span class="chip key">Currency Code<i>key</i></span><span class="chip text">Currency Word<i>text</i></span><span class="chip text">Currency Symbol<i>text</i></span><span class="chip number">Bank Buy Rate<i>number</i></span><span class="chip number">Bank Sell Rate<i>number</i></span><span class="chip text">Exchange Gain Account<i>text</i><u>&rarr;account</u></span><span class="chip text">Exchange Loss Account<i>text</i><u>&rarr;account</u></span><span class="chip text">Exchange Gain/Loss Journal<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="numberingformat">
+  <div class="hd"><span class="eid">numberingformat</span><span class="lbl">Numbering Format</span>
+    <code>/numberingformat</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 6</b><span class="chip text">Name<i>text</i></span><span class="chip key">Next Number<i>key</i></span><span class="chip text">Format<i>text</i></span><span class="chip text">Default<i>text</i></span><span class="chip date">One Month One Set<i>date</i></span><span class="chip text">Sample<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="account">
+  <div class="hd"><span class="eid">account</span><span class="lbl">Chart of Account</span>
+    <code>/account</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v on">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip text">Description<i>text</i></span><span class="chip key">Acc. No.<i>key</i></span><span class="chip enum">Special Account Type<i>enum</i><u>&rarr;accounttype</u></span><span class="chip date">Up To Date Balance<i>date</i><u>&rarr;trialbalance</u></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="accounttype">
+  <div class="hd"><span class="eid">accounttype</span><span class="lbl">Account Type</span>
+    <code>/accounttype</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 5</b><span class="chip enum">Account Type<i>enum</i><u>&rarr;account</u></span><span class="chip text">Description<i>text</i></span><span class="chip text">Alternate Description<i>text</i></span><span class="chip text">Reporting Category<i>text</i><u>&rarr;report_all</u></span><span class="chip text">System/User Defined<i>text</i><u>&rarr;user</u></span></div>
+  
+</div>
+<div class="ent" id="debtor">
+  <div class="hd"><span class="eid">debtor</span><span class="lbl">Customer</span>
+    <code>/debtor</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 7</b><span class="chip key">Customer Code<i>key</i></span><span class="chip text">Company Name<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip text">Phone<i>text</i></span><span class="chip text">Area<i>text</i><u>&rarr;area</u></span><span class="chip text">Agent<i>text</i><u>&rarr;salesagent</u></span><span class="chip text">Active<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="creditor">
+  <div class="hd"><span class="eid">creditor</span><span class="lbl">Supplier</span>
+    <code>/creditor</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 6</b><span class="chip key">Supplier Code<i>key</i></span><span class="chip text">Company Name<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip text">Phone<i>text</i></span><span class="chip text">Area<i>text</i><u>&rarr;area</u></span><span class="chip text">Active<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="journaltype">
+  <div class="hd"><span class="eid">journaltype</span><span class="lbl">Journal Type</span>
+    <code>/journaltype</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v on">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip enum">Journal Type<i>enum</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Alternate Description<i>text</i></span><span class="chip enum">Entry Type<i>enum</i><u>&rarr;cashbookentry</u></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="paymentmethod">
+  <div class="hd"><span class="eid">paymentmethod</span><span class="lbl">Payment Method</span>
+    <code>/paymentmethod</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v on">D</span></span></div>
+  <div class="row"><b>columns 9</b><span class="chip enum">Payment Method Type<i>enum</i></span><span class="chip enum">Payment Method<i>enum</i></span><span class="chip text">Bank A/C<i>text</i></span><span class="chip enum">Journal Type<i>enum</i><u>&rarr;journaltype</u></span><span class="chip text">Payment By<i>text</i></span><span class="chip key">Accept Cheque No.<i>key</i></span><span class="chip text">Bank Charge A/C<i>text</i></span><span class="chip number">Bank Charge Rate (%)<i>number</i></span><span class="chip text">Merge Bank Charge Trans.<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="area">
+  <div class="hd"><span class="eid">area</span><span class="lbl">Area</span>
+    <code>/area</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 3</b><span class="chip key">Area Code<i>key</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Alternate Description<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="creditterm">
+  <div class="hd"><span class="eid">creditterm</span><span class="lbl">Credit Term</span>
+    <code>/creditterm</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v on">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip number">Credit Term<i>number</i></span><span class="chip enum">Type Of Terms<i>enum</i></span><span class="chip text">Days<i>text</i></span><span class="chip date">Months<i>date</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="salesagent">
+  <div class="hd"><span class="eid">salesagent</span><span class="lbl">Sales Agent</span>
+    <code>/salesagent</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip text">Sales Agent<i>text</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Alternate Description<i>text</i></span><span class="chip text">Active<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="product">
+  <div class="hd"><span class="eid">product</span><span class="lbl">Product</span>
+    <code>/product</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 5</b><span class="chip key">Product Code<i>key</i></span><span class="chip text">Product Name<i>text</i></span><span class="chip enum">Product Type<i>enum</i></span><span class="chip text">Unit<i>text</i></span><span class="chip enum">Status<i>enum</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="productposting">
+  <div class="hd"><span class="eid">productposting</span><span class="lbl">Product Posting</span>
+    <code>/productposting</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 8</b><span class="chip text">Product Posting<i>text</i><u>&rarr;product</u></span><span class="chip text">Description<i>text</i></span><span class="chip text">Default<i>text</i></span><span class="chip text">Sales Account<i>text</i><u>&rarr;account</u></span><span class="chip text">Sales Return Account<i>text</i><u>&rarr;purchasereturn</u></span><span class="chip text">Purchase Account<i>text</i><u>&rarr;account</u></span><span class="chip text">Purchase Return Account<i>text</i><u>&rarr;purchasereturn</u></span><span class="chip number">Balance Stock Account<i>number</i><u>&rarr;trialbalance</u></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<h2>Reports <em>read-only projections</em></h2>
+<div class="ent" id="ledger">
+  <div class="hd"><span class="eid">ledger</span><span class="lbl">Ledger</span>
+    <code>/ledger</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 9</b><span class="chip date">Date<i>date</i></span><span class="chip enum">Journal Type<i>enum</i><u>&rarr;journaltype</u></span><span class="chip key">Doc. No.<i>key</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Ref<i>text</i></span><span class="chip text">Name<i>text</i></span><span class="chip text">Local DR<i>text</i></span><span class="chip text">Local CR<i>text</i></span><span class="chip number">Local Balance<i>number</i><u>&rarr;trialbalance</u></span></div>
+  
+</div>
+<div class="ent" id="journaloftransaction">
+  <div class="hd"><span class="eid">journaloftransaction</span><span class="lbl">Journal of Transaction</span>
+    <code>/journaloftransaction</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 9</b><span class="chip date">Date<i>date</i></span><span class="chip key">Acc. No.<i>key</i></span><span class="chip text">Acc. Desc.<i>text</i></span><span class="chip key">Doc. No.<i>key</i></span><span class="chip text">Ref<i>text</i></span><span class="chip text">Description<i>text</i></span><span class="chip text">Name<i>text</i></span><span class="chip text">Local DR<i>text</i></span><span class="chip text">Local CR<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="trialbalance">
+  <div class="hd"><span class="eid">trialbalance</span><span class="lbl">Trial Balance</span>
+    <code>/trialbalance</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 2</b><span class="chip key">Acc. No.<i>key</i></span><span class="chip text">Description<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="profitandlossstatement">
+  <div class="hd"><span class="eid">profitandlossstatement</span><span class="lbl">Profit and Loss Statement</span>
+    <code>/profitandlossstatement</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 2</b><span class="chip text">Description<i>text</i></span><span class="chip key">Acc. No.<i>key</i></span></div>
+  
+</div>
+<div class="ent" id="balancesheetstatement">
+  <div class="hd"><span class="eid">balancesheetstatement</span><span class="lbl">Balance Sheet Statement</span>
+    <code>/balancesheetstatement</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 2</b><span class="chip text">Description<i>text</i></span><span class="chip key">Acc. No.<i>key</i></span></div>
+  
+</div>
+<div class="ent" id="debtoraging">
+  <div class="hd"><span class="eid">debtoraging</span><span class="lbl">Debtor Aging</span>
+    <code>/debtoraging</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 11</b><span class="chip key">Debtor Code<i>key</i></span><span class="chip text">Company Name<i>text</i></span><span class="chip text">Sales Agent<i>text</i><u>&rarr;salesagent</u></span><span class="chip text">Phone 1<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip text">CURRENT<i>text</i></span><span class="chip date">1 MONTH<i>date</i></span><span class="chip date">2 MONTHS<i>date</i></span><span class="chip text">3 &amp; OVER<i>text</i></span><span class="chip number">Total Over Due<i>number</i></span><span class="chip number">Balance<i>number</i><u>&rarr;trialbalance</u></span></div>
+  
+</div>
+<div class="ent" id="creditoraging">
+  <div class="hd"><span class="eid">creditoraging</span><span class="lbl">Creditor Aging</span>
+    <code>/creditoraging</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 10</b><span class="chip number">Creditor Code<i>number</i></span><span class="chip text">Company Name<i>text</i></span><span class="chip text">Phone 1<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip text">CURRENT<i>text</i></span><span class="chip date">1 MONTH<i>date</i></span><span class="chip date">2 MONTHS<i>date</i></span><span class="chip text">3 &amp; OVER<i>text</i></span><span class="chip number">Total Over Due<i>number</i></span><span class="chip number">Balance<i>number</i><u>&rarr;trialbalance</u></span></div>
+  
+</div>
+<div class="ent" id="debtorstatement">
+  <div class="hd"><span class="eid">debtorstatement</span><span class="lbl">Debtor Statement</span>
+    <code>/debtorstatement</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 7</b><span class="chip key">Debtor Code<i>key</i></span><span class="chip text">Company Name<i>text</i></span><span class="chip text">Sales Agent<i>text</i><u>&rarr;salesagent</u></span><span class="chip text">Area<i>text</i><u>&rarr;area</u></span><span class="chip text">Phone 1<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip number">Balance<i>number</i><u>&rarr;trialbalance</u></span></div>
+  
+</div>
+<div class="ent" id="creditorstatement">
+  <div class="hd"><span class="eid">creditorstatement</span><span class="lbl">Creditor Statement</span>
+    <code>/creditorstatement</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 6</b><span class="chip number">Creditor Code<i>number</i></span><span class="chip text">Company Name<i>text</i></span><span class="chip text">Area<i>text</i><u>&rarr;area</u></span><span class="chip text">Phone 1<i>text</i></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip number">Balance<i>number</i><u>&rarr;trialbalance</u></span></div>
+  
+</div>
+<h2>System <em>configuration</em></h2>
+<div class="ent" id="report_all">
+  <div class="hd"><span class="eid">report_all</span><span class="lbl">Design Report</span>
+    <code>/report/all</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 2</b><span class="chip text">Report Name<i>text</i></span><span class="chip enum">Report Type<i>enum</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="audittrail">
+  <div class="hd"><span class="eid">audittrail</span><span class="lbl">Audit Trail</span>
+    <code>/audittrail</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 5</b><span class="chip text">Event Time<i>text</i></span><span class="chip key">User ID<i>key</i><u>&rarr;user</u></span><span class="chip enum">Record Type<i>enum</i></span><span class="chip key">Record ID<i>key</i></span><span class="chip text">Description<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="fileattachment">
+  <div class="hd"><span class="eid">fileattachment</span><span class="lbl">File Attachment</span>
+    <code>/fileattachment</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 5</b><span class="chip date">Upload Date<i>date</i></span><span class="chip text">File Name<i>text</i></span><span class="chip text">File Size<i>text</i></span><span class="chip enum">File Type<i>enum</i></span><span class="chip text">Linked Document<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="documentscanner">
+  <div class="hd"><span class="eid">documentscanner</span><span class="lbl">Document Scanner</span>
+    <code>/documentscanner</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v on">D</span></span></div>
+  <div class="row"><b>columns 1</b><span class="chip text">File Name<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="fiscalyear">
+  <div class="hd"><span class="eid">fiscalyear</span><span class="lbl">Fiscal Year</span>
+    <code>/fiscalyear</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip date">Fiscal Year Name<i>date</i></span><span class="chip date">Start Date<i>date</i></span><span class="chip date">End Date<i>date</i></span><span class="chip date">Current Year<i>date</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="openingbalance">
+  <div class="hd"><span class="eid">openingbalance</span><span class="lbl">Opening Balance</span>
+    <code>/openingbalance</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 5</b><span class="chip text">Description<i>text</i></span><span class="chip key">Acc. No.<i>key</i></span><span class="chip enum">Special Account Type<i>enum</i><u>&rarr;account</u></span><span class="chip text">DR<i>text</i></span><span class="chip text">CR<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="stockvalue">
+  <div class="hd"><span class="eid">stockvalue</span><span class="lbl">Periodic Stock Value</span>
+    <code>/stockvalue</code>
+    <span class="crud"><span class="v ">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 13</b><span class="chip text">Opening - Dec 2025<i>text</i></span><span class="chip text">Jan 2026<i>text</i></span><span class="chip text">Feb 2026<i>text</i></span><span class="chip text">Mar 2026<i>text</i></span><span class="chip text">Apr 2026<i>text</i></span><span class="chip text">May 2026<i>text</i></span><span class="chip text">Jun 2026<i>text</i></span><span class="chip text">Jul 2026<i>text</i></span><span class="chip text">Aug 2026<i>text</i></span><span class="chip text">Sep 2026<i>text</i></span><span class="chip text">Oct 2026<i>text</i></span><span class="chip text">Nov 2026<i>text</i></span><span class="chip text">Dec 2026<i>text</i></span></div>
+  
+</div>
+<div class="ent" id="user">
+  <div class="hd"><span class="eid">user</span><span class="lbl">User</span>
+    <code>/user</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v on">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 7</b><span class="chip key">User ID<i>key</i></span><span class="chip text">Name<i>text</i></span><span class="chip text">User Roles<i>text</i></span><span class="chip text">Department<i>text</i></span><span class="chip text">Accountant<i>text</i><u>&rarr;account</u></span><span class="chip text">Inviting Email<i>text</i></span><span class="chip text">Active<i>text</i></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>
+<div class="ent" id="banksettings_default">
+  <div class="hd"><span class="eid">banksettings_default</span><span class="lbl">Bank Settings</span>
+    <code>/banksettings/default</code>
+    <span class="crud"><span class="v on">C</span><span class="v on">R</span><span class="v ">U</span><span class="v ">D</span></span></div>
+  <div class="row"><b>columns 4</b><span class="chip key">Hong Leong Bank Account No.<i>key</i><u>&rarr;account</u></span><span class="chip text">Bank Account<i>text</i><u>&rarr;account</u></span><span class="chip text">Currency<i>text</i><u>&rarr;currency</u></span><span class="chip text">Bank Account Description<i>text</i><u>&rarr;account</u></span></div>
+  <div class="path miss">CREATE path not traced — run <code>--forms</code></div>
+</div>

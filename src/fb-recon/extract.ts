@@ -29,6 +29,16 @@ export interface RawPost {
   index: number;
   author: string | null;
   authorUrl: string | null;
+  /**
+   * The author's avatar, straight off the rendered page — free, because the
+   * image is already loaded to draw the post.
+   *
+   * It is a SIGNED CDN url and it EXPIRES, typically within days. Treat it as a
+   * thumbnail for eyeballing a list, never as durable storage; if the face has
+   * to survive, the bytes must be downloaded, and that is a real request per
+   * person rather than a free read.
+   */
+  avatarUrl: string | null;
   text: string;
   permalink: string | null;
   timestamp: string | null;
@@ -39,6 +49,7 @@ export interface RawComment {
   index: number;
   author: string | null;
   authorUrl: string | null;
+  avatarUrl: string | null;
   text: string;
 }
 
@@ -100,6 +111,46 @@ const POST_EXTRACT = () => {
     );
   };
 
+  /**
+   * The author's face, taken from the DOM already on screen — no extra request,
+   * no navigation. Two shapes exist in the wild: a plain <img src>, and an
+   * <image> inside an <svg> (Facebook uses the SVG form for circular crops).
+   *
+   * Anchored to the AUTHOR LINK rather than "first CDN image in the post",
+   * because in a photo post the first CDN image is the photo itself and you get
+   * a solar panel where the face should be. Falls back to matching the img's
+   * alt text against the author's name, which is how Facebook labels avatars.
+   */
+  const pickAvatar = (el: Element | null): string | null => {
+    if (!el) return null;
+    const img = el.querySelector('img');
+    const fromImg = img?.getAttribute('src');
+    if (fromImg && /fbcdn|scontent/i.test(fromImg)) return fromImg;
+    const svgImg = el.querySelector('image');
+    const fromSvg = svgImg?.getAttribute('xlink:href') ?? svgImg?.getAttribute('href');
+    if (fromSvg && /fbcdn|scontent/i.test(fromSvg)) return fromSvg;
+    return null;
+  };
+
+  const avatarFor = (root: HTMLElement, authorLink: HTMLAnchorElement | null, name: string | null): string | null => {
+    const href = authorLink?.getAttribute('href');
+    if (href) {
+      for (const a of Array.from(root.querySelectorAll('a[href]'))) {
+        if (a.getAttribute('href') !== href) continue;
+        const hit = pickAvatar(a);
+        if (hit) return hit;
+      }
+    }
+    if (name) {
+      for (const img of Array.from(root.querySelectorAll('img[alt]'))) {
+        const alt = img.getAttribute('alt') ?? '';
+        const src = img.getAttribute('src') ?? '';
+        if (alt.includes(name) && /fbcdn|scontent/i.test(src)) return src;
+      }
+    }
+    return null;
+  };
+
   const roots = new Map<Element, HTMLElement>();
 
   for (const msg of Array.from(document.querySelectorAll(MESSAGE_SEL_PLACEHOLDER))) {
@@ -129,15 +180,18 @@ const POST_EXTRACT = () => {
       .map((a) => a.getAttribute('aria-label'))
       .find((l) => l && dateRe.test(l) && !/^\s*$/.test(l));
 
+    // Group member links carry no aria-label, so fall back to the link text —
+    // without this every group contact is named after its own user id.
+    const author =
+      clean(authorLink?.getAttribute('aria-label')) ||
+      clean(authorLink?.textContent) ||
+      null;
+
     return {
       index,
-      // Group member links carry no aria-label, so fall back to the link text —
-      // without this every group contact is named after its own user id.
-      author:
-        clean(authorLink?.getAttribute('aria-label')) ||
-        clean(authorLink?.textContent) ||
-        null,
+      author,
       authorUrl: tidyUrl(authorLink?.getAttribute('href') ?? null),
+      avatarUrl: avatarFor(root, authorLink, author),
       text: rawText.slice(0, 4000),
       permalink: perma ? tidyUrl(perma.getAttribute('href')) : null,
       timestamp: clean(timeLabel) || null,
@@ -175,10 +229,19 @@ const COMMENT_EXTRACT = () => {
       .replace(/\s+/g, ' ')
       .trim();
 
+    // Same two shapes as a post avatar; a comment row is small enough that the
+    // first CDN image in it IS the commenter's face.
+    const pic = el.querySelector('img[src*="fbcdn"], img[src*="scontent"]');
+    const svgPic = el.querySelector('image');
+    const svgHref = svgPic?.getAttribute('xlink:href') ?? svgPic?.getAttribute('href') ?? null;
+
     return {
       index,
       author: named?.[1]?.trim() || clean(authorLink?.textContent) || null,
       authorUrl: tidyUrl(authorLink?.getAttribute('href') ?? null),
+      avatarUrl:
+        pic?.getAttribute('src') ??
+        (svgHref && /fbcdn|scontent/i.test(svgHref) ? svgHref : null),
       text: body.slice(0, 2000),
     };
   });

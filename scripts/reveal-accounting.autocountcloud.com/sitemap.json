@@ -1,0 +1,2934 @@
+[
+  {
+    "href": "/dashboard",
+    "text": "",
+    "menu": "(top bar)",
+    "landed": "/dashboard",
+    "title": "Dashboard - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_dashboard.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Last 30 days"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/quotation",
+    "text": "Quotation",
+    "menu": "Sales",
+    "landed": "/quotation",
+    "title": "Quotation - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_quotation.png",
+    "columns": [
+      "2 Doc. No.",
+      "1 Date",
+      "Customer Code",
+      "Customer Name",
+      "Agent",
+      "Curr. Code",
+      "Curr. Rate",
+      "Subtotal (ex)",
+      "Total",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/invoice",
+    "text": "Invoice",
+    "menu": "Sales",
+    "landed": "/invoice",
+    "title": "Invoice - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_invoice.png",
+    "columns": [
+      "2 Doc. No.",
+      "1 Date",
+      "Customer Code",
+      "Customer Name",
+      "Agent",
+      "Curr. Code",
+      "Curr. Rate",
+      "Subtotal (ex)",
+      "Total",
+      "Outstanding",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Copy from Quotation",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/creditnote",
+    "text": "Credit Note",
+    "menu": "Sales",
+    "landed": "/creditnote",
+    "title": "Credit Note - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_creditnote.png",
+    "columns": [
+      "2 Doc. No.",
+      "1 Date",
+      "Customer Code",
+      "Customer Name",
+      "Agent",
+      "Curr. Code",
+      "Curr. Rate",
+      "Subtotal (ex)",
+      "Total",
+      "Outstanding",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Copy from Invoice",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/purchaseorder",
+    "text": "Purchase Order",
+    "menu": "Purchase",
+    "landed": "/purchaseorder",
+    "title": "Purchase Order - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_purchaseorder.png",
+    "columns": [
+      "2 Doc. No.",
+      "1 Date",
+      "Supplier Code",
+      "Supplier Name",
+      "Curr. Code",
+      "Curr. Rate",
+      "Subtotal (ex)",
+      "Total",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/purchaseinvoice",
+    "text": "Purchase Invoice",
+    "menu": "Purchase",
+    "landed": "/purchaseinvoice",
+    "title": "Purchase Invoice - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_purchaseinvoice.png",
+    "columns": [
+      "2 Doc. No.",
+      "Supplier Invoice",
+      "1 Date",
+      "Supplier Code",
+      "Supplier Name",
+      "Curr. Code",
+      "Curr. Rate",
+      "Subtotal (ex)",
+      "Total",
+      "Outstanding",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Copy from Purchase Order",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/purchasereturn",
+    "text": "Purchase Return",
+    "menu": "Purchase",
+    "landed": "/purchasereturn",
+    "title": "Purchase Return - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_purchasereturn.png",
+    "columns": [
+      "2 Doc. No.",
+      "Supplier C/N",
+      "1 Date",
+      "Supplier Code",
+      "Supplier Name",
+      "Curr. Code",
+      "Curr. Rate",
+      "Subtotal (ex)",
+      "Total",
+      "Outstanding",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Copy from Purchase Invoice",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/cashbookentry",
+    "text": "Cash Book Entry",
+    "menu": "Accounting",
+    "landed": "/cashbookentry",
+    "title": "Cash Book Entry - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_cashbookentry.png",
+    "columns": [
+      "2 Doc. No.",
+      "1 Date",
+      "Type",
+      "Pay To / Receive From",
+      "Description",
+      "Currency",
+      "Curr. Rate",
+      "Net Total",
+      "Local Net Total",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "New Receipt Voucher",
+      "New Payment Voucher",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/journalentry",
+    "text": "Journal Entry",
+    "menu": "Accounting",
+    "landed": "/journalentry",
+    "title": "Journal Entry - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_journalentry.png",
+    "columns": [
+      "2 Doc. No.",
+      "1 Date",
+      "Description",
+      "Curr.",
+      "Curr. Rate",
+      "Net Total",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Last 12 months",
+      "Batch Actions",
+      "Print Listing",
+      "Select",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/knockoffentry",
+    "text": "Knock Off Entry",
+    "menu": "Accounting",
+    "landed": "/knockoffentry",
+    "title": "Knock Off Entry - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_knockoffentry.png",
+    "columns": [
+      "2 Knock Off No.",
+      "1 Date",
+      "Customer/Supplier Code",
+      "Company Name",
+      "Curr. Code",
+      "Total Amount",
+      "Gain/Loss",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Print Listing",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/bankreconciliation",
+    "text": "Bank Reconciliation",
+    "menu": "Accounting",
+    "landed": "/bankreconciliation",
+    "title": "Bank Reconciliation - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_bankreconciliation.png",
+    "columns": [
+      "Bank Statement Date",
+      "Account Balance",
+      "Actual Bank Statement Balance",
+      "System Bank Statement Balance",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/banktransactions",
+    "text": "Bank Transactions",
+    "menu": "Accounting",
+    "landed": "/banktransactions",
+    "title": "Bank Transactions - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_banktransactions.png",
+    "columns": [
+      "Date",
+      "Description",
+      "Reference",
+      "Spent",
+      "Received",
+      "Status",
+      "Action"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Import",
+      "Import from File",
+      "Batch Actions",
+      "Bank Rules",
+      "Reconciliation Report",
+      "Select",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/ledger",
+    "text": "Ledger",
+    "menu": "Reports",
+    "landed": "/ledger",
+    "title": "Ledger - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_ledger.png",
+    "columns": [
+      "Date",
+      "Journal Type",
+      "Doc. No.",
+      "Description",
+      "Ref",
+      "Name",
+      "Local DR",
+      "Local CR",
+      "Local Balance"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/journaloftransaction",
+    "text": "Journal of Transaction",
+    "menu": "Reports",
+    "landed": "/journaloftransaction",
+    "title": "Journal of Transaction - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_journaloftransaction.png",
+    "columns": [
+      "Date",
+      "Acc. No.",
+      "Acc. Desc.",
+      "Doc. No.",
+      "Ref",
+      "Description",
+      "Name",
+      "Local DR",
+      "Local CR"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/trialbalance",
+    "text": "Trial Balance",
+    "menu": "Reports",
+    "landed": "/trialbalance",
+    "title": "Trial Balance - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_trialbalance.png",
+    "columns": [
+      "Acc. No.",
+      "Description"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/profitandlossstatement",
+    "text": "Profit and Loss Statement",
+    "menu": "Reports",
+    "landed": "/profitandlossstatement",
+    "title": "Profit and Loss Statement - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_profitandlossstatement.png",
+    "columns": [
+      "Description",
+      "Acc. No."
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Default Layout"
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/balancesheetstatement",
+    "text": "Balance Sheet Statement",
+    "menu": "Reports",
+    "landed": "/balancesheetstatement",
+    "title": "Balance Sheet Statement - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_balancesheetstatement.png",
+    "columns": [
+      "Description",
+      "Acc. No."
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Default Layout"
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/debtoraging",
+    "text": "Debtor Aging",
+    "menu": "Reports",
+    "landed": "/debtoraging",
+    "title": "Debtor Aging - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_debtoraging.png",
+    "columns": [
+      "Debtor Code",
+      "Company Name",
+      "Sales Agent",
+      "Phone 1",
+      "Currency",
+      "CURRENT",
+      "1 MONTH",
+      "2 MONTHS",
+      "3 & OVER",
+      "Total Over Due",
+      "Balance"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/creditoraging",
+    "text": "Creditor Aging",
+    "menu": "Reports",
+    "landed": "/creditoraging",
+    "title": "Creditor Aging - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_creditoraging.png",
+    "columns": [
+      "Creditor Code",
+      "Company Name",
+      "Phone 1",
+      "Currency",
+      "CURRENT",
+      "1 MONTH",
+      "2 MONTHS",
+      "3 & OVER",
+      "Total Over Due",
+      "Balance"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/debtorstatement",
+    "text": "Debtor Statement",
+    "menu": "Reports",
+    "landed": "/debtorstatement",
+    "title": "Debtor Statement - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_debtorstatement.png",
+    "columns": [
+      "Debtor Code",
+      "Company Name",
+      "Sales Agent",
+      "Area",
+      "Phone 1",
+      "Currency",
+      "Balance"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Send Statement",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/creditorstatement",
+    "text": "Creditor Statement",
+    "menu": "Reports",
+    "landed": "/creditorstatement",
+    "title": "Creditor Statement - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_creditorstatement.png",
+    "columns": [
+      "Creditor Code",
+      "Company Name",
+      "Area",
+      "Phone 1",
+      "Currency",
+      "Balance"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Print Report",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/report/all",
+    "text": "Design Report",
+    "menu": "Tools",
+    "landed": "/report/all",
+    "title": "Design Report - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_report_all.png",
+    "columns": [
+      "Report Name",
+      "Report Type"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Design",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "16",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/audittrail",
+    "text": "Audit Trail",
+    "menu": "Tools",
+    "landed": "/audittrail",
+    "title": "Audit Trail - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_audittrail.png",
+    "columns": [
+      "Event Time",
+      "User ID",
+      "Record Type",
+      "Record ID",
+      "Description"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Inquiry",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/fileattachment",
+    "text": "File Attachment",
+    "menu": "Tools",
+    "landed": "/fileattachment",
+    "title": "File Attachment - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_fileattachment.png",
+    "columns": [
+      "Upload Date",
+      "File Name",
+      "File Size",
+      "File Type",
+      "Linked Document"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Upload Files",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "file",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/documentscanner",
+    "text": "Document Scanner",
+    "menu": "Tools",
+    "landed": "/documentscanner",
+    "title": "Document Scanner - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_documentscanner.png",
+    "columns": [
+      "File Name"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Upload",
+      "Convert",
+      "Invoice",
+      "Purchase Invoice",
+      "Receipt Voucher",
+      "Payment Voucher",
+      "Delete",
+      "Add to Payment Voucher",
+      "Refresh file list",
+      "Hide file list"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/masterdata",
+    "text": "",
+    "menu": "(top bar)",
+    "landed": "/masterdata",
+    "title": "Master Data - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_masterdata.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/companyprofile",
+    "text": "Company Profile",
+    "menu": "(top bar)",
+    "landed": "/companyprofile",
+    "title": "Company Profile - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_companyprofile.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Edit"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/fiscalyear",
+    "text": "Fiscal Year",
+    "menu": "(top bar)",
+    "landed": "/fiscalyear",
+    "title": "Fiscal Year - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_fiscalyear.png",
+    "columns": [
+      "Fiscal Year Name",
+      "Start Date",
+      "End Date",
+      "Current Year"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "New Previous Fiscal Year",
+      "New Next Fiscal Year",
+      "Edit",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Toggle Dropdown",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page",
+      "Manage Period Lock"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/openingbalance",
+    "text": "Opening Balance",
+    "menu": "(top bar)",
+    "landed": "/openingbalance",
+    "title": "Opening Balance - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_openingbalance.png",
+    "columns": [
+      "Description",
+      "Acc. No.",
+      "Special Account Type",
+      "DR",
+      "CR"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Print Report",
+      "Column Chooser",
+      "overflow",
+      "100",
+      "200",
+      "500",
+      "1000",
+      "Previous Page",
+      "1",
+      "Next Page",
+      "Save"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/stockvalue",
+    "text": "Periodic Stock Value",
+    "menu": "(top bar)",
+    "landed": "/stockvalue",
+    "title": "Periodic Stock Value - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_stockvalue.png",
+    "columns": [
+      "Opening - Dec 2025",
+      "Jan 2026",
+      "Feb 2026",
+      "Mar 2026",
+      "Apr 2026",
+      "May 2026",
+      "Jun 2026",
+      "Jul 2026",
+      "Aug 2026",
+      "Sep 2026",
+      "Oct 2026",
+      "Nov 2026",
+      "Dec 2026"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Export all data to Excel",
+      "overflow",
+      "Save"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/user",
+    "text": "User",
+    "menu": "(top bar)",
+    "landed": "/user",
+    "title": "User - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_user.png",
+    "columns": [
+      "User ID",
+      "Name",
+      "User Roles",
+      "Department",
+      "Accountant",
+      "Inviting Email",
+      "Active"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/settings/default",
+    "text": "Settings",
+    "menu": "(top bar)",
+    "landed": "/settings/default",
+    "title": "Settings - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_settings_default.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "General",
+      "Application Settings",
+      "Decimals",
+      "Account Code Format",
+      "API Keys",
+      "Approval Workflow",
+      "e-Invoicing",
+      "Scan Document Settings",
+      "Invoicing",
+      "Select",
+      "Cancel",
+      "Save"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      },
+      {
+        "type": "submit",
+        "name": ""
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/banksettings/default",
+    "text": "Bank Settings",
+    "menu": "(top bar)",
+    "landed": "/banksettings/default",
+    "title": "Bank Settings - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_banksettings_default.png",
+    "columns": [
+      "Hong Leong Bank Account No.",
+      "Bank Account",
+      "Currency",
+      "Bank Account Description"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Connect",
+      "Add HLB Account"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/userprofile",
+    "text": "User Profile",
+    "menu": "(top bar)",
+    "landed": "/userprofile",
+    "title": "User Profile - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_userprofile.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Select",
+      "Edit",
+      "Change Password"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Select..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/mainmenu/Sales",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/mainmenu/Sales",
+    "title": "Main Menu - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_mainmenu_Sales.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/mainmenu/Purchase",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/mainmenu/Purchase",
+    "title": "Main Menu - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_mainmenu_Purchase.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/mainmenu/Accounting",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/mainmenu/Accounting",
+    "title": "Main Menu - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_mainmenu_Accounting.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/banksettings/mbb",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/banksettings/mbb",
+    "title": "Bank Settings - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_banksettings_mbb.png",
+    "columns": [
+      "Hong Leong Bank Account No.",
+      "Bank Account",
+      "Currency",
+      "Bank Account Description"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Connect",
+      "Add HLB Account"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      },
+      {
+        "type": "text",
+        "name": ""
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/mainmenu/Tools",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/mainmenu/Tools",
+    "title": "Main Menu - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_mainmenu_Tools.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/currency",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/currency",
+    "title": "Currency - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_currency.png",
+    "columns": [
+      "Currency Code",
+      "Currency Word",
+      "Currency Symbol",
+      "Bank Buy Rate",
+      "Bank Sell Rate",
+      "Exchange Gain Account",
+      "Exchange Loss Account",
+      "Exchange Gain/Loss Journal"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/numberingformat",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/numberingformat",
+    "title": "Numbering Format - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_numberingformat.png",
+    "columns": [
+      "Name",
+      "Next Number",
+      "Format",
+      "Default",
+      "One Month One Set",
+      "Sample"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "2",
+      "3",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/account",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/account",
+    "title": "Chart of Account - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_account.png",
+    "columns": [
+      "Description",
+      "Acc. No.",
+      "Special Account Type",
+      "Up To Date Balance"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Normal Account",
+      "Bank, Cash, Deposit",
+      "Debtor Control",
+      "Creditor Control",
+      "Stock",
+      "Maintain Stock Value Links",
+      "Print Report",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Account",
+      "Edit",
+      "Toggle Dropdown",
+      "100",
+      "200",
+      "500",
+      "1000",
+      "Previous Page",
+      "1",
+      "Next Page",
+      "Add Sub Account",
+      "Delete"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/accounttype",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/accounttype",
+    "title": "Account Type - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_accounttype.png",
+    "columns": [
+      "Account Type",
+      "Description",
+      "Alternate Description",
+      "Reporting Category",
+      "System/User Defined"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "Edit Account Type Order",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "2",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/debtor",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/debtor",
+    "title": "Customer - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_debtor.png",
+    "columns": [
+      "Customer Code",
+      "Company Name",
+      "Currency",
+      "Phone",
+      "Area",
+      "Agent",
+      "Active"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Print Listing",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/creditor",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/creditor",
+    "title": "Supplier - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_creditor.png",
+    "columns": [
+      "Supplier Code",
+      "Company Name",
+      "Currency",
+      "Phone",
+      "Area",
+      "Active"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Print Listing",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/journaltype",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/journaltype",
+    "title": "Journal Type - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_journaltype.png",
+    "columns": [
+      "Journal Type",
+      "Description",
+      "Alternate Description",
+      "Entry Type"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "Toggle Dropdown",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page",
+      "Delete"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/paymentmethod",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/paymentmethod",
+    "title": "Payment Method - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_paymentmethod.png",
+    "columns": [
+      "Payment Method Type",
+      "Payment Method",
+      "Bank A/C",
+      "Journal Type",
+      "Payment By",
+      "Accept Cheque No.",
+      "Bank Charge A/C",
+      "Bank Charge Rate (%)",
+      "Merge Bank Charge Trans."
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "Toggle Dropdown",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page",
+      "Delete"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/area",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/area",
+    "title": "Area - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_area.png",
+    "columns": [
+      "Area Code",
+      "Description",
+      "Alternate Description"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Print Listing",
+      "Column Chooser",
+      "overflow",
+      "100",
+      "200",
+      "500",
+      "1000",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/creditterm",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/creditterm",
+    "title": "Credit Term - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_creditterm.png",
+    "columns": [
+      "Credit Term",
+      "Type Of Terms",
+      "Days",
+      "Months"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "Toggle Dropdown",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page",
+      "Delete"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/salesagent",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/salesagent",
+    "title": "Sales Agent - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_salesagent.png",
+    "columns": [
+      "Sales Agent",
+      "Description",
+      "Alternate Description",
+      "Active"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Print Listing",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/product",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/product",
+    "title": "Product - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_product.png",
+    "columns": [
+      "Product Code",
+      "Product Name",
+      "Product Type",
+      "Unit",
+      "Status"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Import Data",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/productposting",
+    "text": "",
+    "menu": "(discovered)",
+    "landed": "/productposting",
+    "title": "Product Posting - AutoCount Accounting",
+    "ok": true,
+    "shot": "shots/_productposting.png",
+    "columns": [
+      "Product Posting",
+      "Description",
+      "Default",
+      "Sales Account",
+      "Sales Return Account",
+      "Purchase Account",
+      "Purchase Return Account",
+      "Balance Stock Account"
+    ],
+    "dataRows": 1,
+    "buttons": [
+      "Sales",
+      "Purchase",
+      "Accounting",
+      "Reports",
+      "Tools",
+      "Macam Yes",
+      "Start typing to search...",
+      "GAN ZHI HONG",
+      "Contact Support",
+      "Live Chat",
+      "Log Out",
+      "New",
+      "Export all data to Excel",
+      "Column Chooser",
+      "overflow",
+      "Edit",
+      "10",
+      "25",
+      "50",
+      "100",
+      "Previous Page",
+      "1",
+      "Next Page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search..."
+      },
+      {
+        "type": "text",
+        "name": "Search..."
+      }
+    ],
+    "selects": []
+  }
+]

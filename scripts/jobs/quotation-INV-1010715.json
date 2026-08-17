@@ -1,0 +1,40 @@
+{
+  "name": "atap quote INV-1010715 (Gan Zhi Hong) -> AutoCount quotation",
+  "profile": "E:\\eter-browser\\profiles\\agent",
+  "site": "https://accounting.autocountcloud.com",
+  "entry": "Macam Yes",
+  "tasks": [
+    {
+      "op": "create",
+      "route": "/debtor",
+      "action": "New",
+      "ensureAbsent": "GAN ZHI HONG",
+      "fields": [
+        { "label": "Customer Code", "auto": { "column": "Customer Code", "format": "300-A%03d" }, "saveAs": "cust" },
+        { "label": "Company Name", "value": "GAN ZHI HONG" },
+        { "label": "Phone", "tab": "General", "value": "+601121000099" }
+      ],
+      "save": "Save",
+      "verify": { "contains": "GAN ZHI HONG" }
+    },
+    {
+      "op": "create",
+      "route": "/quotation",
+      "action": "New",
+      "gridMarker": "Total (inc)",
+      "ensureAbsent": "4,888.00",
+      "fields": [
+        { "label": "Customer", "type": "lookup", "value": "$cust", "match": "GAN ZHI HONG" },
+        { "label": "Date", "type": "date", "value": "2026-07-07" }
+      ],
+      "lines": [
+        {
+          "Description": "7Kw[1P] EV Charger Only: 1X ARMORVOLT MODEL 107 EV Wallbox Charger 7.4kW Single Phase Type 2; 5 meters cable length; 3 years warranty; basic installation included (ref INV-1010715)",
+          "Unit Price": "4888"
+        }
+      ],
+      "save": "Save",
+      "verify": { "contains": "GAN ZHI HONG" }
+    }
+  ]
+}

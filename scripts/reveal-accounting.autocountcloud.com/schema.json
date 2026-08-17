@@ -1,0 +1,3453 @@
+{
+  "site": "accounting.autocountcloud.com",
+  "capturedAt": "2026-08-13T06:09:03.018Z",
+  "entities": [
+    {
+      "id": "quotation",
+      "label": "Quotation",
+      "kind": "document",
+      "route": "/quotation",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "quotation.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "quotation.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "quotation.customer_code",
+          "label": "Customer Code",
+          "type": "key",
+          "ref": "debtor"
+        },
+        {
+          "id": "quotation.customer_name",
+          "label": "Customer Name",
+          "type": "text",
+          "ref": "debtor"
+        },
+        {
+          "id": "quotation.agent",
+          "label": "Agent",
+          "type": "text",
+          "ref": "salesagent"
+        },
+        {
+          "id": "quotation.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "quotation.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "quotation.subtotal_ex",
+          "label": "Subtotal (ex)",
+          "type": "number"
+        },
+        {
+          "id": "quotation.total",
+          "label": "Total",
+          "type": "number"
+        },
+        {
+          "id": "quotation.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "quotation.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "quotation.f.customer",
+            "label": "Customer",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "debtor"
+          },
+          {
+            "id": "quotation.f.name",
+            "label": "Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "quotation.f.email",
+            "label": "Email",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "quotation.f.quotation_no",
+            "label": "Quotation No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "quotation.f.address",
+            "label": "Address",
+            "kind": "textarea",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+          },
+          {
+            "id": "quotation.f.sales_agent",
+            "label": "Sales Agent",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "salesagent"
+          },
+          {
+            "id": "quotation.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "quotation.f.payment_term",
+            "label": "Payment Term",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "quotation.f.currency",
+            "label": "Currency",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "quotation.f.rate",
+            "label": "Rate",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "debtor",
+        "salesagent",
+        "currency"
+      ]
+    },
+    {
+      "id": "invoice",
+      "label": "Invoice",
+      "kind": "document",
+      "route": "/invoice",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "invoice.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "invoice.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "invoice.customer_code",
+          "label": "Customer Code",
+          "type": "key",
+          "ref": "debtor"
+        },
+        {
+          "id": "invoice.customer_name",
+          "label": "Customer Name",
+          "type": "text",
+          "ref": "debtor"
+        },
+        {
+          "id": "invoice.agent",
+          "label": "Agent",
+          "type": "text",
+          "ref": "salesagent"
+        },
+        {
+          "id": "invoice.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "invoice.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "invoice.subtotal_ex",
+          "label": "Subtotal (ex)",
+          "type": "number"
+        },
+        {
+          "id": "invoice.total",
+          "label": "Total",
+          "type": "number"
+        },
+        {
+          "id": "invoice.outstanding",
+          "label": "Outstanding",
+          "type": "number"
+        },
+        {
+          "id": "invoice.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "invoice.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "invoice.f.customer",
+            "label": "Customer",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "debtor"
+          },
+          {
+            "id": "invoice.f.name",
+            "label": "Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "invoice.f.email",
+            "label": "Email",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "invoice.f.invoice_no",
+            "label": "Invoice No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+            "ref": "purchaseinvoice"
+          },
+          {
+            "id": "invoice.f.address",
+            "label": "Address",
+            "kind": "textarea",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+          },
+          {
+            "id": "invoice.f.sales_agent",
+            "label": "Sales Agent",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "salesagent"
+          },
+          {
+            "id": "invoice.f.credit_term",
+            "label": "Credit Term",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditterm"
+          },
+          {
+            "id": "invoice.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "invoice.f.currency",
+            "label": "Currency",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "invoice.f.rate",
+            "label": "Rate",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "invoice.f.deposit_payment_amount",
+            "label": "Deposit Payment Amount",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "debtor",
+        "salesagent",
+        "purchaseinvoice",
+        "creditterm",
+        "currency"
+      ]
+    },
+    {
+      "id": "creditnote",
+      "label": "Credit Note",
+      "kind": "document",
+      "route": "/creditnote",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "creditnote.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "creditnote.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "creditnote.customer_code",
+          "label": "Customer Code",
+          "type": "key",
+          "ref": "debtor"
+        },
+        {
+          "id": "creditnote.customer_name",
+          "label": "Customer Name",
+          "type": "text",
+          "ref": "debtor"
+        },
+        {
+          "id": "creditnote.agent",
+          "label": "Agent",
+          "type": "text",
+          "ref": "salesagent"
+        },
+        {
+          "id": "creditnote.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "creditnote.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "creditnote.subtotal_ex",
+          "label": "Subtotal (ex)",
+          "type": "number"
+        },
+        {
+          "id": "creditnote.total",
+          "label": "Total",
+          "type": "number"
+        },
+        {
+          "id": "creditnote.outstanding",
+          "label": "Outstanding",
+          "type": "number"
+        },
+        {
+          "id": "creditnote.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "creditnote.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "creditnote.f.customer",
+            "label": "Customer",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "debtor"
+          },
+          {
+            "id": "creditnote.f.name",
+            "label": "Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "creditnote.f.email",
+            "label": "Email",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "creditnote.f.c_n_no",
+            "label": "C/N No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "creditnote.f.address",
+            "label": "Address",
+            "kind": "text area",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+          },
+          {
+            "id": "creditnote.f.sales_agent",
+            "label": "Sales Agent",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "salesagent"
+          },
+          {
+            "id": "creditnote.f.our_invoice_no",
+            "label": "Our Invoice No.",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+            "ref": "invoice"
+          },
+          {
+            "id": "creditnote.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "creditnote.f.reason",
+            "label": "Reason",
+            "kind": "text area",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "creditnote.f.currency",
+            "label": "Currency",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "creditnote.f.rate",
+            "label": "Rate",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "debtor",
+        "salesagent",
+        "invoice",
+        "currency"
+      ]
+    },
+    {
+      "id": "purchaseorder",
+      "label": "Purchase Order",
+      "kind": "document",
+      "route": "/purchaseorder",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "purchaseorder.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "purchaseorder.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "purchaseorder.supplier_code",
+          "label": "Supplier Code",
+          "type": "key",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchaseorder.supplier_name",
+          "label": "Supplier Name",
+          "type": "text",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchaseorder.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "purchaseorder.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "purchaseorder.subtotal_ex",
+          "label": "Subtotal (ex)",
+          "type": "number"
+        },
+        {
+          "id": "purchaseorder.total",
+          "label": "Total",
+          "type": "number"
+        },
+        {
+          "id": "purchaseorder.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "purchaseorder.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "purchaseorder.f.supplier",
+            "label": "Supplier",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditor"
+          },
+          {
+            "id": "purchaseorder.f.name",
+            "label": "Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseorder.f.email",
+            "label": "Email",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseorder.f.p_o_no",
+            "label": "P/O No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseorder.f.address",
+            "label": "Address",
+            "kind": "text area",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+          },
+          {
+            "id": "purchaseorder.f.credit_term",
+            "label": "Credit Term",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditterm"
+          },
+          {
+            "id": "purchaseorder.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseorder.f.currency",
+            "label": "Currency",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "purchaseorder.f.rate",
+            "label": "Rate",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "creditor",
+        "creditterm",
+        "currency"
+      ]
+    },
+    {
+      "id": "purchaseinvoice",
+      "label": "Purchase Invoice",
+      "kind": "document",
+      "route": "/purchaseinvoice",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "purchaseinvoice.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "purchaseinvoice.supplier_invoice",
+          "label": "Supplier Invoice",
+          "type": "text",
+          "ref": "invoice"
+        },
+        {
+          "id": "purchaseinvoice.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "purchaseinvoice.supplier_code",
+          "label": "Supplier Code",
+          "type": "key",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchaseinvoice.supplier_name",
+          "label": "Supplier Name",
+          "type": "text",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchaseinvoice.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "purchaseinvoice.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "purchaseinvoice.subtotal_ex",
+          "label": "Subtotal (ex)",
+          "type": "number"
+        },
+        {
+          "id": "purchaseinvoice.total",
+          "label": "Total",
+          "type": "number"
+        },
+        {
+          "id": "purchaseinvoice.outstanding",
+          "label": "Outstanding",
+          "type": "number"
+        },
+        {
+          "id": "purchaseinvoice.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "purchaseinvoice.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "purchaseinvoice.f.supplier",
+            "label": "Supplier",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditor"
+          },
+          {
+            "id": "purchaseinvoice.f.name",
+            "label": "Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseinvoice.f.credit_term",
+            "label": "Credit Term",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditterm"
+          },
+          {
+            "id": "purchaseinvoice.f.supplier_invoice_no",
+            "label": "Supplier Invoice No.",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+            "ref": "invoice"
+          },
+          {
+            "id": "purchaseinvoice.f.p_i_no",
+            "label": "P/I No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseinvoice.f.address",
+            "label": "Address",
+            "kind": "textarea",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+          },
+          {
+            "id": "purchaseinvoice.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchaseinvoice.f.currency",
+            "label": "Currency",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "purchaseinvoice.f.rate",
+            "label": "Rate",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "invoice",
+        "creditor",
+        "creditterm",
+        "currency"
+      ]
+    },
+    {
+      "id": "purchasereturn",
+      "label": "Purchase Return",
+      "kind": "document",
+      "route": "/purchasereturn",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "purchasereturn.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "purchasereturn.supplier_c_n",
+          "label": "Supplier C/N",
+          "type": "text",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchasereturn.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "purchasereturn.supplier_code",
+          "label": "Supplier Code",
+          "type": "key",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchasereturn.supplier_name",
+          "label": "Supplier Name",
+          "type": "text",
+          "ref": "creditor"
+        },
+        {
+          "id": "purchasereturn.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "purchasereturn.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "purchasereturn.subtotal_ex",
+          "label": "Subtotal (ex)",
+          "type": "number"
+        },
+        {
+          "id": "purchasereturn.total",
+          "label": "Total",
+          "type": "number"
+        },
+        {
+          "id": "purchasereturn.outstanding",
+          "label": "Outstanding",
+          "type": "number"
+        },
+        {
+          "id": "purchasereturn.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "purchasereturn.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "purchasereturn.f.supplier",
+            "label": "Supplier",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditor"
+          },
+          {
+            "id": "purchasereturn.f.name",
+            "label": "Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchasereturn.f.supplier_c_n_no",
+            "label": "Supplier C/N No.",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+            "ref": "creditor"
+          },
+          {
+            "id": "purchasereturn.f.supplier_invoice_no",
+            "label": "Supplier Invoice No.",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+            "ref": "invoice"
+          },
+          {
+            "id": "purchasereturn.f.p_r_no",
+            "label": "P/R No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchasereturn.f.address",
+            "label": "Address",
+            "kind": "textarea",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+          },
+          {
+            "id": "purchasereturn.f.reason",
+            "label": "Reason",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchasereturn.f.credit_term",
+            "label": "Credit Term",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "creditterm"
+          },
+          {
+            "id": "purchasereturn.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "purchasereturn.f.currency",
+            "label": "Currency",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "purchasereturn.f.rate",
+            "label": "Rate",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "creditor",
+        "invoice",
+        "creditterm",
+        "currency"
+      ]
+    },
+    {
+      "id": "cashbookentry",
+      "label": "Cash Book Entry",
+      "kind": "document",
+      "route": "/cashbookentry",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "cashbookentry.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "cashbookentry.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "cashbookentry.type",
+          "label": "Type",
+          "type": "enum"
+        },
+        {
+          "id": "cashbookentry.pay_to_receive_from",
+          "label": "Pay To / Receive From",
+          "type": "text"
+        },
+        {
+          "id": "cashbookentry.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "cashbookentry.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "cashbookentry.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "cashbookentry.net_total",
+          "label": "Net Total",
+          "type": "number"
+        },
+        {
+          "id": "cashbookentry.local_net_total",
+          "label": "Local Net Total",
+          "type": "number"
+        },
+        {
+          "id": "cashbookentry.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "cashbookentry.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "currency"
+      ]
+    },
+    {
+      "id": "journalentry",
+      "label": "Journal Entry",
+      "kind": "document",
+      "route": "/journalentry",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "journalentry.2_doc_no",
+          "label": "2 Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "journalentry.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "journalentry.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "journalentry.curr",
+          "label": "Curr.",
+          "type": "text"
+        },
+        {
+          "id": "journalentry.curr_rate",
+          "label": "Curr. Rate",
+          "type": "number"
+        },
+        {
+          "id": "journalentry.net_total",
+          "label": "Net Total",
+          "type": "number"
+        },
+        {
+          "id": "journalentry.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "journalentry.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "View Posting Details",
+        "lines": [],
+        "fields": [
+          {
+            "id": "journalentry.f.description",
+            "label": "Description",
+            "kind": "text input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "journalentry.f.voucher_no",
+            "label": "Voucher No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "journalentry.f.journal_type",
+            "label": "Journal Type",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "journaltype"
+          },
+          {
+            "id": "journalentry.f.currency_code",
+            "label": "Currency Code",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "journalentry.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "journaltype",
+        "currency"
+      ]
+    },
+    {
+      "id": "knockoffentry",
+      "label": "Knock Off Entry",
+      "kind": "document",
+      "route": "/knockoffentry",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "knockoffentry.2_knock_off_no",
+          "label": "2 Knock Off No.",
+          "type": "key"
+        },
+        {
+          "id": "knockoffentry.1_date",
+          "label": "1 Date",
+          "type": "date"
+        },
+        {
+          "id": "knockoffentry.customer_supplier_code",
+          "label": "Customer/Supplier Code",
+          "type": "key",
+          "ref": "debtor"
+        },
+        {
+          "id": "knockoffentry.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "knockoffentry.curr_code",
+          "label": "Curr. Code",
+          "type": "key"
+        },
+        {
+          "id": "knockoffentry.total_amount",
+          "label": "Total Amount",
+          "type": "number"
+        },
+        {
+          "id": "knockoffentry.gain_loss",
+          "label": "Gain/Loss",
+          "type": "text"
+        },
+        {
+          "id": "knockoffentry.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": {
+        "openBy": "click New",
+        "save": "Save",
+        "lines": [],
+        "fields": [
+          {
+            "id": "knockoffentry.f.customer_supplier_code",
+            "label": "Customer/Supplier Code",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div>div:nth-of-type(1)>input",
+            "ref": "debtor"
+          },
+          {
+            "id": "knockoffentry.f.knock_off_no",
+            "label": "Knock Off No.",
+            "kind": "dropdown",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "knockoffentry.f.company_name",
+            "label": "Company Name",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "knockoffentry.f.currency_code",
+            "label": "Currency Code",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+            "ref": "currency"
+          },
+          {
+            "id": "knockoffentry.f.date",
+            "label": "Date",
+            "kind": "date picker",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "knockoffentry.f.search",
+            "label": "Search",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div>div>div:nth-of-type(4)>div>div>div:nth-of-type(3)>div:nth-of-type(6)>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "knockoffentry.f.total_applied_amount",
+            "label": "Total Applied Amount",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+          },
+          {
+            "id": "knockoffentry.f.gain_loss",
+            "label": "Gain/(Loss)",
+            "kind": "input",
+            "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div>div:nth-of-type(1)>input"
+          }
+        ]
+      },
+      "refs": [
+        "debtor",
+        "currency"
+      ]
+    },
+    {
+      "id": "bankreconciliation",
+      "label": "Bank Reconciliation",
+      "kind": "document",
+      "route": "/bankreconciliation",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "bankreconciliation.bank_statement_date",
+          "label": "Bank Statement Date",
+          "type": "date",
+          "ref": "profitandlossstatement"
+        },
+        {
+          "id": "bankreconciliation.account_balance",
+          "label": "Account Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        },
+        {
+          "id": "bankreconciliation.actual_bank_statement_balance",
+          "label": "Actual Bank Statement Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        },
+        {
+          "id": "bankreconciliation.system_bank_statement_balance",
+          "label": "System Bank Statement Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        },
+        {
+          "id": "bankreconciliation.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "bankreconciliation.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "profitandlossstatement",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "banktransactions",
+      "label": "Bank Transactions",
+      "kind": "document",
+      "route": "/banktransactions",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "banktransactions.date",
+          "label": "Date",
+          "type": "date"
+        },
+        {
+          "id": "banktransactions.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "banktransactions.reference",
+          "label": "Reference",
+          "type": "text"
+        },
+        {
+          "id": "banktransactions.spent",
+          "label": "Spent",
+          "type": "text"
+        },
+        {
+          "id": "banktransactions.received",
+          "label": "Received",
+          "type": "text"
+        },
+        {
+          "id": "banktransactions.status",
+          "label": "Status",
+          "type": "enum"
+        },
+        {
+          "id": "banktransactions.action",
+          "label": "Action",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "ledger",
+      "label": "Ledger",
+      "kind": "report",
+      "route": "/ledger",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "ledger.date",
+          "label": "Date",
+          "type": "date"
+        },
+        {
+          "id": "ledger.journal_type",
+          "label": "Journal Type",
+          "type": "enum",
+          "ref": "journaltype"
+        },
+        {
+          "id": "ledger.doc_no",
+          "label": "Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "ledger.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "ledger.ref",
+          "label": "Ref",
+          "type": "text"
+        },
+        {
+          "id": "ledger.name",
+          "label": "Name",
+          "type": "text"
+        },
+        {
+          "id": "ledger.local_dr",
+          "label": "Local DR",
+          "type": "text"
+        },
+        {
+          "id": "ledger.local_cr",
+          "label": "Local CR",
+          "type": "text"
+        },
+        {
+          "id": "ledger.local_balance",
+          "label": "Local Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "journaltype",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "journaloftransaction",
+      "label": "Journal of Transaction",
+      "kind": "report",
+      "route": "/journaloftransaction",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "journaloftransaction.date",
+          "label": "Date",
+          "type": "date"
+        },
+        {
+          "id": "journaloftransaction.acc_no",
+          "label": "Acc. No.",
+          "type": "key"
+        },
+        {
+          "id": "journaloftransaction.acc_desc",
+          "label": "Acc. Desc.",
+          "type": "text"
+        },
+        {
+          "id": "journaloftransaction.doc_no",
+          "label": "Doc. No.",
+          "type": "key"
+        },
+        {
+          "id": "journaloftransaction.ref",
+          "label": "Ref",
+          "type": "text"
+        },
+        {
+          "id": "journaloftransaction.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "journaloftransaction.name",
+          "label": "Name",
+          "type": "text"
+        },
+        {
+          "id": "journaloftransaction.local_dr",
+          "label": "Local DR",
+          "type": "text"
+        },
+        {
+          "id": "journaloftransaction.local_cr",
+          "label": "Local CR",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "trialbalance",
+      "label": "Trial Balance",
+      "kind": "report",
+      "route": "/trialbalance",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "trialbalance.acc_no",
+          "label": "Acc. No.",
+          "type": "key"
+        },
+        {
+          "id": "trialbalance.description",
+          "label": "Description",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "profitandlossstatement",
+      "label": "Profit and Loss Statement",
+      "kind": "report",
+      "route": "/profitandlossstatement",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "profitandlossstatement.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "profitandlossstatement.acc_no",
+          "label": "Acc. No.",
+          "type": "key"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "balancesheetstatement",
+      "label": "Balance Sheet Statement",
+      "kind": "report",
+      "route": "/balancesheetstatement",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "balancesheetstatement.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "balancesheetstatement.acc_no",
+          "label": "Acc. No.",
+          "type": "key"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "debtoraging",
+      "label": "Debtor Aging",
+      "kind": "report",
+      "route": "/debtoraging",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "debtoraging.debtor_code",
+          "label": "Debtor Code",
+          "type": "key"
+        },
+        {
+          "id": "debtoraging.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "debtoraging.sales_agent",
+          "label": "Sales Agent",
+          "type": "text",
+          "ref": "salesagent"
+        },
+        {
+          "id": "debtoraging.phone_1",
+          "label": "Phone 1",
+          "type": "text"
+        },
+        {
+          "id": "debtoraging.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "debtoraging.current",
+          "label": "CURRENT",
+          "type": "text"
+        },
+        {
+          "id": "debtoraging.1_month",
+          "label": "1 MONTH",
+          "type": "date"
+        },
+        {
+          "id": "debtoraging.2_months",
+          "label": "2 MONTHS",
+          "type": "date"
+        },
+        {
+          "id": "debtoraging.3_over",
+          "label": "3 & OVER",
+          "type": "text"
+        },
+        {
+          "id": "debtoraging.total_over_due",
+          "label": "Total Over Due",
+          "type": "number"
+        },
+        {
+          "id": "debtoraging.balance",
+          "label": "Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "salesagent",
+        "currency",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "creditoraging",
+      "label": "Creditor Aging",
+      "kind": "report",
+      "route": "/creditoraging",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "creditoraging.creditor_code",
+          "label": "Creditor Code",
+          "type": "number"
+        },
+        {
+          "id": "creditoraging.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "creditoraging.phone_1",
+          "label": "Phone 1",
+          "type": "text"
+        },
+        {
+          "id": "creditoraging.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "creditoraging.current",
+          "label": "CURRENT",
+          "type": "text"
+        },
+        {
+          "id": "creditoraging.1_month",
+          "label": "1 MONTH",
+          "type": "date"
+        },
+        {
+          "id": "creditoraging.2_months",
+          "label": "2 MONTHS",
+          "type": "date"
+        },
+        {
+          "id": "creditoraging.3_over",
+          "label": "3 & OVER",
+          "type": "text"
+        },
+        {
+          "id": "creditoraging.total_over_due",
+          "label": "Total Over Due",
+          "type": "number"
+        },
+        {
+          "id": "creditoraging.balance",
+          "label": "Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "currency",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "debtorstatement",
+      "label": "Debtor Statement",
+      "kind": "report",
+      "route": "/debtorstatement",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "debtorstatement.debtor_code",
+          "label": "Debtor Code",
+          "type": "key"
+        },
+        {
+          "id": "debtorstatement.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "debtorstatement.sales_agent",
+          "label": "Sales Agent",
+          "type": "text",
+          "ref": "salesagent"
+        },
+        {
+          "id": "debtorstatement.area",
+          "label": "Area",
+          "type": "text",
+          "ref": "area"
+        },
+        {
+          "id": "debtorstatement.phone_1",
+          "label": "Phone 1",
+          "type": "text"
+        },
+        {
+          "id": "debtorstatement.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "debtorstatement.balance",
+          "label": "Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "salesagent",
+        "area",
+        "currency",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "creditorstatement",
+      "label": "Creditor Statement",
+      "kind": "report",
+      "route": "/creditorstatement",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "creditorstatement.creditor_code",
+          "label": "Creditor Code",
+          "type": "number"
+        },
+        {
+          "id": "creditorstatement.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "creditorstatement.area",
+          "label": "Area",
+          "type": "text",
+          "ref": "area"
+        },
+        {
+          "id": "creditorstatement.phone_1",
+          "label": "Phone 1",
+          "type": "text"
+        },
+        {
+          "id": "creditorstatement.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "creditorstatement.balance",
+          "label": "Balance",
+          "type": "number",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "area",
+        "currency",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "report_all",
+      "label": "Design Report",
+      "kind": "system",
+      "route": "/report/all",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "report_all.report_name",
+          "label": "Report Name",
+          "type": "text"
+        },
+        {
+          "id": "report_all.report_type",
+          "label": "Report Type",
+          "type": "enum"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "audittrail",
+      "label": "Audit Trail",
+      "kind": "system",
+      "route": "/audittrail",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "audittrail.event_time",
+          "label": "Event Time",
+          "type": "text"
+        },
+        {
+          "id": "audittrail.user_id",
+          "label": "User ID",
+          "type": "key",
+          "ref": "user"
+        },
+        {
+          "id": "audittrail.record_type",
+          "label": "Record Type",
+          "type": "enum"
+        },
+        {
+          "id": "audittrail.record_id",
+          "label": "Record ID",
+          "type": "key"
+        },
+        {
+          "id": "audittrail.description",
+          "label": "Description",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "user"
+      ]
+    },
+    {
+      "id": "fileattachment",
+      "label": "File Attachment",
+      "kind": "system",
+      "route": "/fileattachment",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "fileattachment.upload_date",
+          "label": "Upload Date",
+          "type": "date"
+        },
+        {
+          "id": "fileattachment.file_name",
+          "label": "File Name",
+          "type": "text"
+        },
+        {
+          "id": "fileattachment.file_size",
+          "label": "File Size",
+          "type": "text"
+        },
+        {
+          "id": "fileattachment.file_type",
+          "label": "File Type",
+          "type": "enum"
+        },
+        {
+          "id": "fileattachment.linked_document",
+          "label": "Linked Document",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "documentscanner",
+      "label": "Document Scanner",
+      "kind": "system",
+      "route": "/documentscanner",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "documentscanner.file_name",
+          "label": "File Name",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "fiscalyear",
+      "label": "Fiscal Year",
+      "kind": "system",
+      "route": "/fiscalyear",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "fiscalyear.fiscal_year_name",
+          "label": "Fiscal Year Name",
+          "type": "date"
+        },
+        {
+          "id": "fiscalyear.start_date",
+          "label": "Start Date",
+          "type": "date"
+        },
+        {
+          "id": "fiscalyear.end_date",
+          "label": "End Date",
+          "type": "date"
+        },
+        {
+          "id": "fiscalyear.current_year",
+          "label": "Current Year",
+          "type": "date"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "openingbalance",
+      "label": "Opening Balance",
+      "kind": "system",
+      "route": "/openingbalance",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "openingbalance.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "openingbalance.acc_no",
+          "label": "Acc. No.",
+          "type": "key"
+        },
+        {
+          "id": "openingbalance.special_account_type",
+          "label": "Special Account Type",
+          "type": "enum",
+          "ref": "account"
+        },
+        {
+          "id": "openingbalance.dr",
+          "label": "DR",
+          "type": "text"
+        },
+        {
+          "id": "openingbalance.cr",
+          "label": "CR",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "account"
+      ]
+    },
+    {
+      "id": "stockvalue",
+      "label": "Periodic Stock Value",
+      "kind": "system",
+      "route": "/stockvalue",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "stockvalue.opening_dec_2025",
+          "label": "Opening - Dec 2025",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.jan_2026",
+          "label": "Jan 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.feb_2026",
+          "label": "Feb 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.mar_2026",
+          "label": "Mar 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.apr_2026",
+          "label": "Apr 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.may_2026",
+          "label": "May 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.jun_2026",
+          "label": "Jun 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.jul_2026",
+          "label": "Jul 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.aug_2026",
+          "label": "Aug 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.sep_2026",
+          "label": "Sep 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.oct_2026",
+          "label": "Oct 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.nov_2026",
+          "label": "Nov 2026",
+          "type": "text"
+        },
+        {
+          "id": "stockvalue.dec_2026",
+          "label": "Dec 2026",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "user",
+      "label": "User",
+      "kind": "system",
+      "route": "/user",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "user.user_id",
+          "label": "User ID",
+          "type": "key"
+        },
+        {
+          "id": "user.name",
+          "label": "Name",
+          "type": "text"
+        },
+        {
+          "id": "user.user_roles",
+          "label": "User Roles",
+          "type": "text"
+        },
+        {
+          "id": "user.department",
+          "label": "Department",
+          "type": "text"
+        },
+        {
+          "id": "user.accountant",
+          "label": "Accountant",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "user.inviting_email",
+          "label": "Inviting Email",
+          "type": "text"
+        },
+        {
+          "id": "user.active",
+          "label": "Active",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "account"
+      ]
+    },
+    {
+      "id": "banksettings_default",
+      "label": "Bank Settings",
+      "kind": "system",
+      "route": "/banksettings/default",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "banksettings_default.hong_leong_bank_account_no",
+          "label": "Hong Leong Bank Account No.",
+          "type": "key",
+          "ref": "account"
+        },
+        {
+          "id": "banksettings_default.bank_account",
+          "label": "Bank Account",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "banksettings_default.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "banksettings_default.bank_account_description",
+          "label": "Bank Account Description",
+          "type": "text",
+          "ref": "account"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "account",
+        "currency"
+      ]
+    },
+    {
+      "id": "banksettings_mbb",
+      "label": "Bank Settings",
+      "kind": "master",
+      "route": "/banksettings/mbb",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "banksettings_mbb.hong_leong_bank_account_no",
+          "label": "Hong Leong Bank Account No.",
+          "type": "key",
+          "ref": "account"
+        },
+        {
+          "id": "banksettings_mbb.bank_account",
+          "label": "Bank Account",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "banksettings_mbb.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "banksettings_mbb.bank_account_description",
+          "label": "Bank Account Description",
+          "type": "text",
+          "ref": "account"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "account",
+        "currency"
+      ]
+    },
+    {
+      "id": "currency",
+      "label": "Currency",
+      "kind": "master",
+      "route": "/currency",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "currency.currency_code",
+          "label": "Currency Code",
+          "type": "key"
+        },
+        {
+          "id": "currency.currency_word",
+          "label": "Currency Word",
+          "type": "text"
+        },
+        {
+          "id": "currency.currency_symbol",
+          "label": "Currency Symbol",
+          "type": "text"
+        },
+        {
+          "id": "currency.bank_buy_rate",
+          "label": "Bank Buy Rate",
+          "type": "number"
+        },
+        {
+          "id": "currency.bank_sell_rate",
+          "label": "Bank Sell Rate",
+          "type": "number"
+        },
+        {
+          "id": "currency.exchange_gain_account",
+          "label": "Exchange Gain Account",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "currency.exchange_loss_account",
+          "label": "Exchange Loss Account",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "currency.exchange_gain_loss_journal",
+          "label": "Exchange Gain/Loss Journal",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "account"
+      ]
+    },
+    {
+      "id": "numberingformat",
+      "label": "Numbering Format",
+      "kind": "master",
+      "route": "/numberingformat",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "numberingformat.name",
+          "label": "Name",
+          "type": "text"
+        },
+        {
+          "id": "numberingformat.next_number",
+          "label": "Next Number",
+          "type": "key"
+        },
+        {
+          "id": "numberingformat.format",
+          "label": "Format",
+          "type": "text"
+        },
+        {
+          "id": "numberingformat.default",
+          "label": "Default",
+          "type": "text"
+        },
+        {
+          "id": "numberingformat.one_month_one_set",
+          "label": "One Month One Set",
+          "type": "date"
+        },
+        {
+          "id": "numberingformat.sample",
+          "label": "Sample",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "account",
+      "label": "Chart of Account",
+      "kind": "master",
+      "route": "/account",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "account.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "account.acc_no",
+          "label": "Acc. No.",
+          "type": "key"
+        },
+        {
+          "id": "account.special_account_type",
+          "label": "Special Account Type",
+          "type": "enum",
+          "ref": "accounttype"
+        },
+        {
+          "id": "account.up_to_date_balance",
+          "label": "Up To Date Balance",
+          "type": "date",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "write": null,
+      "refs": [
+        "accounttype",
+        "trialbalance"
+      ]
+    },
+    {
+      "id": "accounttype",
+      "label": "Account Type",
+      "kind": "master",
+      "route": "/accounttype",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "accounttype.account_type",
+          "label": "Account Type",
+          "type": "enum",
+          "ref": "account"
+        },
+        {
+          "id": "accounttype.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "accounttype.alternate_description",
+          "label": "Alternate Description",
+          "type": "text"
+        },
+        {
+          "id": "accounttype.reporting_category",
+          "label": "Reporting Category",
+          "type": "text",
+          "ref": "report_all"
+        },
+        {
+          "id": "accounttype.system_user_defined",
+          "label": "System/User Defined",
+          "type": "text",
+          "ref": "user"
+        }
+      ],
+      "crud": {
+        "create": false,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "account",
+        "report_all",
+        "user"
+      ]
+    },
+    {
+      "id": "debtor",
+      "label": "Customer",
+      "kind": "master",
+      "route": "/debtor",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "debtor.customer_code",
+          "label": "Customer Code",
+          "type": "key"
+        },
+        {
+          "id": "debtor.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "debtor.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "debtor.phone",
+          "label": "Phone",
+          "type": "text"
+        },
+        {
+          "id": "debtor.area",
+          "label": "Area",
+          "type": "text",
+          "ref": "area"
+        },
+        {
+          "id": "debtor.agent",
+          "label": "Agent",
+          "type": "text",
+          "ref": "salesagent"
+        },
+        {
+          "id": "debtor.active",
+          "label": "Active",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "currency",
+        "area",
+        "salesagent"
+      ]
+    },
+    {
+      "id": "creditor",
+      "label": "Supplier",
+      "kind": "master",
+      "route": "/creditor",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "creditor.supplier_code",
+          "label": "Supplier Code",
+          "type": "key"
+        },
+        {
+          "id": "creditor.company_name",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "id": "creditor.currency",
+          "label": "Currency",
+          "type": "text",
+          "ref": "currency"
+        },
+        {
+          "id": "creditor.phone",
+          "label": "Phone",
+          "type": "text"
+        },
+        {
+          "id": "creditor.area",
+          "label": "Area",
+          "type": "text",
+          "ref": "area"
+        },
+        {
+          "id": "creditor.active",
+          "label": "Active",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "currency",
+        "area"
+      ]
+    },
+    {
+      "id": "journaltype",
+      "label": "Journal Type",
+      "kind": "master",
+      "route": "/journaltype",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "journaltype.journal_type",
+          "label": "Journal Type",
+          "type": "enum"
+        },
+        {
+          "id": "journaltype.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "journaltype.alternate_description",
+          "label": "Alternate Description",
+          "type": "text"
+        },
+        {
+          "id": "journaltype.entry_type",
+          "label": "Entry Type",
+          "type": "enum",
+          "ref": "cashbookentry"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "write": null,
+      "refs": [
+        "cashbookentry"
+      ]
+    },
+    {
+      "id": "paymentmethod",
+      "label": "Payment Method",
+      "kind": "master",
+      "route": "/paymentmethod",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "paymentmethod.payment_method_type",
+          "label": "Payment Method Type",
+          "type": "enum"
+        },
+        {
+          "id": "paymentmethod.payment_method",
+          "label": "Payment Method",
+          "type": "enum"
+        },
+        {
+          "id": "paymentmethod.bank_a_c",
+          "label": "Bank A/C",
+          "type": "text"
+        },
+        {
+          "id": "paymentmethod.journal_type",
+          "label": "Journal Type",
+          "type": "enum",
+          "ref": "journaltype"
+        },
+        {
+          "id": "paymentmethod.payment_by",
+          "label": "Payment By",
+          "type": "text"
+        },
+        {
+          "id": "paymentmethod.accept_cheque_no",
+          "label": "Accept Cheque No.",
+          "type": "key"
+        },
+        {
+          "id": "paymentmethod.bank_charge_a_c",
+          "label": "Bank Charge A/C",
+          "type": "text"
+        },
+        {
+          "id": "paymentmethod.bank_charge_rate",
+          "label": "Bank Charge Rate (%)",
+          "type": "number"
+        },
+        {
+          "id": "paymentmethod.merge_bank_charge_trans",
+          "label": "Merge Bank Charge Trans.",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "write": null,
+      "refs": [
+        "journaltype"
+      ]
+    },
+    {
+      "id": "area",
+      "label": "Area",
+      "kind": "master",
+      "route": "/area",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "area.area_code",
+          "label": "Area Code",
+          "type": "key"
+        },
+        {
+          "id": "area.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "area.alternate_description",
+          "label": "Alternate Description",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "creditterm",
+      "label": "Credit Term",
+      "kind": "master",
+      "route": "/creditterm",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "creditterm.credit_term",
+          "label": "Credit Term",
+          "type": "number"
+        },
+        {
+          "id": "creditterm.type_of_terms",
+          "label": "Type Of Terms",
+          "type": "enum"
+        },
+        {
+          "id": "creditterm.days",
+          "label": "Days",
+          "type": "text"
+        },
+        {
+          "id": "creditterm.months",
+          "label": "Months",
+          "type": "date"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "salesagent",
+      "label": "Sales Agent",
+      "kind": "master",
+      "route": "/salesagent",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "salesagent.sales_agent",
+          "label": "Sales Agent",
+          "type": "text"
+        },
+        {
+          "id": "salesagent.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "salesagent.alternate_description",
+          "label": "Alternate Description",
+          "type": "text"
+        },
+        {
+          "id": "salesagent.active",
+          "label": "Active",
+          "type": "text"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "product",
+      "label": "Product",
+      "kind": "master",
+      "route": "/product",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "product.product_code",
+          "label": "Product Code",
+          "type": "key"
+        },
+        {
+          "id": "product.product_name",
+          "label": "Product Name",
+          "type": "text"
+        },
+        {
+          "id": "product.product_type",
+          "label": "Product Type",
+          "type": "enum"
+        },
+        {
+          "id": "product.unit",
+          "label": "Unit",
+          "type": "text"
+        },
+        {
+          "id": "product.status",
+          "label": "Status",
+          "type": "enum"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "write": null,
+      "refs": []
+    },
+    {
+      "id": "productposting",
+      "label": "Product Posting",
+      "kind": "master",
+      "route": "/productposting",
+      "rows": 1,
+      "columns": [
+        {
+          "id": "productposting.product_posting",
+          "label": "Product Posting",
+          "type": "text",
+          "ref": "product"
+        },
+        {
+          "id": "productposting.description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "id": "productposting.default",
+          "label": "Default",
+          "type": "text"
+        },
+        {
+          "id": "productposting.sales_account",
+          "label": "Sales Account",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "productposting.sales_return_account",
+          "label": "Sales Return Account",
+          "type": "text",
+          "ref": "purchasereturn"
+        },
+        {
+          "id": "productposting.purchase_account",
+          "label": "Purchase Account",
+          "type": "text",
+          "ref": "account"
+        },
+        {
+          "id": "productposting.purchase_return_account",
+          "label": "Purchase Return Account",
+          "type": "text",
+          "ref": "purchasereturn"
+        },
+        {
+          "id": "productposting.balance_stock_account",
+          "label": "Balance Stock Account",
+          "type": "number",
+          "ref": "trialbalance"
+        }
+      ],
+      "crud": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": false
+      },
+      "write": null,
+      "refs": [
+        "product",
+        "account",
+        "purchasereturn",
+        "trialbalance"
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "op": "create.quotation",
+      "table": "quotation",
+      "needs": [
+        {
+          "field": "quotation.f.customer",
+          "ask_user_for": "Customer",
+          "control": "dropdown",
+          "pick_from_table": "debtor"
+        },
+        {
+          "field": "quotation.f.name",
+          "ask_user_for": "Name",
+          "control": "input"
+        },
+        {
+          "field": "quotation.f.email",
+          "ask_user_for": "Email",
+          "control": "input"
+        },
+        {
+          "field": "quotation.f.quotation_no",
+          "ask_user_for": "Quotation No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "quotation.f.address",
+          "ask_user_for": "Address",
+          "control": "textarea"
+        },
+        {
+          "field": "quotation.f.sales_agent",
+          "ask_user_for": "Sales Agent",
+          "control": "dropdown",
+          "pick_from_table": "salesagent"
+        },
+        {
+          "field": "quotation.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "quotation.f.payment_term",
+          "ask_user_for": "Payment Term",
+          "control": "input"
+        },
+        {
+          "field": "quotation.f.currency",
+          "ask_user_for": "Currency",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "quotation.f.rate",
+          "ask_user_for": "Rate",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /quotation",
+        "click \"New\"",
+        "fill \"Customer\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+        "fill \"Quotation No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+        "fill \"Sales Agent\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Payment Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+        "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the quotation grid"
+      ]
+    },
+    {
+      "op": "create.invoice",
+      "table": "invoice",
+      "needs": [
+        {
+          "field": "invoice.f.customer",
+          "ask_user_for": "Customer",
+          "control": "dropdown",
+          "pick_from_table": "debtor"
+        },
+        {
+          "field": "invoice.f.name",
+          "ask_user_for": "Name",
+          "control": "input"
+        },
+        {
+          "field": "invoice.f.email",
+          "ask_user_for": "Email",
+          "control": "input"
+        },
+        {
+          "field": "invoice.f.invoice_no",
+          "ask_user_for": "Invoice No.",
+          "control": "dropdown",
+          "pick_from_table": "purchaseinvoice",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "invoice.f.address",
+          "ask_user_for": "Address",
+          "control": "textarea"
+        },
+        {
+          "field": "invoice.f.sales_agent",
+          "ask_user_for": "Sales Agent",
+          "control": "dropdown",
+          "pick_from_table": "salesagent"
+        },
+        {
+          "field": "invoice.f.credit_term",
+          "ask_user_for": "Credit Term",
+          "control": "dropdown",
+          "pick_from_table": "creditterm"
+        },
+        {
+          "field": "invoice.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "invoice.f.currency",
+          "ask_user_for": "Currency",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "invoice.f.rate",
+          "ask_user_for": "Rate",
+          "control": "input"
+        },
+        {
+          "field": "invoice.f.deposit_payment_amount",
+          "ask_user_for": "Deposit Payment Amount",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /invoice",
+        "click \"New\"",
+        "fill \"Customer\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+        "fill \"Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+        "fill \"Sales Agent\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+        "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Deposit Payment Amount\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the invoice grid"
+      ]
+    },
+    {
+      "op": "create.creditnote",
+      "table": "creditnote",
+      "needs": [
+        {
+          "field": "creditnote.f.customer",
+          "ask_user_for": "Customer",
+          "control": "dropdown",
+          "pick_from_table": "debtor"
+        },
+        {
+          "field": "creditnote.f.name",
+          "ask_user_for": "Name",
+          "control": "input"
+        },
+        {
+          "field": "creditnote.f.email",
+          "ask_user_for": "Email",
+          "control": "input"
+        },
+        {
+          "field": "creditnote.f.c_n_no",
+          "ask_user_for": "C/N No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "creditnote.f.address",
+          "ask_user_for": "Address",
+          "control": "text area"
+        },
+        {
+          "field": "creditnote.f.sales_agent",
+          "ask_user_for": "Sales Agent",
+          "control": "dropdown",
+          "pick_from_table": "salesagent"
+        },
+        {
+          "field": "creditnote.f.our_invoice_no",
+          "ask_user_for": "Our Invoice No.",
+          "control": "input",
+          "pick_from_table": "invoice",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "creditnote.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "creditnote.f.reason",
+          "ask_user_for": "Reason",
+          "control": "text area"
+        },
+        {
+          "field": "creditnote.f.currency",
+          "ask_user_for": "Currency",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "creditnote.f.rate",
+          "ask_user_for": "Rate",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /creditnote",
+        "click \"New\"",
+        "fill \"Customer\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+        "fill \"C/N No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+        "fill \"Sales Agent\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Our Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Reason\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+        "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the creditnote grid"
+      ]
+    },
+    {
+      "op": "create.purchaseorder",
+      "table": "purchaseorder",
+      "needs": [
+        {
+          "field": "purchaseorder.f.supplier",
+          "ask_user_for": "Supplier",
+          "control": "dropdown",
+          "pick_from_table": "creditor"
+        },
+        {
+          "field": "purchaseorder.f.name",
+          "ask_user_for": "Name",
+          "control": "input"
+        },
+        {
+          "field": "purchaseorder.f.email",
+          "ask_user_for": "Email",
+          "control": "input"
+        },
+        {
+          "field": "purchaseorder.f.p_o_no",
+          "ask_user_for": "P/O No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "purchaseorder.f.address",
+          "ask_user_for": "Address",
+          "control": "text area"
+        },
+        {
+          "field": "purchaseorder.f.credit_term",
+          "ask_user_for": "Credit Term",
+          "control": "dropdown",
+          "pick_from_table": "creditterm"
+        },
+        {
+          "field": "purchaseorder.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "purchaseorder.f.currency",
+          "ask_user_for": "Currency",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "purchaseorder.f.rate",
+          "ask_user_for": "Rate",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /purchaseorder",
+        "click \"New\"",
+        "fill \"Supplier\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+        "fill \"P/O No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+        "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+        "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the purchaseorder grid"
+      ]
+    },
+    {
+      "op": "create.purchaseinvoice",
+      "table": "purchaseinvoice",
+      "needs": [
+        {
+          "field": "purchaseinvoice.f.supplier",
+          "ask_user_for": "Supplier",
+          "control": "dropdown",
+          "pick_from_table": "creditor"
+        },
+        {
+          "field": "purchaseinvoice.f.name",
+          "ask_user_for": "Name",
+          "control": "input"
+        },
+        {
+          "field": "purchaseinvoice.f.credit_term",
+          "ask_user_for": "Credit Term",
+          "control": "dropdown",
+          "pick_from_table": "creditterm"
+        },
+        {
+          "field": "purchaseinvoice.f.supplier_invoice_no",
+          "ask_user_for": "Supplier Invoice No.",
+          "control": "input",
+          "pick_from_table": "invoice",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "purchaseinvoice.f.p_i_no",
+          "ask_user_for": "P/I No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "purchaseinvoice.f.address",
+          "ask_user_for": "Address",
+          "control": "textarea"
+        },
+        {
+          "field": "purchaseinvoice.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "purchaseinvoice.f.currency",
+          "ask_user_for": "Currency",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "purchaseinvoice.f.rate",
+          "ask_user_for": "Rate",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /purchaseinvoice",
+        "click \"New\"",
+        "fill \"Supplier\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Supplier Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"P/I No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+        "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the purchaseinvoice grid"
+      ]
+    },
+    {
+      "op": "create.purchasereturn",
+      "table": "purchasereturn",
+      "needs": [
+        {
+          "field": "purchasereturn.f.supplier",
+          "ask_user_for": "Supplier",
+          "control": "dropdown",
+          "pick_from_table": "creditor"
+        },
+        {
+          "field": "purchasereturn.f.name",
+          "ask_user_for": "Name",
+          "control": "input"
+        },
+        {
+          "field": "purchasereturn.f.supplier_c_n_no",
+          "ask_user_for": "Supplier C/N No.",
+          "control": "input",
+          "pick_from_table": "creditor",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "purchasereturn.f.supplier_invoice_no",
+          "ask_user_for": "Supplier Invoice No.",
+          "control": "input",
+          "pick_from_table": "invoice",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "purchasereturn.f.p_r_no",
+          "ask_user_for": "P/R No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "purchasereturn.f.address",
+          "ask_user_for": "Address",
+          "control": "textarea"
+        },
+        {
+          "field": "purchasereturn.f.reason",
+          "ask_user_for": "Reason",
+          "control": "input"
+        },
+        {
+          "field": "purchasereturn.f.credit_term",
+          "ask_user_for": "Credit Term",
+          "control": "dropdown",
+          "pick_from_table": "creditterm"
+        },
+        {
+          "field": "purchasereturn.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "purchasereturn.f.currency",
+          "ask_user_for": "Currency",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "purchasereturn.f.rate",
+          "ask_user_for": "Rate",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /purchasereturn",
+        "click \"New\"",
+        "fill \"Supplier\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Supplier C/N No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+        "fill \"Supplier Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"P/R No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+        "fill \"Reason\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+        "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+        "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the purchasereturn grid"
+      ]
+    },
+    {
+      "op": "create.journalentry",
+      "table": "journalentry",
+      "needs": [
+        {
+          "field": "journalentry.f.description",
+          "ask_user_for": "Description",
+          "control": "text input"
+        },
+        {
+          "field": "journalentry.f.voucher_no",
+          "ask_user_for": "Voucher No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "journalentry.f.journal_type",
+          "ask_user_for": "Journal Type",
+          "control": "dropdown",
+          "pick_from_table": "journaltype"
+        },
+        {
+          "field": "journalentry.f.currency_code",
+          "ask_user_for": "Currency Code",
+          "control": "dropdown",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "journalentry.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        }
+      ],
+      "steps": [
+        "navigate to /journalentry",
+        "click \"New\"",
+        "fill \"Description\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+        "fill \"Voucher No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Journal Type\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency Code\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+        "click \"View Posting Details\"",
+        "verify: the new row appears in the journalentry grid"
+      ]
+    },
+    {
+      "op": "create.knockoffentry",
+      "table": "knockoffentry",
+      "needs": [
+        {
+          "field": "knockoffentry.f.customer_supplier_code",
+          "ask_user_for": "Customer/Supplier Code",
+          "control": "dropdown",
+          "pick_from_table": "debtor"
+        },
+        {
+          "field": "knockoffentry.f.knock_off_no",
+          "ask_user_for": "Knock Off No.",
+          "control": "dropdown",
+          "note": "server-assigned, do not supply"
+        },
+        {
+          "field": "knockoffentry.f.company_name",
+          "ask_user_for": "Company Name",
+          "control": "input"
+        },
+        {
+          "field": "knockoffentry.f.currency_code",
+          "ask_user_for": "Currency Code",
+          "control": "input",
+          "pick_from_table": "currency"
+        },
+        {
+          "field": "knockoffentry.f.date",
+          "ask_user_for": "Date",
+          "control": "date picker"
+        },
+        {
+          "field": "knockoffentry.f.search",
+          "ask_user_for": "Search",
+          "control": "input"
+        },
+        {
+          "field": "knockoffentry.f.total_applied_amount",
+          "ask_user_for": "Total Applied Amount",
+          "control": "input"
+        },
+        {
+          "field": "knockoffentry.f.gain_loss",
+          "ask_user_for": "Gain/(Loss)",
+          "control": "input"
+        }
+      ],
+      "steps": [
+        "navigate to /knockoffentry",
+        "click \"New\"",
+        "fill \"Customer/Supplier Code\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Knock Off No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+        "fill \"Company Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+        "fill \"Currency Code\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+        "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Search\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div>div>div:nth-of-type(4)>div>div>div:nth-of-type(3)>div:nth-of-type(6)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Total Applied Amount\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+        "fill \"Gain/(Loss)\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div>div:nth-of-type(1)>input",
+        "click \"Save\"",
+        "verify: the new row appears in the knockoffentry grid"
+      ]
+    }
+  ]
+}

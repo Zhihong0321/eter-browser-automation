@@ -1,0 +1,86 @@
+{
+  "op": "create.purchasereturn",
+  "table": "purchasereturn",
+  "needs": [
+    {
+      "field": "purchasereturn.f.supplier",
+      "ask_user_for": "Supplier",
+      "control": "dropdown",
+      "pick_from_table": "creditor"
+    },
+    {
+      "field": "purchasereturn.f.name",
+      "ask_user_for": "Name",
+      "control": "input"
+    },
+    {
+      "field": "purchasereturn.f.supplier_c_n_no",
+      "ask_user_for": "Supplier C/N No.",
+      "control": "input",
+      "pick_from_table": "creditor",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "purchasereturn.f.supplier_invoice_no",
+      "ask_user_for": "Supplier Invoice No.",
+      "control": "input",
+      "pick_from_table": "invoice",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "purchasereturn.f.p_r_no",
+      "ask_user_for": "P/R No.",
+      "control": "dropdown",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "purchasereturn.f.address",
+      "ask_user_for": "Address",
+      "control": "textarea"
+    },
+    {
+      "field": "purchasereturn.f.reason",
+      "ask_user_for": "Reason",
+      "control": "input"
+    },
+    {
+      "field": "purchasereturn.f.credit_term",
+      "ask_user_for": "Credit Term",
+      "control": "dropdown",
+      "pick_from_table": "creditterm"
+    },
+    {
+      "field": "purchasereturn.f.date",
+      "ask_user_for": "Date",
+      "control": "date picker"
+    },
+    {
+      "field": "purchasereturn.f.currency",
+      "ask_user_for": "Currency",
+      "control": "dropdown",
+      "pick_from_table": "currency"
+    },
+    {
+      "field": "purchasereturn.f.rate",
+      "ask_user_for": "Rate",
+      "control": "input"
+    }
+  ],
+  "steps": [
+    "navigate to /purchasereturn",
+    "click \"New\"",
+    "fill \"Supplier\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Supplier C/N No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+    "fill \"Supplier Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+    "fill \"P/R No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+    "fill \"Reason\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+    "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+    "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+    "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "click \"Save\"",
+    "verify: the new row appears in the purchasereturn grid"
+  ]
+}

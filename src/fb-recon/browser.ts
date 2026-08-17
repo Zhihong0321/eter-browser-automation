@@ -168,15 +168,35 @@ export async function expandComments(page: Page, rounds = 8): Promise<void> {
 }
 
 /**
- * Scroll one round and report how many matching nodes exist afterwards.
+ * Scroll one round and report two independent "is there more?" signals.
  *
- * The caller compares this against the previous round's count: growth means
- * keep going, no growth twice running means the list is exhausted. This is
- * waiting on the DATA'S SHAPE (rule #14) — there is deliberately no
- * waitForTimeout used as a readiness signal anywhere in this file.
+ * `nodes` is how many posts are in the DOM now. On its own it is NOT a
+ * reliable progress signal: the feed is virtualized, so the count shrinks as
+ * often as it grows. Measured 2026-08-13 on a 40.5K-member group, ten rounds
+ * gave 1,3,4,2,1,0,1,1,3,2 — including a round with ZERO posts in the DOM while
+ * the group still had thousands left.
+ *
+ * `height` is document.scrollHeight, and it is the one that tells the truth.
+ * Across those same ten rounds it climbed 3674 → 24530 without ever falling.
+ * Facebook only grows the page when it has appended more content, so a growing
+ * height means "still loading", whatever the node count is doing.
+ *
+ * The caller resets its dry-round counter when EITHER grows. This is waiting on
+ * the DATA'S SHAPE (rule #14) — no waitForTimeout is used as a readiness signal
+ * anywhere in this file.
  */
-export async function scrollAndSettle(page: Page, limiter: ReadLimiter, countSelector: string): Promise<number> {
+export async function scrollAndSettle(
+  page: Page,
+  limiter: ReadLimiter,
+  countSelector: string,
+): Promise<{ nodes: number; height: number }> {
   await limiter.takeScroll();
   await humanScroll(page, 2);
-  return page.evaluate((sel: string) => document.querySelectorAll(sel).length, countSelector);
+  return page.evaluate(
+    (sel: string) => ({
+      nodes: document.querySelectorAll(sel).length,
+      height: document.body.scrollHeight,
+    }),
+    countSelector,
+  );
 }

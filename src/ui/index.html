@@ -351,6 +351,11 @@
   .rc-bad { color: var(--err, #f85149); }
   .rc-unk { color: var(--fg-faint); }
   .rc-trap { margin-top: 5px; font-size: 11.5px; color: var(--warn, #d29922); }
+  .rc-crud { display: inline-flex; gap: 4px; margin-left: 8px; vertical-align: middle; }
+  .rc-crud span { min-width: 22px; padding: 2px 5px; border-radius: 4px; text-align: center; font-size: 10px; font-weight: 700; background: var(--bg-sunken); color: var(--fg-faint); }
+  .rc-crud span.on { background: color-mix(in srgb, var(--ok, #3fb950) 16%, transparent); color: var(--ok, #3fb950); }
+  .rc-gate { margin-top: 7px; padding: 7px 9px; border-left: 3px solid var(--border); background: var(--bg-sunken); font-size: 11.5px; color: var(--fg-muted); }
+  .rc-gate.ok { border-left-color: var(--ok, #3fb950); }
 </style>
 </head>
 <body>
@@ -433,14 +438,17 @@
       <div class="row" style="flex-wrap:wrap;gap:8px;align-items:center;">
         <input id="fbrecon-topic" placeholder="topic, e.g. e-invoice" style="max-width:200px;">
         <input id="fbrecon-source" placeholder="group URL (blank = search the topic)" style="flex:1;min-width:260px;">
-        <input id="fbrecon-score" type="number" min="0" value="0" title="gate threshold" style="max-width:80px;">
+        <input id="fbrecon-score" type="number" min="0" value="0" title="gate threshold" style="max-width:70px;">
+        <input id="fbrecon-rounds" type="number" min="1" value="150"
+               title="scroll rounds per source — how deep to dig. ~0.7-1.1 posts per round." style="max-width:80px;">
         <select id="fbrecon-profile" style="max-width:170px;"></select>
         <button class="btn primary" id="btn-fbrecon-run">Run sweep</button>
         <button class="btn small" id="btn-fbrecon-stop" disabled>Stop</button>
       </div>
       <p class="hint" id="fbrecon-note" style="margin:10px 0 0;">
         Read only — it never likes, comments, joins or messages. Every run is a new project with its own
-        report; nothing is ever overwritten. A sweep takes a few minutes and progress appears below.
+        report; nothing is ever overwritten. The second number is scroll ROUNDS — how deep to dig, roughly
+        0.7–1.1 posts per round, about 4 seconds each. 150 rounds is ~10 minutes. Progress appears below.
       </p>
       <div id="fbrecon-projects" style="margin-top:12px;"></div>
     </div>
@@ -496,29 +504,50 @@
 
   <section id="sec-recon">
     <div class="sec-head">
-      <h2>Recon agent</h2>
+      <h2>Recon scanner</h2>
       <div class="grow"></div>
-      <span class="hint">read-only site scan</span>
+      <span class="hint">authenticated UI → API handbook</span>
     </div>
 
     <div class="panel">
       <div class="gm-form">
         <label>Site URL
-          <input id="rc-url" placeholder="https://admin.atap.solar/" autocomplete="off">
+          <input id="rc-url" placeholder="https://accounting.example.com/dashboard" autocomplete="off">
         </label>
-        <button class="btn primary" id="rc-start">Start scan</button>
+        <label>Shared auth profile
+          <select id="rc-profile" style="min-width:150px;"></select>
+        </label>
+        <label>Max pages
+          <input id="rc-max-pages" type="number" min="1" max="200" value="40" style="max-width:85px;">
+        </label>
+        <button class="btn primary" id="rc-start">Run V3 fast scan</button>
+        <button class="btn small" id="rc-v1-start">Run legacy V1</button>
       </div>
+      <label class="hint" style="display:flex;gap:7px;align-items:center;margin-top:10px;">
+        <input id="rc-tabs" type="checkbox" style="width:auto;"> Explore tab controls (slower)
+      </label>
       <div class="hint">
-        Crawls the site's nav once, freezes each route and replays its API calls. Takes
-        minutes and holds the browser &mdash; leave this page open until it finishes.
-        Never clicks a button on its own; controls it refuses are listed per route for
-        you to approve.
+        V3 reuses the selected profile's signed-in tab, follows the site's own SPA links,
+        captures DOM, screenshots and network shapes, then creates an AI-ready Read-before-Write
+        test plan. Add and confirm the site's session above before scanning. V3 only observes;
+        it does not create, edit or delete records during this scan.
       </div>
       <div id="rc-msg" class="gm-msg" hidden></div>
     </div>
 
     <div class="panel">
-      <div class="subhead">Projects</div>
+      <div class="subhead">V3 scan reports</div>
+      <div id="rc3-list" class="gm-list"></div>
+      <div class="hint">Read gates and CRUD badges come from rendered UI and network evidence. C/U/D are candidates for a later controlled test, not verified mutations.</div>
+    </div>
+
+    <div class="panel" id="rc3-detail" hidden>
+      <div class="subhead" id="rc3-detail-head"></div>
+      <div id="rc3-routes" class="rc-routes"></div>
+    </div>
+
+    <div class="panel">
+      <div class="subhead">Legacy V1 reports</div>
       <div id="rc-list" class="gm-list"></div>
       <div class="hint">
         One project per scanned site. <b>Snapshots</b> counts only frozen pages that
@@ -756,9 +785,26 @@
    * against that profile, because sessions belong to a profile — the same site
    * signed into two profiles is genuinely two separate logins.
    */
+  function paintReconProfiles(s) {
+    const sel = $('rc-profile');
+    const profiles = (s && s.profiles) || [];
+    const wanted = sel.value || state.profile || 'agent';
+    sel.textContent = '';
+    for (const p of profiles) {
+      const opt = el('option');
+      opt.value = p.id;
+      const ready = (p.sessions || []).filter((x) => x.status === 'ready').length;
+      opt.textContent = p.label + ' (' + ready + ' ready)';
+      sel.appendChild(opt);
+    }
+    if (profiles.some((p) => p.id === wanted)) sel.value = wanted;
+    else if (profiles.some((p) => p.id === state.profile)) sel.value = state.profile;
+  }
+
   function paintProfiles(s) {
     const profiles = (s && s.profiles) || [];
     $('profile-count').textContent = String(profiles.length);
+    paintReconProfiles(s);
 
     const sig = JSON.stringify([profiles, state.profile]);
     if (sig === state.profileSig) return;
@@ -863,30 +909,40 @@
       const csv = el('a', 'btn small', 'CSV');
       csv.href = '/fb-recon/csv/' + encodeURIComponent(p.id);
       actions.appendChild(csv);
+      const msgs = el('a', 'btn small', 'Messages JSON');
+      msgs.href = '/fb-recon/messages/' + encodeURIComponent(p.id);
+      msgs.target = '_blank';
+      actions.appendChild(msgs);
       row.appendChild(actions);
 
       host.appendChild(row);
     });
   }
 
+  // Past sweeps live on disk, so this polls from page load onwards — 3s while a
+  // sweep is in flight, 15s when idle — rather than only while one is running.
+  // Otherwise the finished reports are only ever visible to the tab that
+  // started them.
   async function refreshFbRecon() {
+    let live = false;
     try {
       const r = await api('GET', '/api/fb/recon/projects');
       renderFbReconProjects(r.projects || []);
 
       // The Stop button is only enabled while a sweep is actually in flight, so
       // it never lies about being able to stop something.
-      const live = (r.run && r.run.running) || false;
+      live = (r.run && r.run.running) || false;
       const stop = $('btn-fbrecon-stop');
       if (stop.dataset.busy !== '1') stop.disabled = !live;
       stop.textContent = (r.run && r.run.stopping) ? 'Stopping…' : 'Stop';
       $('btn-fbrecon-run').disabled = live;
 
-      if (live || (r.projects || []).some((p) => p.status === 'running')) {
-        clearTimeout(state.fbReconTimer);
-        state.fbReconTimer = setTimeout(refreshFbRecon, 3000);
-      }
+      live = live || (r.projects || []).some((p) => p.status === 'running');
     } catch { /* daemon down; the banner already says so */ }
+
+    // Re-armed outside the catch: a daemon blip must not kill the loop for good.
+    clearTimeout(state.fbReconTimer);
+    state.fbReconTimer = setTimeout(refreshFbRecon, live ? 3000 : 15000);
   }
 
   function paintSessions(s) {
@@ -1283,6 +1339,7 @@
         topic: topic,
         sources: source ? [source.indexOf(':') > 0 && source.indexOf('http') !== 0 ? source : 'group:' + source] : undefined,
         minScore: Number($('fbrecon-score').value || 0),
+        maxRounds: Number($('fbrecon-rounds').value || 150),
         profile: $('fbrecon-profile').value || undefined,
       };
       const started = await api('POST', '/api/fb/recon', body);
@@ -1512,6 +1569,98 @@
   // is on disk rather than driving one. No polling: scan.json only changes when
   // a scan finishes, and a 3s poll would repaint an open project under the user.
   const rc = { domain: null };
+  const rc3 = { domain: null };
+
+  function rc3Crud(ops) {
+    const wrap = el('span', 'rc-crud');
+    for (const key of ['create', 'read', 'update', 'delete']) {
+      const on = !!(ops && ops[key] && ops[key].available);
+      const chip = el('span', on ? 'on' : '', key[0].toUpperCase());
+      chip.title = key + (on ? ' candidate found' : ' not observed');
+      wrap.appendChild(chip);
+    }
+    return wrap;
+  }
+
+  function rc3Row(p) {
+    const row = el('button', 'rc-row' + (p.domain === rc3.domain ? ' on' : ''));
+    row.type = 'button';
+    const left = el('div');
+    left.appendChild(el('div', 'gm-id', p.domain));
+    left.appendChild(el('div', 'gm-sub', 'V3 ' + p.status + ' · ' + new Date(p.scannedAt).toLocaleString()
+      + ' · ' + (p.durationMs / 1000).toFixed(1) + 's'));
+    row.appendChild(left);
+    const nums = el('div', 'gm-nums');
+    nums.innerHTML = '<b>' + p.pages + '</b> pages · ' + p.readPassed + ' read gates · '
+      + p.create + ' C / ' + p.update + ' U / ' + p.delete + ' D'
+      + (p.failed ? ' · <span class="rc-bad">' + p.failed + ' failed</span>' : '');
+    row.appendChild(nums);
+    row.appendChild(el('div', 'gm-acts', p.domain === rc3.domain ? 'Hide' : 'Open'));
+    row.addEventListener('click', () => {
+      if (rc3.domain === p.domain) { rc3.domain = null; $('rc3-detail').hidden = true; rc3Refresh(); return; }
+      rc3.domain = p.domain;
+      rc3Open(p.domain);
+    });
+    return row;
+  }
+
+  function rc3Route(p) {
+    const box = el('div', 'rc-route');
+    const head = el('div', 'rc-head');
+    let route = p.url || p.routeKey;
+    try { route = new URL(route).pathname || '/'; } catch (e) {}
+    head.appendChild(el('div', 'rc-path', route));
+    if (p.title) head.appendChild(el('div', 'rc-title', p.title));
+    head.appendChild(rc3Crud(p.quickTest && p.quickTest.operations));
+    box.appendChild(head);
+
+    const table = p.table ? p.table.rows + ' rows × ' + p.table.columns + ' cols' : 'no table';
+    const shot = p.screenshot && p.screenshot.file ? Math.round(p.screenshot.bytes / 1024) + ' KB PNG' : 'no PNG';
+    const endpoints = (p.xhr || []).length;
+    box.appendChild(el('div', 'rc-meta', table + ' · ' + endpoints + ' network calls · ' + shot
+      + ' · ' + ((p.timings && p.timings.totalMs) || 0) + 'ms'));
+
+    const gate = p.quickTest && p.quickTest.readGate;
+    const gateBox = el('div', 'rc-gate' + (gate && gate.status === 'passed' ? ' ok' : ''));
+    gateBox.textContent = gate && gate.status === 'passed'
+      ? 'READ PASSED — ' + ((gate.evidence || [])[0] || 'page and network shape captured')
+      : 'READ BLOCKED — ' + ((gate && gate.evidence && gate.evidence[0]) || 'no read evidence');
+    box.appendChild(gateBox);
+    return box;
+  }
+
+  async function rc3Open(domain) {
+    $('rc3-detail').hidden = false;
+    $('rc3-detail-head').textContent = domain + ' — loading V3 report…';
+    $('rc3-routes').textContent = '';
+    try {
+      const scan = await api('GET', '/api/recon/v3/projects/' + encodeURIComponent(domain));
+      $('rc3-detail-head').textContent = domain + ' — ' + scan.pages.length + ' pages, '
+        + scan.failed.length + ' failed, ' + (scan.durationMs / 1000).toFixed(1) + 's';
+      const host = $('rc3-routes');
+      for (const p of scan.pages) host.appendChild(rc3Route(p));
+      for (const f of scan.failed) host.appendChild(el('div', 'rc-route rc-bad', f.url + ' — ' + f.error));
+    } catch (err) {
+      $('rc3-detail-head').textContent = domain + ' — ' + err.message;
+    }
+    rc3Refresh();
+  }
+
+  async function rc3Refresh() {
+    try {
+      const data = await api('GET', '/api/recon/v3/projects');
+      const list = $('rc3-list');
+      list.textContent = '';
+      if (!data.projects.length) {
+        list.appendChild(el('div', 'gm-empty', 'No V3 reports yet. Share a session above, then run a fast scan.'));
+        return;
+      }
+      for (const p of data.projects) list.appendChild(rc3Row(p));
+    } catch (err) {
+      $('rc3-list').textContent = '';
+      $('rc3-list').appendChild(el('div', 'gm-empty', err.message));
+    }
+  }
 
   function rcRow(p) {
     const row = el('button', 'rc-row' + (p.domain === rc.domain ? ' on' : ''));
@@ -1642,11 +1791,9 @@
     box.textContent = text;
   }
 
-  // A scan runs to completion inside this one request — minutes, holding the
-  // browser. There is no progress channel, so the button stays busy for the
-  // whole run rather than pretending it finished. Browser fetch has no default
-  // timeout; the dead-daemon message in the CLI is Node's fetch timing out, not
-  // the daemon dying (buildplan §5).
+  // A scan runs to completion inside one request. Keep the selected auth profile
+  // explicit: scanning the right domain with the wrong Chrome profile is still
+  // a logged-out scan.
   $('rc-start').addEventListener('click', async () => {
     const url = $('rc-url').value.trim();
     if (!url) { rcMsg('Enter a site URL.', 'warn'); return; }
@@ -1655,14 +1802,26 @@
     btn.dataset.busy = '1';
     btn.disabled = true;
     const label = btn.textContent;
-    btn.textContent = 'Scanning…';
-    rcMsg('Scanning ' + url + ' — this takes minutes. Keep this page open.', 'warn');
+    btn.textContent = 'V3 scanning…';
+    const profile = $('rc-profile').value || 'agent';
+    const maxPages = Math.max(1, Math.min(200, Number($('rc-max-pages').value) || 40));
+    rcMsg('V3 is scanning ' + url + ' with shared profile “' + profile + '”. Keep this page open.', 'warn');
     try {
-      const r = await api('POST', '/api/recon/scan', { url, maxPages: 40, windowMs: 8000 });
+      const r = await api('POST', '/api/recon/v3/scan', {
+        url: url,
+        profile: profile,
+        maxPages: maxPages,
+        concurrency: 1,
+        exploreTabs: $('rc-tabs').checked,
+        screenshots: true,
+        replay: true,
+      });
       const pages = (r && r.pages) ? r.pages.length : 0;
       const failed = (r && r.failed) ? r.failed.length : 0;
-      rcMsg('Done — ' + pages + ' routes, ' + failed + ' failed.', failed ? 'warn' : 'ok');
-      await rcRefresh();
+      const reads = (r.pages || []).filter((p) => p.quickTest && p.quickTest.readGate.status === 'passed').length;
+      rcMsg('V3 done — ' + pages + ' pages, ' + reads + ' read gates passed, ' + failed + ' failed.', failed ? 'warn' : 'ok');
+      await rc3Refresh();
+      if (r.domain) { rc3.domain = r.domain; await rc3Open(r.domain); }
     } catch (err) {
       rcMsg(err.message, 'bad');
     } finally {
@@ -1672,9 +1831,33 @@
     }
   });
 
+  $('rc-v1-start').addEventListener('click', async () => {
+    const url = $('rc-url').value.trim();
+    if (!url) { rcMsg('Enter a site URL.', 'warn'); return; }
+    const btn = $('rc-v1-start');
+    if (btn.dataset.busy === '1') return;
+    btn.dataset.busy = '1'; btn.disabled = true;
+    const label = btn.textContent; btn.textContent = 'V1 scanning…';
+    rcMsg('Legacy V1 is scanning ' + url + '. Keep this page open.', 'warn');
+    try {
+      const maxPages = Math.max(1, Math.min(200, Number($('rc-max-pages').value) || 40));
+      const r = await api('POST', '/api/recon/scan', { url: url, maxPages: maxPages, windowMs: 8000 });
+      const failed = (r.failed || []).length;
+      rcMsg('V1 done — ' + (r.pages || []).length + ' routes, ' + failed + ' failed.', failed ? 'warn' : 'ok');
+      await rcRefresh();
+    } catch (err) {
+      rcMsg(err.message, 'bad');
+    } finally {
+      btn.dataset.busy = ''; btn.disabled = false; btn.textContent = label;
+    }
+  });
+
   $('rc-url').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('rc-start').click(); });
 
+  rc3Refresh();
   rcRefresh();
+
+  refreshFbRecon();
 
   refresh();
   startPoll();

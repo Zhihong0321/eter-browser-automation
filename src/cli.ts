@@ -175,9 +175,10 @@ async function cmdCheck(site?: string): Promise<void> {
 async function cmdRecon(): Promise<void> {
   const sub = process.argv[3];
   const url = process.argv[4];
-  if ((sub !== 'probe' && sub !== 'scan') || !url) {
+  if ((sub !== 'probe' && sub !== 'scan' && sub !== 'scan-v3') || !url) {
     console.error('  Usage: eter-browser recon probe <url> [--window 8000] [--json]');
     console.error('         eter-browser recon scan  <url> [--max-pages 40] [--window 8000] [--approve "A,B"] [--json]');
+    console.error('         eter-browser recon scan-v3 <url> [--max-pages 40] [--concurrency 3] [--tabs] [--no-screenshot] [--no-replay] [--json]');
     process.exit(1);
   }
   const windowMs = Number(flag('window') ?? 8000);
@@ -187,6 +188,38 @@ async function cmdRecon(): Promise<void> {
     const { formatVerdict } = await import('./recon.js');
     console.log('\n' + formatVerdict(r.trace as never, r.verdict as never) + '\n');
     if (process.argv.includes('--json')) console.log(JSON.stringify(r, null, 2));
+    return;
+  }
+
+  if (sub === 'scan-v3') {
+    const maxPages = Number(flag('max-pages') ?? 40);
+    const concurrency = Number(flag('concurrency') ?? 3);
+    const settleQuietMs = Number(flag('settle-quiet') ?? 650);
+    const settleCapMs = Number(flag('settle-cap') ?? 3500);
+    const replayConcurrency = Number(flag('replay-concurrency') ?? 4);
+    const replayLimit = Number(flag('replay-limit') ?? 12);
+    const exploreTabs = process.argv.includes('--tabs');
+    const screenshots = !process.argv.includes('--no-screenshot');
+    const replay = !process.argv.includes('--no-replay');
+    const fullPage = process.argv.includes('--full-page');
+    console.log(`\n  V3 scanning ${url} … (up to ${maxPages} pages, concurrency ${concurrency})`);
+    const scan = (await daemon('POST', '/api/recon/v3/scan', {
+      url,
+      maxPages,
+      concurrency,
+      settleQuietMs,
+      settleCapMs,
+      replayConcurrency,
+      replayLimit,
+      exploreTabs,
+      screenshots,
+      replay,
+      fullPage,
+    })) as Record<string, unknown>;
+    const { formatScanV3 } = await import('./recon-v3.js');
+    console.log(formatScanV3(scan as never));
+    console.log('');
+    if (process.argv.includes('--json')) console.log(JSON.stringify(scan, null, 2));
     return;
   }
 

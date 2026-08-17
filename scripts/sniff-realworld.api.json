@@ -1,0 +1,32 @@
+{
+  "site": "https://demo.realworld.show",
+  "recorded": "24 requests",
+  "auth": "none",
+  "endpoints": [
+    {
+      "endpoint": "GET https://api.realworld.show/api/articles",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "query": [
+        "limit",
+        "offset"
+      ],
+      "sends": null,
+      "returns": "{articles:[{slug:string, title:string, description:string, tagList:[…], createdAt:string, updatedAt:string, favorited:boolean, favoritesCount:number, author:{…}}], articlesCount:number}",
+      "curl": "curl 'https://api.realworld.show/api/articles?limit=10&offset=0' "
+    },
+    {
+      "endpoint": "GET https://api.realworld.show/api/tags",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "query": [],
+      "sends": null,
+      "returns": "{tags:[string]}",
+      "curl": "curl 'https://api.realworld.show/api/tags' "
+    }
+  ]
+}

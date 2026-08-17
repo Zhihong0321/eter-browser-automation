@@ -1,0 +1,22 @@
+STUB 200 147623B  final=https://www.newpages.com.my/v2/en/company/731041/index.html
+--- body ---
+<!doctype html>
+<html>
+<head>
+<meta charset="gb2312">
+<title>A C S CONTRACTOR SDN BHD in Selangor :: Malaysia NEWPAGES</title>
+<!--<meta name="viewport" content="width=1000,  maximum-scale=10.0" />-->
+<meta name="description" content="A C S CONTRACTOR SDN BHD - A C S CONTRACTOR SDN BHD was established in year 2009 with its core business specializing in strip ceiling, sun louvers, aluminium and galvanized steel works.">
+<meta name="keywords" content="">
+<meta name="author" content="NEWPAGES">
+<meta name="referrer" content="always">
+<meta property="og:site_name" content="NEWPAGES.COM.MY">
+<meta property="og:url" content="https:///www.newpages.com.my/v2/en/company/731041/index.html">
+<meta property="og:title" content="A C S CONTRACTOR SDN BHD in Selangor :: Malaysia NEWPAGES">
+<meta property="og:description" content="A C S CONTRACTOR SDN BHD - A C S CONTRACTOR SDN BHD was established in yea
+
+bare: 200 144KB in 207ms  MainOffice=true  email=acs.sam@gmail.com  wa=60163344463
+
+UA: 200 144KB in 257ms  MainOffice=true  email=acs.sam@gmail.com  wa=60163344463
+
+UA+ref: 200 144KB in 254ms  MainOffice=true  email=acs.sam@gmail.com  wa=60163344463

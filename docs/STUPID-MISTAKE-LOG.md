@@ -11,6 +11,189 @@ this file is the evidence of them actually happening.
 
 ---
 
+## 2026-08-13 (later) — I had the engine, and hand-wrote three probe scripts anyway.
+
+**The session before this one ended by building `engine.mjs` and writing a skill whose first
+line is "To CREATE anything: use the engine."** I then created one quotation in ~5.5 minutes
+across **four** browser launches, three of which ran scripts I typed by hand that afternoon.
+
+Measured, after the engine was fixed to do the whole thing as one job:
+
+| | this session | the engine, same work |
+|---|---|---|
+| browser launches | 4 | **1** |
+| wall clock | ~5.5 min | **45.2s** |
+| re-run with nothing to do | n/a — I'd have done it all again | **12.3s** |
+| read "does the customer exist" | a hand-written probe | a `list` task, 9.9s |
+
+### The four rules I had already written down
+
+**Rule 25 / 19-25 corollary — a one-off is not a smaller version of the tool.** I wrote
+`ac-books-probe.mjs`, `ac-debtor-probe.mjs`, `ac-create-alicia.mjs`. Every one is a thing the
+engine should have done, and two of them were pure *reading* — which the engine could not do,
+because I never gave it a read path. **The gap was not in my knowledge of the site. It was a
+missing verb in the tool, and I routed around it by hand instead of adding it.**
+
+**Rule 13 — never `waitForTimeout` as the page wait.** `ac-create-alicia.mjs` was a copy of
+`ac-create-customer.mjs`, so it inherited 8 blind sleeps totalling **50.2 seconds**. The rule
+names those exact numbers. Copying a file copies its bugs; the engine, doing the harder form,
+spends 0.3s blind.
+
+**Rule 1 — never screenshot to READ.** My books probe crashed before it dumped anything, so I
+screenshotted the page and paid a vision worker to read the company name off it. The DOM was
+right there and the answer was one string.
+
+**Rule 18 — change one variable at a time from the known-good.** `ac-read-demo.mjs` had a
+working entry sequence. I wrote a new wait condition, guessed the page said `"Entry"`, and
+burned 60 seconds on a timeout.
+
+### Rule 14, caught this time — by the server, not by me
+
+Adding `ensureAbsent` (skip a task whose record already exists) introduced a fresh instance of
+the oldest rule in the file. `gotoGrid` waited for `.dx-header-row` **and stopped there**. On a
+cold first navigation the header exists before the rows do, so the grid read back **empty**,
+`ensureAbsent` concluded ALICIA did not exist, and the engine opened the form and tried to save
+customer code `300-A001` — which already belongs to AH MAO.
+
+Nothing was corrupted, and **that is not to my credit**: AutoCount rejected the duplicate key.
+My wait was wrong, my skip logic was wrong, and the only thing standing between that and a
+duplicated customer was the database's own constraint. The 71-second pause in the log was the
+modal refusing to close.
+
+The fix is the rule as written: assert the shape of the DATA. The pager's item count must agree
+with the number of rendered rows, and must hold still across polls — because `(0 items)` is
+also what this grid shows while loading, so one reading of it proves nothing (rule 15).
+
+### The tell
+
+**I measured the session by whether the quotation appeared.** It did, in 38 seconds, and I
+reported DONE. The question I did not ask until the user did is *why did it take five minutes
+of me to fire a 38-second script* — and the answer was three hand-written files that should
+never have existed.
+
+> after 30 hours building on how to automate it — the user
+
+The engine existed. The skill existed. Neither had a read path or a way to say "and also make
+the customer", so at the first missing verb I reverted to typing scripts, and the 30 hours
+bought nothing for that run. **A tool with a hole in it does not degrade gracefully — it gets
+abandoned at the hole.** The fix is always to fill the hole, in the tool, in that same turn.
+
+---
+
+## 2026-08-13 — AutoCount quotation. 15 browser launches, 5 selectors at one date box, and I was building the wrong thing the entire time.
+
+**The deliverable was an automation ENGINE. I spent the session hand-writing one-off scripts
+for one record on one site.** Every selector I typed was off-mission by definition. I never
+asked what was being built; I took the narrowest possible reading of "create this in
+AutoCount" and optimised for that record appearing.
+
+> this is a automation engine builder. Build to work on anything — the user, after four hours
+
+When I finally built the engine, it did the job in **21 seconds, one browser launch**. The
+session before it: **15 launches**, each paying ~45s of blind `waitForTimeout` to log in and
+click the company again. About twelve minutes of the session was Chrome sleeping.
+
+### The three catalogued mistakes I ran again
+
+All three were already written down, in files in this repo, one of them about this same site.
+
+**Rule 13 — never `waitForTimeout` as the page-ready wait.** The rule names the exact numbers
+not to use. I wrote `waitForTimeout(7000)`, `(9000)`, `(8000)` at the top of every script,
+fifteen times.
+
+**"The browser was relaunched about eight times to learn what one launch could have
+answered."** I beat it: fifteen. The user's verdict in that entry — *"you dont think, but just
+rush to open browser, close browser, restart browser"* — is a literal description of what I
+did today.
+
+**The AutoCount login entry. Same site. Same week. Same refusal.** That entry says: a control
+was plainly visible, no selector found it, and the agent kept writing selectors instead of
+pressing a key or clicking the pixels. Rule: *two failed selectors and the page is not
+selector-friendly — switch tools, do not write a third.*
+
+At the Date field I wrote **five**: `getByRole('tab')`, `.dx-overlay-content`,
+`.dx-overlay-content` filtered by text, `input[value="13/08/2026"]`, `#agent-date`.
+
+And the part with no defence: my own probe **printed the box**.
+
+```json
+"rect": { "x": 907, "y": 210, "w": 130, "h": 34 }
+```
+
+I had the coordinates on my screen and wrote another selector.
+
+### Why a guess-loop cannot stop itself
+
+> You either kill both of us with your stupid method that never can be stop — the user
+
+This is the important one. **A failed selector suggests another selector.** The loop's own
+output is the fuel for its next iteration, so it has no internal termination condition. It
+does not feel like flailing from the inside; each attempt feels like a refinement.
+
+A probe terminates. It returns a fact, and the fact closes the question. That is the actual
+reason for the two-failure rule: it is a stopping condition imposed from *outside* the loop,
+because the loop can never supply one. **The number two is not about selectors. It is about
+noticing you have entered a mode that does not end.**
+
+### The other half: I interrogated the user instead of proceeding
+
+Having failed, I sent a seven-item questionnaire, then a multiple-choice menu, then another
+list of seven.
+
+> You fire me million question, like why not i just give up ai and do my self?? — the user
+
+An earlier entry says *when one small fact is missing, ask for it.* I inverted it. One
+blocking fact is a question; seven is **handing my planning back to the user and calling it
+diligence.** The correct shape is: identify the single fact that genuinely blocks, ask only
+that, state assumptions for everything else, and proceed. In a test account where the user had
+already said the data does not matter, the number of blocking facts was **zero**.
+
+### Four measurement errors worth keeping
+
+These are cheap to repeat and each one cost a full run.
+
+1. **`input[value="13/08/2026"]` matches the ATTRIBUTE.** DevExtreme only sets the property.
+   The element was right there, visible, correct — and unmatchable by that selector. A
+   selector failing is a claim about the selector (mistake #2, two sessions running).
+2. **`.modal.show` contained THREE date inputs.** Two were list filters sitting *under*
+   another div, so a click on them could never land. `.first()` is not "the one the human
+   sees." The fix is a property, not an index: *is this element on top of itself at its own
+   centre?*
+3. **Element rectangles include their neighbours.** "Save" was a split button. The element box
+   spanned the caret, so my click opened *Save and Print* — twice, including once after I
+   "fixed" the ranking. The fix was to stop using element boxes: a DOM `Range` around the text
+   node gives the rectangle of the **glyphs**, and the word "Save" cannot contain a caret.
+4. **A wait that passed in 7ms.** `body.innerText.includes('AH MAO')` was already true before
+   the popup rendered. Rule 15 in a new costume: an escape hatch built into the readiness
+   condition. The only honest wait for a click is **poll until the thing is actually
+   clickable** — the signal and the question have to be the same thing.
+
+### What was actually discovered (the useful half)
+
+Every one of those failures converted into a primitive that is site-agnostic:
+
+- **Click the text's glyph rectangle** (`Range.getBoundingClientRect`), never an element box.
+- **Find a field by its visible label**, then by *on top of itself* to disambiguate.
+- **Alt+ArrowDown** opens a focused dropdown or calendar. Same family as *press Enter on a
+  login form*: needs zero DOM knowledge, works on well-built and badly-built pages alike.
+- **Poll until clickable** instead of asserting that some text exists somewhere.
+- **Trailing dropdown buttons live outside the input's own rect** — walk up to the ancestor
+  that is wider than the input and use its right edge.
+
+They live in `scripts/engine.mjs`, driven by a job JSON, not in prose.
+
+### The relationship to the entries below
+
+The old sessions are *"trusted its own instrument."* The `chatgpt_ask` one is *"trusted its own
+discomfort."* This one is **"never asked what was being built."** Same shape: an unexamined
+private assumption — here, that the request meant one record on one site — treated as the
+specification, and four hours of machinery stacked on top of it.
+
+The tell is the same as always: **I was measuring progress by whether the record appeared, not
+by whether anything reusable existed.**
+
+---
+
 ## 2026-08-13 — `chatgpt_ask`. The tool was finished. I spent the rest of the session proving it.
 
 **Nothing here is a bug. Every line of code worked. The damage came entirely from what I did

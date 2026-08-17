@@ -1,0 +1,673 @@
+[
+  {
+    "href": "/seda",
+    "text": "SEDA Applications",
+    "menu": "(top bar)",
+    "landed": "/seda",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_seda.png",
+    "columns": [
+      "SUBMISSION READY",
+      "CUSTOMER",
+      "AGENT USER",
+      "FORM PROGRESS",
+      "PAYMENT",
+      "SEDA PROFILE",
+      "LAST MODIFIED",
+      "ACTIONS"
+    ],
+    "dataRows": 40,
+    "buttons": [
+      "Logout",
+      "All Registrations View all records",
+      "Search",
+      "Pending 40 ▼"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by customer, address, IC number, "
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/invoices",
+    "text": "Invoices",
+    "menu": "(top bar)",
+    "landed": "/invoices",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_invoices.png",
+    "columns": [
+      "INVOICE ID",
+      "CUSTOMER",
+      "INVOICE BY",
+      "DATE",
+      "AMOUNT",
+      "% PAID",
+      "ACTIONS"
+    ],
+    "dataRows": 50,
+    "buttons": [
+      "Logout",
+      "Legacy",
+      "Consolidated",
+      "Export",
+      "New Invoice",
+      "Active Invoices",
+      "Deleted Invoices",
+      "Filters",
+      "Sort",
+      "Printable A4 Invoice",
+      "Download PDF",
+      "Edit",
+      "Delete"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by Invoice ID, invoice no., custo"
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/engineering-v2",
+    "text": "Engineering",
+    "menu": "(top bar)",
+    "landed": "/engineering-v2",
+    "title": "Engineering V2 | EE Admin",
+    "ok": true,
+    "shot": "shots/_engineering_v2.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Logout",
+      "Filter",
+      "Refresh"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search invoice, customer, agent, address"
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/payments",
+    "text": "Payments",
+    "menu": "(top bar)",
+    "landed": "/payments",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_payments.png",
+    "columns": [
+      "CREATED ON",
+      "USER / CUSTOMER",
+      "AMOUNT",
+      "METHOD",
+      "STATUS / REMARK",
+      "ACTIONS"
+    ],
+    "dataRows": 7,
+    "buttons": [
+      "Logout",
+      "Auto-Reconcile",
+      "Diagnose Invoices",
+      "Re-scan Dates",
+      "Calculate EPP Cost",
+      "Pending Verification",
+      "Verified Payments",
+      "Fully Paid Invoices",
+      "Update Method",
+      "EPP Costs",
+      "Filter",
+      "Sort (Newest)",
+      "View",
+      "Delete Submission"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by customer, user, or invoice num"
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/customers",
+    "text": "Customers",
+    "menu": "(top bar)",
+    "landed": "/customers",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_customers.png",
+    "columns": [
+      "CUSTOMER NAME",
+      "AGENT",
+      "CONTACT INFO",
+      "LOCATION",
+      "ID / IC",
+      "ACTIONS"
+    ],
+    "dataRows": 50,
+    "buttons": [
+      "Logout",
+      "History",
+      "Export",
+      "Add Customer",
+      "Filter",
+      "Sort",
+      "Edit"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by name, email, phone, or ID..."
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/referrals",
+    "text": "Referrals",
+    "menu": "(top bar)",
+    "landed": "/referrals",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_referrals.png",
+    "columns": [
+      "REFERRAL",
+      "CUSTOMER",
+      "AGENT",
+      "CONTACT",
+      "STATUS",
+      "DEAL / COMMISSION",
+      "DATES",
+      "ACTIONS"
+    ],
+    "dataRows": 50,
+    "buttons": [
+      "Logout",
+      "Refresh",
+      "Export",
+      "New Referral",
+      "Apply Filters",
+      "Edit",
+      "Previous page",
+      "Next page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by referral name, mobile number, "
+      }
+    ],
+    "selects": [
+      {
+        "name": "",
+        "n": 8,
+        "options": [
+          "All statuses",
+          "Pending",
+          "Contacted",
+          "Qualified",
+          "Converted",
+          "Won"
+        ]
+      }
+    ]
+  },
+  {
+    "href": "/catalog",
+    "text": "Catalog",
+    "menu": "(top bar)",
+    "landed": "/referrals",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": false,
+    "shot": "shots/_catalog.png",
+    "columns": [
+      "REFERRAL",
+      "CUSTOMER",
+      "AGENT",
+      "CONTACT",
+      "STATUS",
+      "DEAL / COMMISSION",
+      "DATES",
+      "ACTIONS"
+    ],
+    "dataRows": 50,
+    "buttons": [
+      "Logout",
+      "Refresh",
+      "Export",
+      "New Referral",
+      "Apply Filters",
+      "Edit",
+      "Previous page",
+      "Next page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by referral name, mobile number, "
+      }
+    ],
+    "selects": [
+      {
+        "name": "",
+        "n": 8,
+        "options": [
+          "All statuses",
+          "Pending",
+          "Contacted",
+          "Qualified",
+          "Converted",
+          "Won"
+        ]
+      }
+    ]
+  },
+  {
+    "href": "/users",
+    "text": "Users",
+    "menu": "(top bar)",
+    "landed": "/referrals",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": false,
+    "shot": "shots/_users.png",
+    "columns": [
+      "REFERRAL",
+      "CUSTOMER",
+      "AGENT",
+      "CONTACT",
+      "STATUS",
+      "DEAL / COMMISSION",
+      "DATES",
+      "ACTIONS"
+    ],
+    "dataRows": 50,
+    "buttons": [
+      "Logout",
+      "Refresh",
+      "Export",
+      "New Referral",
+      "Apply Filters",
+      "Edit",
+      "Previous page",
+      "Next page"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "Search by referral name, mobile number, "
+      }
+    ],
+    "selects": [
+      {
+        "name": "",
+        "n": 8,
+        "options": [
+          "All statuses",
+          "Pending",
+          "Contacted",
+          "Qualified",
+          "Converted",
+          "Won"
+        ]
+      }
+    ]
+  },
+  {
+    "href": "/activity",
+    "text": "Activity Log",
+    "menu": "(top bar)",
+    "landed": "/activity",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_activity.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Logout",
+      "Filter"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "description or label"
+      }
+    ],
+    "selects": [
+      {
+        "name": "app",
+        "n": 7,
+        "options": [
+          "All",
+          "agent-os",
+          "claim-system",
+          "ee-admin",
+          "ee-referral",
+          "main-site"
+        ]
+      },
+      {
+        "name": "action",
+        "n": 12,
+        "options": [
+          "All",
+          "activate",
+          "calculate",
+          "create",
+          "delete",
+          "print"
+        ]
+      },
+      {
+        "name": "entity",
+        "n": 16,
+        "options": [
+          "All",
+          "attachment",
+          "claim_receipt",
+          "commercial_roi_lookup",
+          "customer",
+          "invoice"
+        ]
+      },
+      {
+        "name": "actor",
+        "n": 110,
+        "options": [
+          "All",
+          "ADAM HAFIZ BIN AHMAD RAMLI",
+          "ADMIN",
+          "AHMAD SYAHMI BIN AHMAD NAZRI",
+          "ALIAH NABIHAH BINTI HAIRUL NIZAM",
+          "ANNIE"
+        ]
+      }
+    ]
+  },
+  {
+    "href": "/manage-company",
+    "text": "Manage Company",
+    "menu": "(top bar)",
+    "landed": "/manage-company",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_manage_company.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Logout",
+      "Add Template",
+      "Start Full Migration",
+      "Refresh Stats",
+      "Verify Storage Health",
+      "Sync Batch (50)",
+      "Edit Template"
+    ],
+    "inputs": [],
+    "selects": []
+  },
+  {
+    "href": "/customer-service",
+    "text": "Customer Service",
+    "menu": "(top bar)",
+    "landed": "/customer-service",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_customer_service.png",
+    "columns": [
+      "INVOICE NO.",
+      "CUSTOMER",
+      "AGENT",
+      "1ST PAYMENT DATE",
+      "ACTIONS"
+    ],
+    "dataRows": 1394,
+    "buttons": [
+      "Logout",
+      "Save Config",
+      "Test Create WA Group",
+      "Create WA Group"
+    ],
+    "inputs": [
+      {
+        "type": "text",
+        "name": "e.g. 60123456789"
+      }
+    ],
+    "selects": []
+  },
+  {
+    "href": "/sync",
+    "text": "Sync Center",
+    "menu": "(top bar)",
+    "landed": "/sync",
+    "title": "EE Admin | Modern ERP Solution",
+    "ok": true,
+    "shot": "shots/_sync.png",
+    "columns": [],
+    "dataRows": 0,
+    "buttons": [
+      "Validate Only",
+      "Validate & Fix",
+      "📄Invoices",
+      "💰Payments",
+      "✅Submitted Payments",
+      "📋SEDA Registrations",
+      "📝Invoice Items",
+      "👤Users",
+      "Validate All Relationships",
+      "Patch URLs",
+      "Patch Filenames",
+      "Run Update",
+      "Fix Links",
+      "Clear Logs"
+    ],
+    "inputs": [
+      {
+        "type": "file",
+        "name": ""
+      },
+      {
+        "type": "file",
+        "name": ""
+      }
+    ],
+    "selects": [
+      {
+        "name": "",
+        "n": 9,
+        "options": [
+          "Invoices",
+          "Payments",
+          "Submitted Payments",
+          "SEDA Registrations",
+          "Invoice Items",
+          "Users"
+        ]
+      }
+    ]
+  },
+  {
+    "href": "/schema-manager",
+    "text": "Schema Manager",
+    "menu": "(top bar)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/db-inspector",
+    "text": "Live DB Inspector",
+    "menu": "(top bar)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/api-doc",
+    "text": "API Doc",
+    "menu": "(top bar)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/settings",
+    "text": "Settings",
+    "menu": "(top bar)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_051b73e534732db6",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_5ad2d16c9ec95cd9",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_e272de1299f16b09",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_16c9b944ce24d4f2",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_ed0f7ad188dddca9",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_aaa9ff6ad1885981",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_b19d66c914dae4da",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_d37eea81ce0c2b43",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_714d30c4a96b41c7",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_57ff3d969f05ca10",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_8a27c8716d82b00f",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_b6a6e329ec2fe999",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_e8b3f2f40810cc9d",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_52dd808b8a891f0a",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_10329c9b0f87f23e",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_9c67dc9611fc9932",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_b4288add4ec90947",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_6d631a64cde70457",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_c967bfd23b5748dc",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_5e8629b3deb6adbc",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  },
+  {
+    "href": "/seda/seda_03d2223d04ce6e98",
+    "text": "",
+    "menu": "(discovered)",
+    "ok": false,
+    "error": "locator.evaluate: Timeout 30000ms exceeded."
+  }
+]

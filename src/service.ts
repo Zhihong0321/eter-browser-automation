@@ -17,11 +17,15 @@ import {
   type PlanResult,
   type StatusResult,
 } from './leads.js';
+import type { CompanyDossier } from './enrich/types.js';
+import { runCompanyDeepResearch } from './enrich/pipeline.js';
+import * as nlm from './notebooklm.js';
 import { deepProbe, hintFor, learnCookies, PRESETS, quickProbe } from './probe.js';
 import { ReadLimiter, type ReadLimits } from './readlimit.js';
 import { runReconSweep } from './fb-recon/index.js';
 import { loadPack, savePack, starterPack, type TopicPack } from './fb-recon/topic.js';
 import { parseSource, type SourceSpec } from './fb-recon/sources.js';
+import { listProjects as listGmapProjects, projectDir as gmapProjectDir } from './gmapproject.js';
 // `toCsv` is already taken by the gmap lead store, so fb-recon's is aliased.
 import { toCsv as contactsToCsv, type ContactMap } from './fb-recon/store.js';
 import { listProjects, ProjectRun, reapStaleProjects, type ProjectContact, type ProjectFile } from './fb-recon/project.js';
@@ -30,6 +34,7 @@ import { renderIndex } from './fb-recon/report.js';
 import { SendLimiter } from './sendlimit.js';
 import { analyzeSettle, assertReconAllowed, captureSettle, detectChallenge } from './recon.js';
 import { scanSite, type ScanOptions, type SiteScan } from './recon-scan.js';
+import { scanSiteV3, type ReconV3Options, type V3SiteScan } from './recon-v3.js';
 import { isVerifiedRead } from './recon-net.js';
 import { describeUrl, Vault, type SessionRecord } from './vault.js';
 import * as wa from './whatsapp.js';
@@ -316,9 +321,34 @@ export class VaultService {
    * flight cannot be killed by whatever the agent profile is doing, and vice
    * versa. browserFor().run() serializes calls, so concurrent callers queue
    * instead of fighting over the tab.
+   *
+   * `timeoutMs` covers the whole call. The default suits a conversational
+   * question; a research prompt that asks the session to read a dozen pages
+   * measured 111s, so callers doing that pass their own budget rather than
+   * gambling on the default holding on a slower day.
    */
-  async chatgptAsk(question: string): Promise<ChatGptAnswer> {
-    return this.browserFor(CHATGPT_PROFILE).run((_ctx, page) => askChatGpt(page, question));
+  async chatgptAsk(question: string, timeoutMs?: number): Promise<ChatGptAnswer> {
+    return this.browserFor(CHATGPT_PROFILE).run((_ctx, page) =>
+      timeoutMs === undefined ? askChatGpt(page, question) : askChatGpt(page, question, timeoutMs),
+    );
+  }
+
+  // ------------------------------------------------------------- notebooklm
+
+  async nlmAsk(notebookId: string, question: string) {
+    return nlm.nlmAsk(notebookId, question);
+  }
+
+  async nlmListNotebooks() {
+    return nlm.nlmListNotebooks();
+  }
+
+  async nlmCreateNotebook(title: string) {
+    return nlm.nlmCreateNotebook(title);
+  }
+
+  async nlmAddSource(notebookId: string, content: string, options?: { title?: string; type?: 'text' | 'url' | 'file' }) {
+    return nlm.nlmAddSource(notebookId, content, options);
   }
 
   // ------------------------------------------------------- facebook actions
@@ -344,6 +374,8 @@ export class VaultService {
     topic: string;
     sources?: string[];
     minScore?: number;
+    /** Scroll rounds per source. Higher digs deeper into a big group. */
+    maxRounds?: number;
     limits?: Partial<ReadLimits>;
     /**
      * Which Chrome profile to sweep in. Give fb-recon its own profile with its
@@ -418,7 +450,7 @@ export class VaultService {
     this.#fbReconStopping = false;
     void this.#fbReconSweep(
       project,
-      { pack: pack!, specs, limiter, minScore: opts.minScore, profileId },
+      { pack: pack!, specs, limiter, minScore: opts.minScore, maxRounds: opts.maxRounds, profileId },
       ledgerFile,
       projectsRoot,
     );
@@ -437,7 +469,14 @@ export class VaultService {
    */
   async #fbReconSweep(
     project: ProjectRun,
-    run: { pack: TopicPack; specs: SourceSpec[]; limiter: ReadLimiter; minScore?: number; profileId: string },
+    run: {
+      pack: TopicPack;
+      specs: SourceSpec[];
+      limiter: ReadLimiter;
+      minScore?: number;
+      maxRounds?: number;
+      profileId: string;
+    },
     ledgerFile: string,
     projectsRoot: string,
   ): Promise<void> {
@@ -451,7 +490,9 @@ export class VaultService {
           limiter: run.limiter,
           contacts,
           minScore: run.minScore,
+          maxRounds: run.maxRounds,
           reporter: project,
+          messagesPath: path.join(project.dir, 'messages.json'),
           shouldStop: () => this.#fbReconStopping,
         }),
       );
@@ -629,6 +670,18 @@ export class VaultService {
   }
 
   /**
+   * Which project the lead store currently points at, or null for the shared store.
+   *
+   * Exists so a caller that has to WALK the projects looking for a row can put the
+   * selection back afterwards. Without it, a lookup that misses leaves the daemon
+   * pointed at whichever project happened to be last in the list, and the next
+   * unrelated request quietly reads the wrong campaign.
+   */
+  gmapActiveProject(): string | null {
+    return this.#gmapProjectDir;
+  }
+
+  /**
    * Release gmap-recon's Chrome. One user-data-dir allows exactly ONE Chrome, so a
    * browser left running after a harvest keeps the profile locked: the next launch
    * gets "Opening in existing browser session", attaches to nothing, and dies on a
@@ -751,6 +804,46 @@ export class VaultService {
     return { file, rows: rows.length };
   }
 
+  leadStore(): LeadStore {
+    return this.#leadStore();
+  }
+
+  agentBrowser(): BrowserManager {
+    return this.browser;
+  }
+
+  async gmapDeepResearch(
+    placeId: string,
+    options: {
+      enableBrowserScrape?: boolean;
+      enableNotebookLm?: boolean;
+      enableChatGpt?: boolean;
+      enableAgy?: boolean;
+      enableNewpages?: boolean;
+      enablePageInsight?: boolean;
+      enableDomain?: boolean;
+    } = {},
+  ): Promise<CompanyDossier> {
+    return runCompanyDeepResearch(this, placeId, options);
+  }
+
+  gmapGetDossier(placeId: string): CompanyDossier | null {
+    const direct = this.#leadStore().getDossier(placeId);
+    if (direct) return direct;
+
+    const all = listGmapProjects();
+    for (const p of all) {
+      this.gmapUseProject(gmapProjectDir(p.id));
+      const found = this.#leadStore().getDossier(placeId);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  gmapListDossiers(): { placeId: string; status: string; summary: string; updatedAt: string }[] {
+    return this.#leadStore().listDossiers();
+  }
+
   // ------------------------------------------------------------------ recon
 
   /**
@@ -782,6 +875,66 @@ export class VaultService {
     await this.requireReady(host);
     const outDir = path.join(this.vault.home, 'tools', host, 'recon');
     return this.browser.runIsolated((ctx, page) => scanSite(ctx, page, rootUrl, outDir, opts));
+  }
+
+  /** Fast V3 scan. Artifacts are isolated from V1 for side-by-side benchmarks. */
+  async reconV3Scan(
+    rootUrl: string,
+    opts: ReconV3Options = {},
+    profileId = DEFAULT_PROFILE_ID,
+  ): Promise<V3SiteScan> {
+    const host = new URL(rootUrl).hostname;
+    assertReconAllowed(host);
+    await this.requireReady(host, profileId);
+    const outDir = path.join(this.vault.home, 'tools', host, 'recon-v3');
+    return this.browserFor(profileId).run((ctx, page) => scanSiteV3(ctx, page, rootUrl, outDir, opts));
+  }
+
+  reconV3Projects(): {
+    domain: string; scannedAt: string; status: V3SiteScan['status']; pages: number;
+    failed: number; durationMs: number; readPassed: number; create: number; update: number; delete: number;
+  }[] {
+    const root = path.join(this.vault.home, 'tools');
+    let hosts: string[] = [];
+    try {
+      hosts = fs.readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
+    } catch {
+      return [];
+    }
+    const out = [];
+    for (const host of hosts) {
+      const scan = this.#readV3Scan(host);
+      if (!scan) continue;
+      out.push({
+        domain: scan.domain || host,
+        scannedAt: scan.finishedAt || scan.startedAt,
+        status: scan.status,
+        pages: scan.pages.length,
+        failed: scan.failed.length,
+        durationMs: scan.durationMs,
+        readPassed: scan.pages.filter((p) => p.quickTest?.readGate.status === 'passed').length,
+        create: scan.pages.filter((p) => p.quickTest?.operations.create.available).length,
+        update: scan.pages.filter((p) => p.quickTest?.operations.update.available).length,
+        delete: scan.pages.filter((p) => p.quickTest?.operations.delete.available).length,
+      });
+    }
+    return out.sort((a, b) => (a.scannedAt < b.scannedAt ? 1 : -1));
+  }
+
+  reconV3Project(domain: string): V3SiteScan {
+    const scan = this.#readV3Scan(domain);
+    if (!scan) throw new Error(`No V3 recon scan for "${domain}".`);
+    return scan;
+  }
+
+  #readV3Scan(host: string): V3SiteScan | null {
+    try {
+      const raw = fs.readFileSync(path.join(this.vault.home, 'tools', host, 'recon-v3', 'scan-v3.json'), 'utf8');
+      const scan = JSON.parse(raw) as V3SiteScan;
+      return scan?.version === 3 && Array.isArray(scan.pages) ? scan : null;
+    } catch {
+      return null;
+    }
   }
 
   /**

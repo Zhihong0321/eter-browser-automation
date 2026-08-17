@@ -1,0 +1,28 @@
+=== A: plain HTTPS GET (no browser) — sequential ===
+  259ms  http 200  1KB   | - | -
+  43ms  http 200  1KB   | - | -
+  42ms  http 200  1KB   | - | -
+  41ms  http 200  1KB   | - | -
+  43ms  http 200  1KB   | - | -
+  47ms  http 200  1KB   | - | -
+  TOTAL 476ms  (79ms/company)
+
+=== B: plain HTTPS GET — 6 at once ===
+  TOTAL 104ms for 6  (17ms/company)  emails: 0/6
+
+=== C: headless Chrome (current sync path) ===
+  boot 386ms
+  1005ms  NEWPAGES - Home
+  874ms  NEWPAGES - Home
+  626ms  NEWPAGES - Home
+  663ms  NEWPAGES - Home
+  1172ms  NEWPAGES - Home
+  2085ms  NEWPAGES - Home
+  TOTAL 6425ms nav (1071ms/company) + 386ms boot
+
+=== VERDICT ===
+  seq fetch      79 ms/company
+  parallel fetch 17 ms/company
+  headless chrome1071 ms/company
+  same data? fetch emails 0/6, addresses 0/6
+  6890 companies: fetch-par 2 min | chrome 123 min

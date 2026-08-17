@@ -11,6 +11,8 @@
 import { DatabaseSync } from 'node:sqlite';
 import { createHash } from 'node:crypto';
 
+import type { CompanyDossier } from './enrich/types.js';
+
 // ------------------------------------------------------------------- row types
 
 export type SearchStatus = 'pending' | 'done' | 'failed' | 'blocked';
@@ -155,6 +157,14 @@ CREATE TABLE IF NOT EXISTS hits (
   place_id  TEXT NOT NULL,
   rank      INTEGER,
   PRIMARY KEY (search_id, place_id)
+);
+
+CREATE TABLE IF NOT EXISTS dossiers (
+  place_id    TEXT PRIMARY KEY,
+  data        TEXT NOT NULL,
+  summary     TEXT,
+  status      TEXT NOT NULL,
+  updated_at  TEXT NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_searches_status ON searches(status);
@@ -373,6 +383,74 @@ export class LeadStore {
     if (opts.withEmailOnly) where.push("email IS NOT NULL AND email != ''");
     const sql = `SELECT * FROM businesses ${where.length ? `WHERE ${where.join(' AND ')}` : ''} ORDER BY name`;
     return this.#db.prepare(sql).all().map((r) => toBusiness(r as Raw));
+  }
+
+  saveDossier(dossier: CompanyDossier): void {
+    this.#db
+      .prepare(
+        `INSERT INTO dossiers (place_id, data, summary, status, updated_at)
+         VALUES (?, ?, ?, ?, ?)
+         ON CONFLICT(place_id) DO UPDATE SET
+           data = excluded.data,
+           summary = excluded.summary,
+           status = excluded.status,
+           updated_at = excluded.updated_at`,
+      )
+      .run(
+        dossier.placeId,
+        JSON.stringify(dossier),
+        dossier.executiveSummary,
+        dossier.status,
+        dossier.updatedAt,
+      );
+  }
+
+  getDossier(placeId: string): CompanyDossier | null {
+    const row = this.#db
+      .prepare('SELECT data FROM dossiers WHERE place_id = ?')
+      .get(placeId) as { data: string } | undefined;
+    if (!row) return null;
+    try {
+      return JSON.parse(row.data) as CompanyDossier;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Every dossier in full, for embedding into the report.
+   *
+   * `listDossiers` returns the summary line only, which is enough for a table but
+   * not for a report that has to render the whole dossier with no daemon behind it.
+   */
+  allDossiers(): CompanyDossier[] {
+    return this.#db
+      .prepare('SELECT data FROM dossiers ORDER BY updated_at DESC')
+      .all()
+      .flatMap((r) => {
+        try {
+          return [JSON.parse((r as Raw).data as string) as CompanyDossier];
+        } catch {
+          // A row that will not parse is dropped rather than crashing the export —
+          // one corrupt dossier must not cost the other hundred their report.
+          return [];
+        }
+      });
+  }
+
+  listDossiers(): { placeId: string; status: string; summary: string; updatedAt: string }[] {
+    return this.#db
+      .prepare('SELECT place_id, status, summary, updated_at FROM dossiers ORDER BY updated_at DESC')
+      .all()
+      .map((r) => {
+        const x = r as Raw;
+        return {
+          placeId: x.place_id as string,
+          status: x.status as string,
+          summary: x.summary as string,
+          updatedAt: x.updated_at as string,
+        };
+      });
   }
 
   close(): void {

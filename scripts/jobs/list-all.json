@@ -1,0 +1,10 @@
+{
+  "name": "read AutoCount — customers + quotations",
+  "profile": "E:\\eter-browser\\profiles\\agent",
+  "site": "https://accounting.autocountcloud.com",
+  "entry": "Macam Yes",
+  "tasks": [
+    { "op": "list", "route": "/debtor", "label": "CUSTOMERS" },
+    { "op": "list", "route": "/quotation", "label": "QUOTATIONS" }
+  ]
+}

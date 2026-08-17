@@ -1,0 +1,76 @@
+{
+  "op": "create.quotation",
+  "table": "quotation",
+  "needs": [
+    {
+      "field": "quotation.f.customer",
+      "ask_user_for": "Customer",
+      "control": "dropdown",
+      "pick_from_table": "debtor"
+    },
+    {
+      "field": "quotation.f.name",
+      "ask_user_for": "Name",
+      "control": "input"
+    },
+    {
+      "field": "quotation.f.email",
+      "ask_user_for": "Email",
+      "control": "input"
+    },
+    {
+      "field": "quotation.f.quotation_no",
+      "ask_user_for": "Quotation No.",
+      "control": "dropdown",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "quotation.f.address",
+      "ask_user_for": "Address",
+      "control": "textarea"
+    },
+    {
+      "field": "quotation.f.sales_agent",
+      "ask_user_for": "Sales Agent",
+      "control": "dropdown",
+      "pick_from_table": "salesagent"
+    },
+    {
+      "field": "quotation.f.date",
+      "ask_user_for": "Date",
+      "control": "date picker"
+    },
+    {
+      "field": "quotation.f.payment_term",
+      "ask_user_for": "Payment Term",
+      "control": "input"
+    },
+    {
+      "field": "quotation.f.currency",
+      "ask_user_for": "Currency",
+      "control": "dropdown",
+      "pick_from_table": "currency"
+    },
+    {
+      "field": "quotation.f.rate",
+      "ask_user_for": "Rate",
+      "control": "input"
+    }
+  ],
+  "steps": [
+    "navigate to /quotation",
+    "click \"New\"",
+    "fill \"Customer\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Email\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+    "fill \"Quotation No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+    "fill \"Sales Agent\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Payment Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+    "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+    "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "click \"Save\"",
+    "verify: the new row appears in the quotation grid"
+  ]
+}

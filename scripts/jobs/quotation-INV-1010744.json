@@ -1,0 +1,42 @@
+{
+  "name": "atap quote INV-1010744 (Alicia) -> AutoCount quotation",
+  "profile": "E:\\eter-browser\\profiles\\agent",
+  "site": "https://accounting.autocountcloud.com",
+  "entry": "Macam Yes",
+  "tasks": [
+    {
+      "op": "create",
+      "route": "/debtor",
+      "action": "New",
+      "ensureAbsent": "ALICIA",
+      "fields": [
+        { "label": "Customer Code", "auto": { "column": "Customer Code", "format": "300-A%03d" }, "saveAs": "cust" },
+        { "label": "Company Name", "value": "ALICIA" },
+        { "label": "Phone", "tab": "General", "value": "0162091125" }
+      ],
+      "save": "Save",
+      "verify": { "contains": "ALICIA" }
+    },
+    {
+      "op": "create",
+      "route": "/quotation",
+      "action": "New",
+      "gridMarker": "Total (inc)",
+      "ensureAbsent": "26,999.14",
+      "fields": [
+        { "label": "Customer", "type": "lookup", "value": "$cust", "match": "ALICIA" },
+        { "label": "Date", "type": "date", "value": "2026-07-09" }
+      ],
+      "lines": [
+        {
+          "Description": "[3P] STRING SAJ JINKO 14 PCS - 9.10kWp: 14X 650W JinkoSolar TIGER NEO 3.0 N-Type TOPCon; 1X [3P] SAJ R6 8KW String Inverter; SEDA ATAP Application; TNB Smart Meter Application; design, survey, roof + electrical installation, SkyLift (ref INV-1010744)",
+          "Unit Price": "27540"
+        },
+        { "Description": "ANDY REFERER SPECIAL (RM 3200)", "Unit Price": "-3200" },
+        { "Description": "Bank Processing Fee (UOB EPP 68 Months - RM23123)", "Unit Price": "2659.14" }
+      ],
+      "save": "Save",
+      "verify": { "contains": "ALICIA" }
+    }
+  ]
+}

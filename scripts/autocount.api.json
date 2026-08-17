@@ -1,0 +1,475 @@
+{
+  "site": "(from har)",
+  "from": "E:\\001-browser-use-v2\\scripts\\autocount.har",
+  "recorded": "96 requests, 35 of them API",
+  "auth": {
+    "headers": [
+      "authorization",
+      "cookie"
+    ],
+    "note": "values REDACTED — replay with a live session"
+  },
+  "endpoints": [
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/application/getsettings",
+      "hits": 3,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  shortDateFormat: string   e.g. \"dd/MM/yyyy\"\n  useLiveStockBalance: boolean   e.g. false\n  resizeReportLetterToA4: boolean   e.g. false\n  allowDuplicateBarcodes: boolean   e.g. false\n  quantityDecimal: number   e.g. 0\n  displayFixedSizeQuantityDecimal: boolean   e.g. false\n  salesPriceDecimal: number   e.g. 2\n  displayFixedSizeSalesPriceDecimal: boolean   e.g. true\n  purchasePriceDecimal: number   e.g. 2\n  displayFixedSizePurchasePriceDecimal: boolean   e.g. true\n  costDecimal: number   e.g. 4\n  displayFixedSizeCostDecimal: boolean   e.g. false\n  percentDecimal: number   e.g. 2\n  displayFixedSizePercentageDecimal: boolean   e.g. false\n  currencyDecimal: number   e.g. 2\n  currencyRateDecimal: number   e.g. 6\n  displayFixedSizeCurrencyRateDecimal: boolean   e.g. false\n  taxRateDecimal: number   e.g. 1\n  displayFixedSizeTaxRateDecimal: boolean   e.g. false\n  accountCodeFormat: string   e.g. \"AAA-AAAA\"\n  autoDebtorCodeFormat: string   e.g. \"PPP-F000\"\n  autoCreditorCodeFormat: string   e.g. \"PPP-F000\"\n  taxOption: number   e.g. 0\n  inventorySystemOption: number   e.g. 0\n  enabledQuotationApproval: boolean   e.g. false\n  enabledInvoiceApproval: boolean   e.g. false\n  enabledCreditNoteApproval: boolean   e.g. false\n  enabledPurchaseOrderApproval: boolean   e.g. false\n  enabledPurchaseInvoiceApproval: boolean   e.g. false\n  enabledPurchaseReturnApproval: boolean   e.g. false\n  enabledCashBookEntryApproval: boolean   e.g. false\n  enabledJournalEntryApproval: boolean   e.g. false\n  enabledMYEInvoiceDocumentApproval: boolean   e.g. false\n  enabledStockAdjustmentApproval: boolean   e.g. false\n  enabledStockTransferApproval: boolean   e.g. false\n  documentExpiredDays: number   e.g. 10\n  enableEInvoice: boolean   e.g. false\n  eInvoicingStartDate: string   e.g. \"2024-08-01T00:00:00\"\n  allowConsolidatedEInvoice: boolean   e.g. false\n  interimRelaxationPeriodUntil: string   e.g. \"2025-01-31T00:00:00\"\n  autoSetIssueDateTime: boolean   e.g. false\n  autoSetIssueDateTimeOnFutureDocDate: boolean   e.g. false\n  defaultClassificationCode: null\n  autoSendEmail: boolean   e.g. false\n  autoSendEmailForInvoice: boolean   e.g. false\n  autoSendEmailForCreditNote: boolean   e.g. false\n  senderName: null\n  senderEmail: null\n  invoiceEmailSubject: null\n  invoiceEmailMessage: null\n  invoiceDocumentFormat: string   e.g. \"Full Tax Invoice (Malaysia e-Invoice)\"\n  creditNoteEmailSubject: null\n  creditNoteEmailMessage: null\n  creditNoteDocumentFormat: string   e.g. \"Tax Credit Note (Malaysia e-Invoice)\"\n  enableSGInvoiceNow: boolean   e.g. false\n  sgInvoiceNowStartDate: string   e.g. \"2025-03-01T00:00:00\"\n  c5ActivationStatus: string   e.g. \"NOT_ACTIVATED\"\n  enabledSalesBacklogDataEntry: boolean   e.g. false\n  enabledPurchaseBacklogDataEntry: boolean   e.g. false\n  quotation5CentsRoundingOption: number   e.g. 0\n  invoice5CentsRoundingOption: number   e.g. 0\n  creditNote5CentsRoundingOption: number   e.g. 0\n  purchaseOrder5CentsRoundingOption: number   e.g. 0\n  purchaseInvoice5CentsRoundingOption: number   e.g. 0\n  purchaseReturn5CentsRoundingOption: number   e.g. 0\n  roundingAdjustmentAccountNo: null\n  invoiceJournalType: string   e.g. \"SALES\"\n  creditNoteJournalType: string   e.g. \"SALES\"\n  purchaseInvoiceJournalType: string   e.g. \"PURCHASE\"\n  purchaseReturnJournalType: string   e.g. \"PURCHASE\"\n  stockAdjustmentJournalType: string   e.g. \"GENERAL\"\n  roundingAdjustmentJournalDescription: string   e.g. \"Rounding Adjustment\"\n  defaultDebtorAreaCode: null\n  defaultDebtorSalesAgent: null\n  defaultDebtorCurrencyCode: string   e.g. \"MYR\"\n  defaultDebtorCreditTerm: string   e.g. \"C.O.D.\"\n  defaultCreditorAreaCode: null\n  defaultCreditorCurrencyCode: string   e.g. \"MYR\"\n  defaultCreditorCreditTerm: string   e.g. \"C.O.D.\"\n  fiscalYearStartPeriod: number   e.g. 202601\n  actualDataStartPeriod: number   e.g. 202601\n  lastFiscalYearEndPeriod: number   e.g. 202612\n  lockOpeningBalance: boolean   e.g. false\n  country: string   e.g. \"Malaysia\"\n  otherCountryName: null\n  countryCurrencyCode: string   e.g. \"MYR\"\n  localCurrencyCode: string   e.g. \"MYR\"\n  localCurrencySymbol: string   e.g. \"RM\"\n  hasMultiCurrency: boolean   e.g. false\n  hasMultiLocation: boolean   e.g. false\n  sampleChartOfAccounts: string   e.g. \"Trading\"\n  hasConsolidatedEInvoices: boolean   e.g. false\n  hasAggregatedTransactions: boolean   e.g. false\n  defaultDebtorControlAccountNo: string   e.g. \"300-0000\"\n  defaultCreditorControlAccountNo: null\n  defaultQuotationDescription: string   e.g. \"QUOTATION\"\n  defaultInvoiceDescription: string   e.g. \"INVOICE\"\n  defaultCreditNoteDescription: string   e.g. \"CREDIT NOTE\"\n  defaultPurchaseOrderDescription: string   e.g. \"PURCHASE ORDER\"\n  defaultPurchaseInvoiceDescription: string   e.g. \"PURCHASE INVOICE\"\n  defaultPurchaseReturnDescription: string   e.g. \"PURCHASE RETURN\"\n  defaultStockAdjustmentDescription: string   e.g. \"STOCK ADJUSTMENT\"\n  defaultStockTransferDescription: string   e.g. \"STOCK TRANSFER\"\n  lastSavedJournalEntryJournalType: string   e.g. \"GENERAL\"\n  lastSavedCashBookEntryJournalType: string   e.g. \"GENERAL\"\n  lastSavedPaymentVoucherDescription: string   e.g. \"Payment for Account\"\n  lastSavedReceiptVoucherDescription: string   e.g. \"Receipt for Account\"\n  lastSavedDebtorPaymentVoucherDescription: string   e.g. \"Payment for Account\"\n  lastSavedDebtorReceiptVoucherDescription: string   e.g. \"Receipt for Account\"\n  lastSavedCreditorPaymentVoucherDescription: string   e.g. \"Payment for Account\"\n  lastSavedCreditorReceiptVoucherDescription: string   e.g. \"Receipt for Account\"\n  defaultPaymentMethod: string   e.g. \"BANK\"\n  scanDocumentSettings: [ 10× {\n    billType: string   e.g. \"Assessment Tax\", \"Electricity Bill\", \"Maxis Bill\"\n    keyword: string   e.g. \"cukai taksiran\", \"tenaga nasional\", \"maxis\"\n    defaultAccount: null\n    defaultDescription: null\n  } ]\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/application/getsettings' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://auth.autocountcloud.com/.well-known/openid-configuration",
+      "hits": 5,
+      "status": [
+        200
+      ],
+      "pathVars": {},
+      "query": {},
+      "auth": [],
+      "sends": null,
+      "returns": "{\n  issuer: string   e.g. \"https://auth.autocountcloud.com\"\n  jwks_uri: string   e.g. \"https://auth.autocountcloud.com/.well-known/openid-config…\"\n  authorization_endpoint: string   e.g. \"https://auth.autocountcloud.com/connect/authorize\"\n  token_endpoint: string   e.g. \"«redacted»\"\n  userinfo_endpoint: string   e.g. \"https://auth.autocountcloud.com/connect/userinfo\"\n  end_session_endpoint: string   e.g. \"«redacted»\"\n  check_session_iframe: string   e.g. \"«redacted»\"\n  revocation_endpoint: string   e.g. \"https://auth.autocountcloud.com/connect/revocation\"\n  introspection_endpoint: string   e.g. \"https://auth.autocountcloud.com/connect/introspect\"\n  device_authorization_endpoint: string   e.g. \"https://auth.autocountcloud.com/connect/deviceauthorization\"\n  frontchannel_logout_supported: boolean   e.g. true\n  frontchannel_logout_session_supported: boolean   e.g. true\n  backchannel_logout_supported: boolean   e.g. true\n  backchannel_logout_session_supported: boolean   e.g. true\n  scopes_supported: [ 53× string   e.g. \"openid\", \"profile\", \"address\" ]\n  claims_supported: [ 29× string   e.g. \"sub\", \"name\", \"family_name\" ]\n  grant_types_supported: [ 6× string   e.g. \"authorization_code\", \"client_credentials\", \"refresh_token\" ]\n  response_types_supported: [ 7× string   e.g. \"code\", \"token\", \"id_token\" ]\n  response_modes_supported: [ 3× string   e.g. \"form_post\", \"query\", \"fragment\" ]\n  token_endpoint_auth_methods_supported: [ 2× string   e.g. \"«redacted»\" ]\n  id_token_signing_alg_values_supported: [ 1× string   e.g. \"RS256\" ]\n  subject_types_supported: [ 1× string   e.g. \"public\" ]\n  code_challenge_methods_supported: [ 2× string   e.g. \"plain\", \"S256\" ]\n  request_parameter_supported: boolean   e.g. true\n}",
+      "curl": "curl -X GET 'https://auth.autocountcloud.com/.well-known/openid-configuration'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getsaleswidgetdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {
+        "periodType": [
+          "last30Days"
+        ],
+        "periodInterval": [
+          "day"
+        ]
+      },
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "[ 30× {\n  startDate: string   e.g. \"2026-07-15T00:00:00\", \"2026-07-16T00:00:00\", \"2026-07-17T00:00:00\"\n  endDate: string   e.g. \"2026-07-15T00:00:00\", \"2026-07-16T00:00:00\", \"2026-07-17T00:00:00\"\n  total: number   e.g. 0\n} ]",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getsaleswidgetdata?periodType=last30Days&periodInterval=day' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "POST https://auth.autocountcloud.com/connect/token",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {},
+      "query": {},
+      "auth": [],
+      "sends": "{\n  client_id: string   e.g. \"accounting-app\"\n  code: string   e.g. \"«redacted»\"\n  redirect_uri: string   e.g. \"https://accounting.autocountcloud.com/callback.html\"\n  code_verifier: string   e.g. \"«redacted»\"\n  grant_type: string   e.g. \"authorization_code\"\n}",
+      "returns": "{\n  id_token: string   e.g. \"«redacted»\"\n  access_token: string   e.g. \"«redacted»\"\n  expires_in: number   e.g. 3600\n  token_type: string   e.g. \"Bearer\"\n  scope: string   e.g. \"openid profile IdentityServerApi accounting-app-api\"\n}",
+      "curl": "curl -X POST 'https://auth.autocountcloud.com/connect/token' -H 'content-type: application/json' -d '{\"client_id\":\"accounting-app\",\"code\":\"«redacted»\",\"redirect_uri\":\"https://accounting.autocountcloud.com/callback.html\",\"code_verifier\":\"«redacted»\",\"grant_type\":\"authorization_code\"}'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/application/getuserdata",
+      "hits": 4,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  isFirstTimeGuideCompleted: boolean   e.g. true\n  isAdmin: boolean   e.g. true\n  isAccountant: boolean   e.g. false\n  roles: []\n  roleSettings: {\n    onlyCreateDraftSales: boolean   e.g. false\n    noEditSales: boolean   e.g. false\n    noDeleteSales: boolean   e.g. false\n    noViewSalesSummary: boolean   e.g. false\n    onlyCreateDraftPurchase: boolean   e.g. false\n    noEditPurchase: boolean   e.g. false\n    noDeletePurchase: boolean   e.g. false\n    noViewPurchaseSummary: boolean   e.g. false\n    onlyCreateDraftAccounting: boolean   e.g. false\n    noEditAccounting: boolean   e.g. false\n    noDeleteAccounting: boolean   e.g. false\n    noViewAccountingSummary: boolean   e.g. false\n    noViewBankBalance: boolean   e.g. false\n    noAccessJournalEntry: boolean   e.g. false\n    noAccessReceiptVoucher: boolean   e.g. false\n    noAccessPaymentVoucher: boolean   e.g. false\n    noAccessCashBookEntry: boolean   e.g. false\n    onlyCreateDraftMYEInvoice: boolean   e.g. false\n    onlyCreateDraftStock: boolean   e.g. false\n    noEditStock: boolean   e.g. false\n    noDeleteStock: boolean   e.g. false\n  }\n  systemTime: number   e.g. 1786608792174, 1786608793094, 1786608801097\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/application/getuserdata' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/debtor/list",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {
+        "skip": [
+          "0"
+        ],
+        "take": [
+          "10"
+        ],
+        "totalCount": [
+          "1"
+        ],
+        "sort99": [
+          "rowId"
+        ],
+        "dir99": [
+          "0"
+        ]
+      },
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  data: [ 2× {\n    accNo: string   e.g. \"300-A001\", \"300-A002\"\n    companyName: string   e.g. \"AH MAO\", \"ALICIA\"\n    address: null\n    deliverAddress: string\n    phone1: string   e.g. \"60123334442\", \"0162091125\"\n    areaCode: null\n    salesAgent: null\n    emailAddress: string\n    currencyCode: string   e.g. \"MYR\"\n    taxEntityDisplayText: null\n    isActive: boolean   e.g. true\n    taxExemptionNo: string\n    taxExemptionExpiryDate: null\n    peppolId: null\n    businessUnit: null\n  } ]\n  totalCount: number   e.g. 2\n  groupCount: number   e.g. 0\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/debtor/list?skip=0&take=10&totalCount=1&sort99=rowId&dir99=0' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/application/getaccountbookdata",
+      "hits": 2,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  accountBookCountry: string   e.g. \"Malaysia\"\n  planName: string   e.g. \"Lite\"\n  accountingActive: boolean   e.g. true\n  accountingExpiryDate: null\n  isAccountingExpired: boolean   e.g. false\n  posPlanName: string\n  posActive: boolean   e.g. false\n  posExpiryDate: null\n  winPOSExpiryDate: null\n  isWinPOSExpired: boolean   e.g. false\n  isPalmPOS: boolean   e.g. false\n  marketplacePlanName: string\n  marketplaceActive: boolean   e.g. false\n  marketplaceExpiryDate: null\n  isTrialPlan: boolean   e.g. true\n  companyName: string   e.g. \"Macam Yes\"\n  remark: null\n  remarkColor: null\n  userID: string   e.g. \"ADMIN\"\n  userName: string   e.g. \"GAN ZHI HONG\"\n  email: string   e.g. \"zhihong@eternalgy.me\"\n  phoneNumber: string   e.g. \"+601121000099\"\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/application/getaccountbookdata' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getbankaccountwidgetdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "[ 2× {\n  accNo: string   e.g. \"310-1000\", \"320-0000\"\n  description: string   e.g. \"CASH AT BANK\", \"CASH IN HAND\"\n  balance: number   e.g. 0\n  specialAccType: string   e.g. \"SBK\", \"SCH\"\n  currencySymbol: string   e.g. \"RM\"\n} ]",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getbankaccountwidgetdata' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/accountbook",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "0"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "[ 1× {\n  id: number   e.g. 68408\n  companyName: string   e.g. \"Macam Yes\"\n  remark: null\n  remarkColor: null\n  canManageAccountBook: boolean   e.g. true\n  hasOneSalesPlan: boolean   e.g. false\n  inactive: boolean   e.g. false\n} ]",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/0/accountbook' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getinvoiceswidgetdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  totalInvoice: number   e.g. 0\n  totalUnpaid: number   e.g. 0\n  totalPartialPayment: number   e.g. 0\n  totalFullPayment: number   e.g. 0\n  outstandingAmount: number   e.g. 0\n  overdueAmount: number   e.g. 0\n  notDueAmount: number   e.g. 0\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getinvoiceswidgetdata' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getquotationswidgetdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  totalQuotation: number   e.g. 3\n  totalPending: number   e.g. 3\n  totalLost: number   e.g. 0\n  totalSuccessClosed: number   e.g. 0\n  successClosedAmount: number   e.g. 0\n  successAmount: number   e.g. 0\n  closedAmount: number   e.g. 0\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getquotationswidgetdata' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/accountbook/getuserdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "0"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  isSubscriber: boolean   e.g. true\n  hasSubscriptionPortal: boolean   e.g. true\n  hasAccounting: boolean   e.g. true\n  isAccountant: boolean   e.g. false\n  registerAccountant: boolean   e.g. false\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/0/accountbook/getuserdata' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getprofitandlosswidgetdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {
+        "periodType": [
+          "last30Days"
+        ]
+      },
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  netIncome: number   e.g. 0\n  totalIncome: number   e.g. 0\n  totalExpense: number   e.g. 0\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getprofitandlosswidgetdata?periodType=last30Days' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getcostandexpenseswidgetdata",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {
+        "periodType": [
+          "last30Days"
+        ]
+      },
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  totalExpense: number   e.g. 0\n  expenseItems: []\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getcostandexpenseswidgetdata?periodType=last30Days' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/application/getaccountbookid",
+      "hits": 2,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  accountBookId: number   e.g. 68408\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/application/getaccountbookid' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "POST https://accounting.autocountcloud.com/api/{id}/accountbook/setcurrentaccountbook/{id}",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "0",
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  isInitialized: boolean   e.g. true\n}",
+      "curl": "curl -X POST 'https://accounting.autocountcloud.com/api/0/accountbook/setcurrentaccountbook/68408' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/gridlayout/getdefaultlayout",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {
+        "componentName": [
+          "CustomerListing"
+        ]
+      },
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  result: null\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/gridlayout/getdefaultlayout?componentName=CustomerListing' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/dashboard/getlogo",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  logo: null\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/dashboard/getlogo' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/notification/count",
+      "hits": 2,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "{\n  result: number   e.g. 0\n}",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/notification/count' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/application/getusersettings",
+      "hits": 2,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {},
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "[]",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/application/getusersettings' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://accounting.autocountcloud.com/api/{id}/gridlayout",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {
+        "{id}": [
+          "68408"
+        ]
+      },
+      "query": {
+        "componentName": [
+          "CustomerListing"
+        ]
+      },
+      "auth": [
+        "authorization",
+        "cookie"
+      ],
+      "sends": null,
+      "returns": "[]",
+      "curl": "curl -X GET 'https://accounting.autocountcloud.com/api/68408/gridlayout?componentName=CustomerListing' -H 'authorization: $TOKEN' -H 'cookie: $TOKEN'"
+    },
+    {
+      "endpoint": "GET https://auth.autocountcloud.com/connect/userinfo",
+      "hits": 1,
+      "status": [
+        200
+      ],
+      "pathVars": {},
+      "query": {},
+      "auth": [
+        "authorization"
+      ],
+      "sends": null,
+      "returns": null,
+      "curl": "curl -X GET 'https://auth.autocountcloud.com/connect/userinfo' -H 'authorization: $TOKEN'"
+    }
+  ]
+}

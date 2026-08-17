@@ -90,12 +90,24 @@ exists.
 
 ## 5. Reading a result
 
+**Start with `messages.json`, not the contacts.** It is one row per message —
+sender, their Messenger link, what they said, and a `type` of `seller` / `owner`
+/ `buyer` / `none`. `contacts.csv` collapses one person's five posts into a
+single record, which is what you want when you are about to message someone and
+the wrong thing to read when you are deciding whether the sweep worked.
+
+The type LABELS, it never filters. Every sender with a resolvable profile is
+recorded whatever the classifier says, and `none` means "could not tell", not
+"rejected". A dead classifier costs you the labels, never the people — check for
+`no classifier configured` in the `why` field before concluding a group is full
+of unclassifiable posts.
+
 Counters are in `project.json` → `counters`, and across the top of the report.
 
 | Counter | Question it answers |
 |---|---|
 | `scanned` | How many distinct posts were read |
-| `gated` | How many cleared the keyword gate |
+| `gated` | How many were collected (everything, when `minScore` is 0) |
 | `opened` / `commentsRead` | How many threads were opened, and comments mined |
 | `skippedNoPermalink` | Gated posts with no permalink to open — **normal for group text posts** |
 | `totalContacts` / `newContacts` / `knownContacts` | People found; how many are first contact vs already in the ledger |
@@ -107,6 +119,7 @@ Counters are in `project.json` → `counters`, and across the top of the report.
 | `scanned` 0 | `MESSAGE_SEL` / `ACTION_SEL` in `src/facebook.ts` no longer match the live DOM |
 | `scanned` healthy, `gated` 0 | The topic pack does not speak the group's language. **Edit `topics/<topic>.json`.** This is the most common cause by far and it is not a code bug |
 | `gated` healthy, `totalContacts` 0 | `profileIdentity()` is rejecting the author URLs — print a few `authorUrl` values |
+| Every row typed `none` | The classifier never ran. `FBRECON_LLM_URL`/`_MODEL` unset AND no `FASTWORKER_BASE_URL` to fall back to. The `why` field says so verbatim |
 | `opened` 0, `skippedNoPermalink` high | Expected for text-only group posts. Only photo posts expose a permalink |
 | `opened` healthy, `commentsRead` 0 | `COMMENT_SEL` in `src/fb-recon/extract.ts` has drifted |
 | Contacts named after their own numeric id | The author-name pick in `extract.ts` is landing on the avatar anchor, not the name anchor |

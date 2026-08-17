@@ -1,37 +1,44 @@
-# recon-agent — 2nd lane (visual) — MVP buildplan
+# recon-agent — 2nd lane (visual) — buildplan
 
-Status: **BUILT and verified 2026-08-13**, the same day it was written. Steps 1–7 all pass on two
-AutoCount pages, including the login page, and the lane has been shown to generalise to a second,
-unrelated app. Implementation: `scripts/xray.mjs`. Results and the measured failure mode in §11.
-Companion: `docs/STUPID-MISTAKE-LOG.md` (2026-08-13 entry) is the evidence for why this exists.
+Status **2026-08-13, end of day 2**: the lane's purpose changed. It is no longer "compile a click
+script"; it is **reveal a site's database schema** (§12). The REVEAL MAP stage works — 52/52 routes
+on AutoCount, 43 tables, 290 columns, 68 foreign keys, 8 create contracts, and an auto-generated
+skill. **Nothing has ever been written to any site.** Implementation: `scripts/xray.mjs` (browser)
+and `scripts/schema.mjs` (offline compiler). Companion: `docs/STUPID-MISTAKE-LOG.md`.
+
+**This is not a production tool and is not close to one.** §13 says exactly how far off it is and why.
 
 ---
 
 ## 0. READ FIRST — what is NOT built
 
-The method is proven. Almost none of the plumbing is. Do not assume anything below exists.
+Do not assume anything below exists.
 
 | Not built | What that means in practice |
 |---|---|
-| **Nothing dispatches to lane 2** | `recon-agent` does not know this lane exists. There is no fallback, no lane switching, no failure detector (§8). Lane 2 runs **only** when a human types the command. Wiring it up means editing lane 1's files, which §5 forbids without an explicit, cold decision. |
-| **`--emit` compiles ONE flow, not any flow** | It has hardcoded map paths, hardcoded name regexes (`/log ?in/`, `/^macam yes$/`) and a hardcoded template. It proves "map → runnable script" for the AutoCount login. A **general** map→script compiler is not written. |
-| **Controls under ~20 px do not correlate** | Measured, not feared: ~16 px of coordinate error against a 12×12 px box. Row-level icon buttons are unreachable. Strict containment drops them (fails closed, correctly). |
-| **The element table misses plain text and `tel:` links** | Only `input,button,a,select,textarea,img,label,[role],[onclick]` are collected. Half of the drops on `admin.atap.solar` were this — the model named things the table never contained. |
-| **Map keys are model-authored and can be wrong** | `Re-scan Dates` was named "Re-schedule". Geometry was right; the name was not. Any lookup *by name* inherits this. |
-| **One page per run** | No multi-page crawl, no retries, no caching, no concurrency. Each run maps exactly one page. |
-| **The `Back to login` hop is a hardcoded constant** | The single selector in `xray.mjs` that lane 2 did not compile for itself. It needs a logout-page map. |
-| **No tests, no error handling, nothing in `src/`** | `scripts/xray.mjs` is a marked prototype. It imports `dist/fastworker.js` read-only and touches no lane-1 file. The acceptance test is manual: run it twice. |
-| **Only ever run against logged-in sites in the `agent` profile** | Two sites, three pages. Never against a site with bot detection — that is lane 3 and explicitly out of scope (§8). |
+| **Nothing has ever been written** | 8 create contracts are traced; **0 have been executed.** Every op in the emitted skill is stamped `traced, never executed`. Until one save succeeds the whole write half is theory. |
+| **How to fill a dropdown is unknown** | Customer, Sales Agent, Credit Term, Currency are custom comboboxes, not `<select>`. `.fill()` will not work. **Every document contract depends on solving this** and it is the single biggest unknown. |
+| **Line items are not captured** | A document is a header **plus a child line table** (Product Code, Description, Qty, Unit Price, Discount). Contracts describe the header only. An invoice without lines is not an invoice. Detector is fixed in code; needs one `--forms` pass. |
+| **`required` is unknown everywhere** | The forms declare nothing required. Constraints are late-bound — they only appear when a save is rejected. That is what test-write mode (§14) is for. |
+| **Update and Delete were never traced** | Both need an existing record to act on, and row-level action icons are 12×12 px, which is below the correlation floor. In accounting, D is probably **Void**, not delete, and may be irreversible. |
+| **Master-data forms are not traced** | 13 of 27 died on the hub hop. `/debtor` (Customer) is unmapped, so **no customer exists and none can be created** — which blocks `create.invoice` entirely. |
+| **There is no runner** | Nothing executes a contract. An AI holding the skill still has to write browser code, which defeats the purpose. Deliberately unbuilt until one save has succeeded. |
+| **Unsafe against production sites** | REVEAL clicks *every* discovered same-origin `<a href>`. On an admin panel a GET link can approve, sync or export. Killed a run against `admin.atap.solar` for this reason. Needs a route allowlist, no queue expansion from row links, and a dry-run that prints the plan before navigating. |
+| **Virtualized grids are invisible** | Column extraction assumes `<table>`. ag-Grid / react-window render `div[role=row]` with ~20 rows in the DOM. Likely the most common real-world failure. |
+| **Controls under ~20 px do not correlate** | Unchanged and unresolved: ~16 px of error against a 12×12 px box. Fails closed, correctly. |
+| **Names are model-authored and can be wrong** | `Re-scan Dates` → "Re-schedule". FK inference inherits it: `Invoice No.` was matched to table `purchaseinvoice`. Geometry is reliable; names are best-guess by design. |
+| **Nothing dispatches to lane 2** | Unchanged. `recon-agent` does not know this lane exists. Wiring it up edits lane 1's files, which §5 forbids without a cold decision. |
+| **Nothing in `src/`** | Both scripts are marked prototypes. They import `dist/fastworker.js` read-only and touch no lane-1 file. |
 
-**Suggested order for the next session** (each is independent; none requires the others):
+**Order for the next session** — 1 and 2 unblock everything else:
 
-1. Widen the element table — cheapest, safe, recovers half the drops on dense pages.
-2. Decide small-control correlation: nearest-box-within-tolerance vs. staying strictly fail-closed.
-   This is a **judgement call**, not a patch — it trades §9's "never invent a selector" guarantee.
-3. Generalise `--emit` into a real map → script compiler.
-4. §8's failure detector. Still your call, still touches lane 1, still to be made cold.
+1. **Solve dropdown fill.** Probe one combobox for real. Every write path is behind it.
+2. **Trace `/debtor`** so a customer can exist. `create.invoice` cannot run until one does.
+3. One `--forms --limit=9` pass to populate line items (detector already fixed).
+4. Build test-write mode (§14) — the only way `required` and Void-vs-Delete become knowable.
+5. Read-only safety mode before this touches any production site again.
 
-Committed on `main`: `116fbd7` (the lane), `3ab96d7` (the generalisation probe).
+Committed on `main`: `116fbd7` (the lane), `3ab96d7` (the generalisation probe). Day 2 uncommitted.
 
 ---
 
@@ -284,3 +291,133 @@ control size, not of page or site.**
 - §8's failure detector remains deferred, and it now has one more piece of evidence: run 1 aimed
   at the login page and landed on Select Company, and the *only* reason that was noticed is that
   the script prints `url | title` on arrival. "I asked for X, did I land on X?" is that cheap.
+
+---
+
+## 12. The methodology change (2026-08-13, day 2)
+
+**Every SaaS is eventually a wrapper over a database.** So the job is not "automate a workflow", it
+is: reveal the schema, then every workflow is a lookup.
+
+1. **Shared auth = the connection string.** Already solved — the `agent` Chrome profile.
+2. **Reveal the schema.** Which pages exist (tables), what each grid shows (read schema), what each
+   form takes (write schema), what each dropdown offers (foreign keys).
+3. **Record where to READ / LIST / CREATE / UPDATE / DELETE**, per table.
+
+This replaced the previous plan, which was a vertical slice — create a customer, then an invoice,
+then connect a source. That plan was wrong, and specifically wrong: **it wrote records into a
+database whose access paths had not been mapped.** A vertical slice is correct when the *mechanism*
+is unproven; the mechanism was already proven by §11, so the slice re-solved a solved problem and
+left surface coverage untouched.
+
+Two things fall out of the DB model for free:
+
+- **Dropdowns are foreign keys.** A Customer dropdown on the invoice form *is*
+  `invoice.customer -> debtor`. Enumerating them recovers the relational graph without database
+  access — and on an empty account, an **empty dropdown names an unpopulated master table**, so the
+  seeding order reads straight off the map.
+- **LIST and CREATE are two projections of one table.** Grid columns are the read schema, the New
+  form is the write schema. Their diff identifies server-computed fields (doc no., balances, aging).
+
+Where the analogy breaks, and it matters: **no transactions** (a form that dies halfway leaves a
+partial record, no ROLLBACK); **constraints are late-bound** (validation is only legible after a
+rejected save); **no `SELECT … WHERE`** (the query planner is whatever filters the UI offers, so
+exports are a first-class bulk-read path); **one profile = one serial connection**, no pool.
+
+### Stages, and what each produced
+
+```
+node scripts/xray.mjs --reveal            # read nav tree, walk every route, screenshot each
+node scripts/xray.mjs --forms --limit=9   # open each New form, vision-label its fields
+node scripts/schema.mjs                   # offline: compile tables/columns/CRUD/FKs
+node scripts/schema.mjs --emit-skill      # offline: generate .claude/skills/<site>/
+```
+
+**REVEAL MAP — 52/52 routes reached.** Nav discovery is **23 ms**, not a click-through: the whole
+tree is already in the DOM (`ul.sidenav-inner` holds every collapsed `<a href>`). The first attempt
+clicked menus open to "discover" links that were already there, fought the toggle behaviour, took
+six minutes and reached 16/52. **Collapsed ≠ absent.** Discovery found 17 routes the sidenav never
+shows — the master-data tables behind `/masterdata`, where `/debtor` is Customer and `/creditor` is
+Supplier.
+
+**Every route is reached by clicking, never by typing a URL,** and every arrival is gated on
+`asked === landed`. A schema recorded from the wrong page is a corrupt catalog — worse than a
+failure, because it looks fine.
+
+**Forms — 8 of 9 opened**, 23–28 inputs each. The form is a **modal on the same route**, so URL
+change cannot detect it; raw input-count delta can (invoice: 3 → 28).
+
+**Vision labelled what the DOM would not.** The modal has almost no `<label for>`, so `labelOf`
+resolved 4 of 28. One vision call per form (~53 s) named the fields and geometry matched each to a
+real selector: Customer, Name, Email, Invoice No., Address, Sales Agent, Credit Term, Date,
+Currency, Rate, Deposit Payment Amount — 11/11. **This is the lane's entire purpose applied to
+forms instead of pages, and it runs once, ever.**
+
+**Compiled: 43 tables, 290 columns, 68 FKs, 27 creatable, 8 write paths.** FK inference is
+name-based and best-guess: `invoice.customer_code -> debtor` was correct and derived before anyone
+looked at the form; `Invoice No. -> purchaseinvoice` was wrong.
+
+**Emitted a skill** at `.claude/skills/<site>/` — `SKILL.md` (index + status flags), `tables.md`,
+and one JSON contract per op, loaded on demand. The skill is a **build artifact, never
+hand-written**; the emitter contains no site knowledge.
+
+### Generality
+
+Only **one block** in the whole pipeline is site-specific: the AutoCount company picker, skipped
+entirely when `--url=` is given. `schema.mjs` has zero site knowledge.
+
+`admin.atap.solar` reached 12 pages through the *fallback* path with no sidenav classes present,
+before the run was killed for being production. So the generic path works — but the sample is two
+apps, and the run that would have proven it was aborted on purpose.
+
+The map stage should work on most conventional apps (anything navigating by real `<a href>`). It
+breaks on: nav built from `div onclick` / programmatic routers, hash routing (one-line fix),
+virtualized grids, and create actions that are icons rather than the word "New".
+
+**The property that matters more than the hit rate: it degrades to "route list plus screenshots",
+not to garbage.** 21 misses and zero invented selectors on the atap probe. A half-working site
+yields an honest partial map with a MISS column, never a schema that lies.
+
+---
+
+## 13. Distance to production — read this before promising anything
+
+Two days in. What exists is a **working prototype of a mapping method**, not a tool. The gap is not
+polish; four things are unknown, and unknowns are not schedulable:
+
+| Gap | Why it is not "nearly done" |
+|---|---|
+| Dropdown fill | Never attempted once. Could be type-and-pick (an afternoon) or event-driven and hostile (a week). Everything is behind it. |
+| First successful write | Zero records created. Until one save lands, every contract is a hypothesis. |
+| Validation rules | Structurally undiscoverable by reading. Requires attempting saves. |
+| Update / Delete | Never traced, and blocked by the 12 px control problem that has been open since day 1. |
+
+Production would additionally require: a runner that executes contracts, read-only safety for prod
+sites, virtualized-grid support, staleness detection when a vendor ships a UI change, and error
+handling — of which **none exists**.
+
+Honest framing: the read half is close to useful and the write half has not started. Calling this
+"almost done" because a schema exists would repeat the exact failure this repo keeps recording —
+trusting a proxy signal that fails toward "fine".
+
+---
+
+## 14. Test-write mode (designed, not built)
+
+Writing is the only way to learn the late-bound half of the schema, and an empty trial account is
+the correct place to do it — writing **manufactures its own test data**, which also unblocks the
+read path that has nothing to read.
+
+- **Log before the save, never after.** A save that succeeds but times out on the response leaves an
+  untracked record in the books. Write intent → save → confirm.
+- **Marker in the record itself**, not only the log: `XRAY-TEST-<runid>` in a free-text field (the
+  invoice line `Description` is the natural home). If the log is lost, the records are still
+  identifiable — by a human and by cleanup.
+- **Delete in reverse dependency order.** `refs` in `schema.json` already gives the ordering.
+- **Accounting systems usually VOID, not delete.** AutoCount has an Audit Trail. A voided invoice
+  may persist permanently. Assume test data is **not fully removable** until proven otherwise.
+- **Document numbers do not roll back.** The invoice modal shows `I-000001` before anything is
+  saved. Test writes consume the live sequence whether or not the record survives.
+
+Those last two are why the **empty trial account is the right sandbox and should be kept** — not a
+limitation to escape.

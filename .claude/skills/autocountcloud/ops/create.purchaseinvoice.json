@@ -1,0 +1,72 @@
+{
+  "op": "create.purchaseinvoice",
+  "table": "purchaseinvoice",
+  "needs": [
+    {
+      "field": "purchaseinvoice.f.supplier",
+      "ask_user_for": "Supplier",
+      "control": "dropdown",
+      "pick_from_table": "creditor"
+    },
+    {
+      "field": "purchaseinvoice.f.name",
+      "ask_user_for": "Name",
+      "control": "input"
+    },
+    {
+      "field": "purchaseinvoice.f.credit_term",
+      "ask_user_for": "Credit Term",
+      "control": "dropdown",
+      "pick_from_table": "creditterm"
+    },
+    {
+      "field": "purchaseinvoice.f.supplier_invoice_no",
+      "ask_user_for": "Supplier Invoice No.",
+      "control": "input",
+      "pick_from_table": "invoice",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "purchaseinvoice.f.p_i_no",
+      "ask_user_for": "P/I No.",
+      "control": "dropdown",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "purchaseinvoice.f.address",
+      "ask_user_for": "Address",
+      "control": "textarea"
+    },
+    {
+      "field": "purchaseinvoice.f.date",
+      "ask_user_for": "Date",
+      "control": "date picker"
+    },
+    {
+      "field": "purchaseinvoice.f.currency",
+      "ask_user_for": "Currency",
+      "control": "dropdown",
+      "pick_from_table": "currency"
+    },
+    {
+      "field": "purchaseinvoice.f.rate",
+      "ask_user_for": "Rate",
+      "control": "input"
+    }
+  ],
+  "steps": [
+    "navigate to /purchaseinvoice",
+    "click \"New\"",
+    "fill \"Supplier\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Name\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Credit Term\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Supplier Invoice No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+    "fill \"P/I No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Address\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea",
+    "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input",
+    "fill \"Currency\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input",
+    "fill \"Rate\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "click \"Save\"",
+    "verify: the new row appears in the purchaseinvoice grid"
+  ]
+}

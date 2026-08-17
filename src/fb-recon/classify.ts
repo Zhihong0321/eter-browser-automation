@@ -1,18 +1,23 @@
 /**
- * Intent classification for gate survivors.
+ * Who is this person? Group Recon's only question.
  *
- * Two rules shape everything here.
+ * This LABELS, it does not select. Every message collected in the sweep is
+ * recorded with its sender no matter what comes back from here — the type is a
+ * column, not a gate. That is the whole difference from the old design, where a
+ * classifier verdict could delete someone before you ever saw them.
+ *
+ * Two rules shape the rest.
  *
  * BATCH. One model call per post turns a 300-post sweep into the most expensive
  * part of the feature by an order of magnitude. Twenty posts per call costs
  * almost the same as one.
  *
- * FAIL OPEN. Every failure path — no endpoint configured, HTTP error, garbage
- * response, an item the model forgot — keeps the item. A classifier that drops
- * leads when it breaks is worse than no classifier, because the failure is
- * invisible: you get a shorter list and no reason to distrust it.
+ * FAIL SOFT. Every failure path — no endpoint configured, HTTP error, garbage
+ * response, an item the model forgot — yields `none`, which means "could not
+ * tell", and the person is still recorded. An unlabelled row you can read is
+ * worth infinitely more than a row that was quietly removed.
  */
-import { FBRECON_LLM_KEY, FBRECON_LLM_MODEL, FBRECON_LLM_URL } from '../config.js';
+import { fbReconLlm } from '../config.js';
 import type { Intent } from './store.js';
 
 export interface ClassifyItem {
@@ -22,7 +27,6 @@ export interface ClassifyItem {
 
 export interface Verdict {
   id: string;
-  interested: boolean;
   intent: Intent;
   why: string;
 }
@@ -36,20 +40,28 @@ export interface LlmConfig {
   key: string;
   model: string;
   batchSize?: number;
+  /** Per-batch ceiling. Measured 2026-08-13: a 20-item batch took ~4 minutes. */
+  timeoutMs?: number;
 }
 
-const VALID_INTENTS: readonly Intent[] = ['buying', 'researching', 'seller', 'none'];
+const VALID_INTENTS: readonly Intent[] = ['seller', 'owner', 'buyer', 'none'];
 const DEFAULT_BATCH = 20;
+/**
+ * Generous, because being slow is normal and losing labels is not — but finite,
+ * because the sweep cannot finish until this returns.
+ */
+const DEFAULT_TIMEOUT_MS = 300_000;
 /** Long enough to carry intent, short enough that 20 fit comfortably in one call. */
 const MAX_TEXT = 600;
 
-function keep(item: ClassifyItem, why: string): Verdict {
-  return { id: item.id, interested: true, intent: 'researching', why };
+/** Recorded, but honestly unlabelled. Never silently invents a type. */
+function unknown(item: ClassifyItem, why: string): Verdict {
+  return { id: item.id, intent: 'none', why };
 }
 
 export const passThroughClassifier: Classifier = {
   async classify(_topic: string, items: ClassifyItem[]): Promise<Verdict[]> {
-    return items.map((i) => keep(i, 'no classifier configured; kept on regex score'));
+    return items.map((i) => unknown(i, 'no classifier configured — set FBRECON_LLM_URL/MODEL to get types'));
   },
 };
 
@@ -68,14 +80,13 @@ export function parseVerdicts(raw: string, items: ClassifyItem[]): Verdict[] {
       const parsed = JSON.parse(raw.slice(start, end + 1)) as unknown;
       if (Array.isArray(parsed)) {
         for (const row of parsed) {
-          const r = row as { id?: unknown; interested?: unknown; intent?: unknown; why?: unknown };
+          const r = row as { id?: unknown; type?: unknown; intent?: unknown; why?: unknown };
           const id = typeof r.id === 'string' ? r.id : '';
           if (!byId.has(id)) continue; // ignore ids we never sent
-          const intent = VALID_INTENTS.includes(r.intent as Intent) ? (r.intent as Intent) : 'researching';
+          const raw = (r.type ?? r.intent) as Intent;
           found.set(id, {
             id,
-            interested: r.interested !== false,
-            intent,
+            intent: VALID_INTENTS.includes(raw) ? raw : 'none',
             why: typeof r.why === 'string' ? r.why.slice(0, 200) : '',
           });
         }
@@ -85,25 +96,44 @@ export function parseVerdicts(raw: string, items: ClassifyItem[]): Verdict[] {
     }
   }
 
-  return items.map((i) => found.get(i.id) ?? keep(i, 'classifier gave no verdict for this item'));
+  return items.map((i) => found.get(i.id) ?? unknown(i, 'classifier gave no verdict for this item'));
 }
 
+/**
+ * The three types, defined by what the message DOES rather than what it is
+ * about. "Is this about solar?" is the wrong question in a solar group — every
+ * message is. "Is this person selling, using, or shopping?" is the one that
+ * decides whether you open Messenger.
+ */
 function prompt(topic: string, items: ClassifyItem[]): string {
   return [
-    `You are screening Facebook posts and comments to find people who might BUY ${topic}.`,
+    `These are messages from a Facebook group about ${topic}.`,
+    'Everyone in the group is one of exactly three types. Label each message by',
+    'what its SENDER is doing:',
     '',
-    'For each item decide:',
-    `- interested: true if this person could plausibly become a customer for ${topic}.`,
-    '- intent: "buying" (asking price, quotes, ready to install), "researching" (curious,',
-    '  comparing, asking opinions), "seller" (a vendor, installer, agent or recruiter —',
-    '  NOT a customer), or "none" (unrelated).',
-    '- why: at most 12 words.',
+    '- "seller"  — trying to sell. Pitching, displaying a product or price list,',
+    '              showing off a job they installed for a customer, posting',
+    '              promotions, or asking people to PM/WhatsApp/contact them.',
+    '- "owner"   — already bought it. Asking how to use or maintain theirs,',
+    '              complaining about performance, a bill, or an installer, or',
+    '              showing off what they own.',
+    '- "buyer"   — has not bought yet. Mostly asking questions: prices, whether it',
+    '              is worth it, which brand, who to hire, is my situation suitable.',
+    '- "none"    — genuinely cannot tell, or the message is off-topic chatter.',
     '',
-    'Posts may mix English and Malay. "berapa harga", "nak pasang", "berbaloi tak" are',
-    'buying signals. A company advertising its own service is a seller, not a lead.',
+    'The hard one is seller vs owner: both post photos of an installation. If the',
+    'sender did the work FOR someone, they are a seller. If it is on their own',
+    'roof and they are living with it, they are an owner.',
+    'The other hard one is owner vs buyer: an owner asking about a SECOND system',
+    'is a buyer. Complaining about the one they have is an owner.',
     '',
-    'Reply with ONLY a JSON array, one object per item, using the ids given:',
-    '[{"id":"...","interested":true,"intent":"buying","why":"..."}]',
+    'Messages mix English, Malay and Chinese. "berapa harga", "nak pasang",',
+    '"berbaloi tak", "多少钱", "值得吗" are buyer questions. "PM for quote",',
+    '"WhatsApp us", "dealer wanted" are sellers.',
+    '',
+    'Reply with ONLY a JSON array, one object per item, using the ids given.',
+    'why: at most 12 words.',
+    '[{"id":"...","type":"buyer","why":"..."}]',
     '',
     ...items.map((i) => `--- id: ${i.id}\n${i.text.slice(0, MAX_TEXT)}`),
   ].join('\n');
@@ -111,6 +141,7 @@ function prompt(topic: string, items: ClassifyItem[]): string {
 
 export function llmClassifier(cfg: LlmConfig): Classifier {
   const batchSize = cfg.batchSize ?? DEFAULT_BATCH;
+  const timeoutMs = cfg.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
   return {
     async classify(topic: string, items: ClassifyItem[]): Promise<Verdict[]> {
@@ -118,6 +149,7 @@ export function llmClassifier(cfg: LlmConfig): Classifier {
 
       for (let i = 0; i < items.length; i += batchSize) {
         const batch = items.slice(i, i + batchSize);
+        const started = Date.now();
         try {
           const res = await fetch(cfg.url, {
             method: 'POST',
@@ -130,18 +162,27 @@ export function llmClassifier(cfg: LlmConfig): Classifier {
               temperature: 0,
               messages: [{ role: 'user', content: prompt(topic, batch) }],
             }),
+            // Without this a stuck endpoint hangs the ENTIRE sweep — measured
+            // 2026-08-13, a batch sat in fetch for 7+ minutes while the same
+            // request from another process answered in 3 seconds, and the
+            // project stayed "running" with no way to tell what it was doing.
+            // Labels are optional; hanging the harvest to wait for them is not.
+            signal: AbortSignal.timeout(timeoutMs),
           });
 
           if (!res.ok) {
-            out.push(...batch.map((it) => keep(it, `classifier HTTP ${res.status}`)));
+            out.push(...batch.map((it) => unknown(it, `classifier HTTP ${res.status}`)));
+            console.error(`[fb-recon] classify batch ${i / batchSize + 1}: HTTP ${res.status} in ${Date.now() - started}ms`);
             continue;
           }
 
           const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
           const raw = data.choices?.[0]?.message?.content ?? '';
           out.push(...parseVerdicts(raw, batch));
+          console.error(`[fb-recon] classify batch ${i / batchSize + 1}: ${batch.length} item(s) in ${Date.now() - started}ms`);
         } catch (err) {
-          out.push(...batch.map((it) => keep(it, `classifier unreachable: ${(err as Error).message}`)));
+          out.push(...batch.map((it) => unknown(it, `classifier unreachable: ${(err as Error).message}`)));
+          console.error(`[fb-recon] classify batch ${i / batchSize + 1}: FAILED after ${Date.now() - started}ms — ${(err as Error).message}`);
         }
       }
 
@@ -152,6 +193,7 @@ export function llmClassifier(cfg: LlmConfig): Classifier {
 
 /** Configured endpoint if there is one, otherwise the honest no-op. */
 export function defaultClassifier(): Classifier {
-  if (!FBRECON_LLM_URL || !FBRECON_LLM_MODEL) return passThroughClassifier;
-  return llmClassifier({ url: FBRECON_LLM_URL, key: FBRECON_LLM_KEY, model: FBRECON_LLM_MODEL });
+  const cfg = fbReconLlm();
+  if (!cfg.url || !cfg.model) return passThroughClassifier;
+  return llmClassifier(cfg);
 }

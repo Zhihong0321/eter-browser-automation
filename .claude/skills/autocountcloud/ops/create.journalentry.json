@@ -1,0 +1,45 @@
+{
+  "op": "create.journalentry",
+  "table": "journalentry",
+  "needs": [
+    {
+      "field": "journalentry.f.description",
+      "ask_user_for": "Description",
+      "control": "text input"
+    },
+    {
+      "field": "journalentry.f.voucher_no",
+      "ask_user_for": "Voucher No.",
+      "control": "dropdown",
+      "note": "server-assigned, do not supply"
+    },
+    {
+      "field": "journalentry.f.journal_type",
+      "ask_user_for": "Journal Type",
+      "control": "dropdown",
+      "pick_from_table": "journaltype"
+    },
+    {
+      "field": "journalentry.f.currency_code",
+      "ask_user_for": "Currency Code",
+      "control": "dropdown",
+      "pick_from_table": "currency"
+    },
+    {
+      "field": "journalentry.f.date",
+      "ask_user_for": "Date",
+      "control": "date picker"
+    }
+  ],
+  "steps": [
+    "navigate to /journalentry",
+    "click \"New\"",
+    "fill \"Description\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>input",
+    "fill \"Voucher No.\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input",
+    "fill \"Journal Type\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Currency Code\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input",
+    "fill \"Date\" -> body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input",
+    "click \"View Posting Details\"",
+    "verify: the new row appears in the journalentry grid"
+  ]
+}

@@ -1,13 +1,63 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { chromium, type BrowserContext, type Page } from 'patchright';
 import { DEFAULT_PROFILE_ID } from './config.js';
 import { RateLimiter } from './human.js';
 import type { Vault } from './vault.js';
 
+const execFileAsync = promisify(execFile);
+
 /** How long a rescued session cookie is allowed to live once we pin it to disk. */
 const SESSION_COOKIE_TTL_MS = 30 * 24 * 60 * 60_000;
 const SESSION_COOKIE_FILE = 'session-cookies.json';
+
+/**
+ * Chrome's own message when `launchPersistentContext` finds the user-data-dir's
+ * singleton lock already held. In this app the lock almost never means "something
+ * else is legitimately using this profile" — it means a PREVIOUS run of this same
+ * service left a chrome.exe behind (killed service process, crash, restart) that
+ * nothing here still has a handle on. #ensure() is the only launcher for this
+ * profile, so on that specific failure it is safe to find and kill whatever
+ * chrome.exe still points at this exact directory and try once more.
+ */
+function isProfileLockedByOrphan(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes('Opening in existing browser session');
+}
+
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Kill any chrome.exe whose own command line names this profile directory. Windows only. */
+async function killOrphanedChrome(profileDir: string): Promise<void> {
+  if (process.platform !== 'win32') return;
+  const needle = profileDir.toLowerCase();
+  try {
+    const { stdout } = await execFileAsync(
+      'powershell.exe',
+      [
+        '-NoProfile',
+        '-NonInteractive',
+        '-Command',
+        "Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress",
+      ],
+      { timeout: 5000 },
+    );
+    const parsed: unknown = stdout.trim() ? JSON.parse(stdout) : [];
+    const rows = Array.isArray(parsed) ? parsed : [parsed];
+    const pids = rows
+      .filter((r): r is { ProcessId: number; CommandLine?: string } => !!r && typeof r === 'object')
+      .filter((r) => (r.CommandLine ?? '').toLowerCase().includes(needle))
+      .map((r) => r.ProcessId);
+
+    for (const pid of pids) {
+      await execFileAsync('taskkill', ['/PID', String(pid), '/T', '/F'], { timeout: 5000 }).catch(() => {});
+    }
+  } catch {
+    /* best effort — if enumeration fails the retry below just fails again with the same error */
+  }
+}
 
 export type BrowserState = 'stopped' | 'starting' | 'running';
 
@@ -144,16 +194,30 @@ export class BrowserManager {
     this.#state = 'starting';
     this.#lastError = null;
 
-    try {
-      // Replayed verbatim from the manifest so the fingerprint the site enrolled
-      // against is the fingerprint it sees on every subsequent run.
-      const ctx = await chromium.launchPersistentContext(dir, {
+    // Replayed verbatim from the manifest so the fingerprint the site enrolled
+    // against is the fingerprint it sees on every subsequent run.
+    const launch = () =>
+      chromium.launchPersistentContext(dir, {
         channel: profile.launch.channel,
         headless: profile.launch.headless,
         args: mergeArgs(profile.launch.args, PERF_ARGS),
         viewport: null,
         ignoreDefaultArgs: ['--enable-automation'],
       });
+
+    try {
+      let ctx: BrowserContext;
+      try {
+        ctx = await launch();
+      } catch (err) {
+        if (!isProfileLockedByOrphan(err)) throw err;
+        // This service's own #ctx is null right now (we're in #ensure()), so any
+        // chrome.exe still holding this profile's lock cannot be one we know
+        // about — it is left over from a previous run. Clear it and try once more.
+        await killOrphanedChrome(dir);
+        await delay(500);
+        ctx = await launch();
+      }
 
       ctx.on('close', () => {
         this.#ctx = null;

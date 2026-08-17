@@ -1,0 +1,1291 @@
+{
+  "/quotation": {
+    "href": "/quotation",
+    "formUrl": "/quotation",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "textarea",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 26,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Customer",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Email",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Quotation No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Address",
+        "role": "textarea",
+        "tag": "textarea",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+      },
+      {
+        "name": "Sales Agent",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Payment Term",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Rate",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 33953
+  },
+  "/invoice": {
+    "href": "/invoice",
+    "formUrl": "/invoice",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "textarea",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 28,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Customer",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Email",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Invoice No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Address",
+        "role": "textarea",
+        "tag": "textarea",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+      },
+      {
+        "name": "Sales Agent",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Credit Term",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Rate",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Deposit Payment Amount",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 53314
+  },
+  "/creditnote": {
+    "href": "/creditnote",
+    "formUrl": "/creditnote",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "textarea",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 27,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Customer",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Email",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "C/N No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Address",
+        "role": "text area",
+        "tag": "textarea",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+      },
+      {
+        "name": "Sales Agent",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Our Invoice No.",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Reason",
+        "role": "text area",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Rate",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 53709
+  },
+  "/purchaseorder": {
+    "href": "/purchaseorder",
+    "formUrl": "/purchaseorder",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "textarea",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 25,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Supplier",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Email",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "P/O No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Address",
+        "role": "text area",
+        "tag": "textarea",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+      },
+      {
+        "name": "Credit Term",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Rate",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 48599
+  },
+  "/purchaseinvoice": {
+    "href": "/purchaseinvoice",
+    "formUrl": "/purchaseinvoice",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "textarea",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 23,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Supplier",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Credit Term",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Supplier Invoice No.",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "P/I No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Address",
+        "role": "textarea",
+        "tag": "textarea",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Rate",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 38403
+  },
+  "/purchasereturn": {
+    "href": "/purchasereturn",
+    "formUrl": "/purchasereturn",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "textarea",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 25,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Supplier",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Supplier C/N No.",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Supplier Invoice No.",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "P/R No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(3)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Address",
+        "role": "textarea",
+        "tag": "textarea",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>textarea"
+      },
+      {
+        "name": "Reason",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Credit Term",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div:nth-of-type(3)>div>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(2)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Rate",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div:nth-of-type(2)>div:nth-of-type(2)>div>div:nth-of-type(4)>div>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 55920
+  },
+  "/cashbookentry": {
+    "href": "/cashbookentry",
+    "formUrl": "/cashbookentry",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 3,
+    "inputsAfter": 3,
+    "ok": false,
+    "lines": []
+  },
+  "/journalentry": {
+    "href": "/journalentry",
+    "formUrl": "/journalentry",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Select...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [
+      "View Posting Details"
+    ],
+    "inputsBefore": 3,
+    "inputsAfter": 16,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Description",
+        "role": "text input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Voucher No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Journal Type",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency Code",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 64892
+  },
+  "/knockoffentry": {
+    "href": "/knockoffentry",
+    "formUrl": "/knockoffentry",
+    "fields": [
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "<<New>>",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "Search...",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "text",
+        "required": false
+      },
+      {
+        "label": "",
+        "kind": "submit",
+        "required": false
+      }
+    ],
+    "saves": [],
+    "inputsBefore": 2,
+    "inputsAfter": 12,
+    "ok": true,
+    "lines": [],
+    "labelled": [
+      {
+        "name": "Customer/Supplier Code",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Knock Off No.",
+        "role": "dropdown",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Company Name",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(1)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Currency Code",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Date",
+        "role": "date picker",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(1)>div:nth-of-type(2)>div:nth-of-type(2)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Search",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(2)>div>div>div:nth-of-type(4)>div>div>div:nth-of-type(3)>div:nth-of-type(6)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Total Applied Amount",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(3)>div>div>div>div:nth-of-type(1)>input"
+      },
+      {
+        "name": "Gain/(Loss)",
+        "role": "input",
+        "tag": "input",
+        "selector": "body>div:nth-of-type(2)>div>div:nth-of-type(1)>div>div>div>div:nth-of-type(2)>form>div:nth-of-type(4)>div>div>div>div:nth-of-type(1)>input"
+      }
+    ],
+    "visionMs": 29187
+  }
+}
