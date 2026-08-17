@@ -261,6 +261,11 @@ export function renderReport(
     font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:7px 10px;cursor:pointer;
     white-space:nowrap;transition:background .15s ease,color .15s ease}
   .dr-btn:hover{background:var(--signal);color:var(--bg)}
+  /* A company already researched is a different action — "read what we found" rather
+     than "go find something" — so it gets the report's own colour, not the amber
+     that means "this will take two minutes and hit the network". */
+  .dr-btn.done{background:var(--cool-soft);border-color:var(--cool);color:var(--cool)}
+  .dr-btn.done:hover{background:var(--cool);color:var(--bg)}
   .none{color:var(--line-2)}
   .empty{padding:44px 20px;text-align:center;color:var(--dim);font-family:var(--mono);
     letter-spacing:.14em;text-transform:uppercase}
@@ -599,9 +604,7 @@ function render(){
     '<td class="soc' + (r.w || r.m || r.fb || r.ig || r.wa ? '' : ' dashed') + '" data-label="Links">' +
       link(r.w, 'web') + link(r.m, 'map') + link(r.fb, 'fb') + link(r.ig, 'ig') + link(r.wa, 'wa') +
       (r.w || r.m || r.fb || r.ig || r.wa ? '' : '<span class="none">—</span>') + '</td>' +
-    '<td class="act" data-label="Research">' +
-      '<button class="dr-btn" type="button" data-act="research" data-id="' + esc(r.id) +
-      '" data-name="' + esc(r.n) + '">⚡ Research</button></td>' +
+    researchCell(r) +
     '</tr>').join('');
 
   mt.hidden = rows.length > 0;
