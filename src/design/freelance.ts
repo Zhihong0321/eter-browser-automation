@@ -17,7 +17,9 @@ import { assistantText, connProfile, runAgent } from '../agent.js';
 import { critique, asRevisionBrief, type Critique } from './critique.js';
 import { publish, toSlug } from './host.js';
 import { imageServer } from './imagetool.js';
+import { optimizeDir, pagePathsOf, writeSeoFiles, formatOptimizeReport, type OptimizeReport } from './optimize.js';
 import { shoot } from './shoot.js';
+import { verify, asVerifyFixBrief, type VerifyResult } from './verify.js';
 
 export interface FreelanceOptions {
   brief: string;
@@ -30,6 +32,14 @@ export interface FreelanceOptions {
   profile?: string;
   /** Review-and-revise rounds after the first build. */
   rounds?: number;
+  /**
+   * Round 0 publishes `workDir` as it stands instead of calling the builder —
+   * for bringing an already-built site up to the gate (see `polish()`) rather
+   * than building one from a brief.
+   */
+  skipInitialBuild?: boolean;
+  /** Run the Bedrock-style gate (verify.ts) each round. Default true. */
+  verify?: boolean;
   onLog?: (line: string) => void;
 }
 
@@ -37,7 +47,23 @@ export interface FreelanceResult {
   url: string;
   rounds: number;
   final: Critique;
-  history: { round: number; score: number; blockers: number; url: string }[];
+  /** Null only when `verify: false` was passed, or every attempt errored. */
+  verify: VerifyResult | null;
+  optimize: OptimizeReport | null;
+  history: {
+    round: number;
+    score: number;
+    blockers: number;
+    url: string;
+    verifyPass: boolean | null;
+    perf: number | null;
+  }[];
+}
+
+/** A round beats another if it clears the gate and the other doesn't; ties break on the design score. */
+function betterRound(a: { score: number; pass: boolean }, b: { score: number; pass: boolean }): boolean {
+  if (a.pass !== b.pass) return a.pass;
+  return a.score > b.score;
 }
 
 const BUILD_INSTRUCTIONS = `

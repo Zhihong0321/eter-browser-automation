@@ -542,6 +542,20 @@ function telCell(v){
   return '<td class="ph" data-label="Phone"><a href="tel:' + esc(String(v).replace(/[^\\d+]/g, '')) +
     '">' + esc(v) + '</a></td>';
 }
+/* A company already researched needs a different button than one that isn't: "read
+   what we found" rather than "go find something". DOSSIERS is embedded and keyed by
+   placeId, so this is a synchronous lookup — no network round-trip just to know
+   which state a row is in, and clicking either button opens the same modal. */
+function researchCell(r){
+  const d = DOSSIERS[r.id];
+  return '<td class="act" data-label="Research">' +
+    (d
+      ? '<button class="dr-btn done" type="button" data-act="research" data-id="' + esc(r.id) +
+        '" data-name="' + esc(r.n) + '">✓ Report — ' + d.legitimacyScore + '/100</button>'
+      : '<button class="dr-btn" type="button" data-act="research" data-id="' + esc(r.id) +
+        '" data-name="' + esc(r.n) + '">⚡ Research</button>') +
+    '</td>';
+}
 
 // ---- theme -----------------------------------------------------------------
 // Three states: unset follows the device, "dark"/"light" override it. The choice is
